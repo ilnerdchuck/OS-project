@@ -1,12 +1,12 @@
-#include "hw/qdev-core.h"
 #include "qemu/osdep.h"
 #include "qapi/error.h"
+#include "qemu/module.h"
 #include "hw/arm/boot.h"
-#include "hw/sysbus.h"
+#include "exec/address-spaces.h"
+#include "hw/arm/stm32f205_soc.h"
+#include "hw/qdev-properties.h"
 #include "hw/qdev-clock.h"
-#include "hw/misc/unimp.h"
-#include "qemu/log.h"
-
+#include "sysemu/sysemu.h"
 
 #include "hw/arm/S32K3x8_MCU.h"
 #include "hw/arm/S32K3X8EVB.h"
@@ -17,9 +17,9 @@ static void S32K3x8_init(Object  *obj){
     //Clock initializer
     s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
 
-    //memory initializer   
+    //memory initializer
     memory_region_init(&s->container, obj, "S32K3x8-container", UINT64_MAX);
-    
+
     //cpu initializer
     object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
     qdev_prop_set_string(DEVICE(&s->cpu), "cpu-type",ARM_CPU_TYPE_NAME("cortex-m7"));
@@ -29,8 +29,8 @@ static void S32K3x8_init(Object  *obj){
 static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
     S32K3x8State *s = S32K3x8_MCU(dev_mcu);
     Error *err = NULL;
-    
-    if (!s->board_memory) { 
+
+    if (!s->board_memory) {
         error_setg(errp, "memory property was not set");
         return;
     }
@@ -66,7 +66,7 @@ static Property S32K3x8_properties[] = {
 
 static void S32K3x8_class_init(ObjectClass *klass, void *data){
     DeviceClass *dc = DEVICE_CLASS(klass);
-    
+
     dc->realize = S32K3x8_realize;
     device_class_set_props(dc, S32K3x8_properties);
 }
