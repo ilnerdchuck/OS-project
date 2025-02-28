@@ -6,8 +6,9 @@
 #include "hw/arm/stm32f205_soc.h"
 #include "hw/qdev-properties.h"
 #include "hw/qdev-clock.h"
+#include "qemu/typedefs.h"
 #include "sysemu/sysemu.h"
-
+#include "include/hw/arm/S32K3X8EVB.h"
 #include "hw/arm/S32K3x8_MCU.h"
 #include "hw/arm/S32K3X8EVB.h"
 
@@ -20,6 +21,30 @@ static void S32K3x8_init(Object  *obj){
     //memory initializer
     memory_region_init(&s->container, obj, "S32K3x8-container", UINT64_MAX);
 
+    //FLASH 
+    /* Create the Flash memory ROM region. */
+    Error *err, *errp = NULL;
+
+    memory_region_init_rom(&s->flash0, OBJECT(s), "S32K3.flash", S32K3x8_FLASH0_SIZE , &err);
+    if (err) {
+        error_propagate(&errp, err);
+        
+        return;
+    }
+    /* Map the Flash memory. */
+    memory_region_add_subregion(&s->container, S32K3x8_FLASH0_BASE, &s->flash0);
+    /* Initialize SRAM memory region. */
+    memory_region_init_ram(&s->sram0, OBJECT(s), "SK32K3.sram", S32K3x8_SRAM0_SIZE, &err);
+    if (err) {
+        error_propagate(&errp, err);
+        return;
+    }
+    /* Map the SRAM memory region. */
+    memory_region_add_subregion(
+        &s->container,
+        S32K3x8_SRAM0_BASE,
+        &s->sram0
+    );
     //cpu initializer
     object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
     qdev_prop_set_string(DEVICE(&s->cpu), "cpu-type",ARM_CPU_TYPE_NAME("cortex-m7"));
