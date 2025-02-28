@@ -1,5 +1,24 @@
 #pragma once
 
+#include "qemu/osdep.h"
+#include "qapi/error.h"
+#include "hw/qdev-properties.h"
+#include "hw/boards.h"
+#include "hw/arm/boot.h"
+#include "sysemu/sysemu.h"
+#include "exec/address-spaces.h"
+#include "qom/object.h"
+#include "hw/qdev-clock.h"
+#include "hw/arm/S32K3X8EVB.h"
+#include "hw/arm/S32K3x8_MCU.h"
+
+#include "qemu/osdep.h"
+#include "qapi/error.h"
+#include "hw/boards.h"
+#include "hw/qdev-properties.h"
+#include "hw/qdev-clock.h"
+#include "qemu/error-report.h"
+#include "hw/arm/boot.h"
 
 //TODO: define all memory regions
 //FLASH
