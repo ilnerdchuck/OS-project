@@ -16,9 +16,9 @@ ELF := $(OUTPUT_DIR)/$(DEMO_NAME).elf
 MAP := $(OUTPUT_DIR)/$(DEMO_NAME).map
 
 # Compiler toolchain
-CC := arm-none-eabi-gcc
-LD := arm-none-eabi-gcc
-SIZE := arm-none-eabi-size
+CC := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-gcc
+LD := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-gcc
+SIZE := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-size
 
 # Target embedded board and CPU
 MACHINE := S32K3X8EVB 
@@ -113,7 +113,7 @@ OBJS_OUTPUT = $(OBJS_NOPATH:%.o=$(OUTPUT_DIR)/%.o)
 
 all: $(ELF)
 
-$(ELF): $(OBJS_OUTPUT) ./mps2_m3.ld Makefile
+$(ELF): $(OBJS_OUTPUT) ./S32K3.ld Makefile
 	echo "\n\n--- Final linking ---\n"
 	$(LD) $(LDFLAGS) $(OBJS_OUTPUT) -o $(ELF)
 	$(SIZE) $(ELF)
@@ -137,5 +137,6 @@ qemu_start:
 qemu_debug:
 	../qemu/build/qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
 	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS_DBG)
+# TODO: add a rule to spawn a terminal with qemu and start gdb 
 gdb_start:
 	gdb $(ELF) -ex "target remote :1234" 
