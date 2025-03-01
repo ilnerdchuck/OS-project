@@ -37,15 +37,15 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
     DeviceState *dev, *armv7m;
     Error *err = NULL;
 
-    if (!s->board_memory) {
-        error_setg(errp, "memory property was not set");
-        return;
-    }
+    /*if (!s->board_memory) {*/
+    /*    error_setg(errp, "memory property was not set");*/
+    /*    return;*/
+    /*}*/
 
-    if (!clock_has_source(s->sysclk)) {
-        error_setg(errp, "sysclk clock must not be wired up by the board code");
-        return;
-    }
+    /*if (!clock_has_source(s->sysclk)) {*/
+    /*    error_setg(errp, "sysclk clock must not be wired up by the board code");*/
+    /*    return;*/
+    /*}*/
 
 
     /*object_property_set_link(OBJECT(&s->cpu), "memory", OBJECT(&s->container),&error_abort);*/
