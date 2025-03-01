@@ -1,85 +1,91 @@
+#include <stdint.h>
+#include <glib.h>
+#include "include/hw/arm/S32K3X8EVB.h"
+#include "hw/arm/S32K3x8_MCU.h"
+#include "hw/arm/S32K3X8EVB.h"
+#include "hw/sysbus.h"
 #include "qemu/osdep.h"
 #include "qapi/error.h"
 #include "qemu/module.h"
 #include "hw/arm/boot.h"
 #include "exec/address-spaces.h"
-#include "hw/arm/stm32f205_soc.h"
 #include "hw/qdev-properties.h"
 #include "hw/qdev-clock.h"
 #include "qemu/typedefs.h"
 #include "sysemu/sysemu.h"
-#include "include/hw/arm/S32K3X8EVB.h"
-#include "hw/arm/S32K3x8_MCU.h"
-#include "hw/arm/S32K3X8EVB.h"
+
+#include "qemu/osdep.h"
+#include "qapi/error.h"
+#include "exec/address-spaces.h"
+#include "sysemu/sysemu.h"
+#include "hw/qdev-clock.h"
+#include "hw/misc/unimp.h"
 
 static void S32K3x8_init(Object  *obj){
     S32K3x8State *s = S32K3x8_MCU(obj);
 
     //Clock initializer
-    s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
 
-    //memory initializer
-    memory_region_init(&s->container, obj, "S32K3x8-container", UINT64_MAX);
-
-    //FLASH 
-    /* Create the Flash memory ROM region. */
-    Error *err, *errp = NULL;
-
-    memory_region_init_rom(&s->flash0, OBJECT(s), "S32K3.flash", S32K3x8_FLASH0_SIZE , &err);
-    if (err) {
-        error_propagate(&errp, err);
-        
-        return;
-    }
-    /* Map the Flash memory. */
-    memory_region_add_subregion(&s->container, S32K3x8_FLASH0_BASE, &s->flash0);
-    /* Initialize SRAM memory region. */
-    memory_region_init_ram(&s->sram0, OBJECT(s), "SK32K3.sram", S32K3x8_SRAM0_SIZE, &err);
-    if (err) {
-        error_propagate(&errp, err);
-        return;
-    }
-    /* Map the SRAM memory region. */
-    memory_region_add_subregion(
-        &s->container,
-        S32K3x8_SRAM0_BASE,
-        &s->sram0
-    );
     //cpu initializer
     object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
-    qdev_prop_set_string(DEVICE(&s->cpu), "cpu-type",ARM_CPU_TYPE_NAME("cortex-m7"));
-    qdev_prop_set_uint32(DEVICE(&s->cpu), "num-irq", 32); //TODO: check how may irqs are supported
+    s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
 }
 
 static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
     S32K3x8State *s = S32K3x8_MCU(dev_mcu);
+    MemoryRegion *system_memory = get_system_memory();
+    DeviceState *dev, *armv7m;
     Error *err = NULL;
 
-    if (!s->board_memory) {
-        error_setg(errp, "memory property was not set");
-        return;
-    }
+    /*if (!s->board_memory) {*/
+    /*    error_setg(errp, "memory property was not set");*/
+    /*    return;*/
+    /*}*/
 
-    if (clock_has_source(s->sysclk)) {
-        error_setg(errp, "sysclk clock must not be wired up by the board code");
-        return;
-    }
+    /*if (!clock_has_source(s->sysclk)) {*/
+    /*    error_setg(errp, "sysclk clock must not be wired up by the board code");*/
+    /*    return;*/
+    /*}*/
 
-    clock_set_hz(s->sysclk, HCLK_FRQ);
-    qdev_connect_clock_in(DEVICE(&s->cpu), "cpuclk", s->sysclk);
 
-    /* Initialize SRAM memory region. */
-    memory_region_init_ram(&s->sram0, OBJECT(s), "S32K3x8.sram0", s->sram0_size, &err);
-    if (err) {
+    /*object_property_set_link(OBJECT(&s->cpu), "memory", OBJECT(&s->container),&error_abort);*/
+    
+    
+    //memory initializer
+    /*memory_region_init(&s->container, dev_mcu, "S32K3x8-container", UINT64_MAX);*/
+    //FLash region init 
+    memory_region_init_rom(&s->flash0, OBJECT(dev_mcu), "S32K3.flash",S32K3x8_FLASH0_SIZE , &err);
+    if (err != NULL) {
         error_propagate(errp, err);
         return;
     }
+    memory_region_init_alias(&s->flash_alias, OBJECT(dev_mcu),
+                             "S32K3.flash.alias", &s->flash0, 0,
+                             S32K3x8_FLASH0_SIZE);
 
-    /* Map the SRAM memory region in our memory container at the correct base address. */
-    memory_region_add_subregion(&s->container, S32K3x8_SRAM0_BASE, &s->sram0);
+    memory_region_add_subregion(system_memory, S32K3x8_FLASH0_BASE, &s->flash0);
+    memory_region_add_subregion(system_memory, 0, &s->flash_alias);
 
-    //Link container main memory to system memory.
-    object_property_set_link(OBJECT(&s->cpu), "memory", OBJECT(&s->container),&error_abort);
+    memory_region_init_ram(&s->sram0, NULL, "S32K3.sram", S32K3x8_SRAM0_SIZE,
+                           &err);
+    if (err != NULL) {
+        error_propagate(errp, err);
+        return;
+    }
+    memory_region_add_subregion(system_memory, S32K3x8_SRAM0_BASE, &s->sram0);
+
+    clock_set_hz(s->sysclk, HCLK_FRQ);
+    armv7m = DEVICE(&s->cpu);
+    qdev_prop_set_uint32(armv7m, "num-irq", 32);
+    /*qdev_prop_set_uint8(armv7m, "num-prio-bits", 4);*/
+    qdev_prop_set_string(armv7m, "cpu-type", ARM_CPU_TYPE_NAME("cortex-m7"));
+    /*qdev_prop_set_bit(armv7m, "enable-bitband", true);*/
+    qdev_connect_clock_in(armv7m, "cpuclk", s->sysclk);
+    object_property_set_link(OBJECT(&s->cpu), "memory",
+                             OBJECT(system_memory), &error_abort);
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->cpu),errp)) {
+       return; 
+    }
 }
 
 static Property S32K3x8_properties[] = {

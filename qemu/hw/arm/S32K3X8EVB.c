@@ -6,9 +6,17 @@
 #include "sysemu/sysemu.h"
 #include "exec/address-spaces.h"
 #include "qom/object.h"
+#include "hw/qdev-clock.h"
 #include "hw/arm/S32K3X8EVB.h"
 #include "hw/arm/S32K3x8_MCU.h"
 
+#include "qemu/osdep.h"
+#include "qapi/error.h"
+#include "hw/boards.h"
+#include "hw/qdev-properties.h"
+#include "hw/qdev-clock.h"
+#include "qemu/error-report.h"
+#include "hw/arm/boot.h"
 //#include "hw/arm/samd21_mcu.h"
 //#include "hw/i2c/microbit_i2c.h"
 //#include "hw/qdev-properties.h"
@@ -28,15 +36,31 @@ struct S32K3X8EVBMachineState {
 OBJECT_DECLARE_SIMPLE_TYPE(S32K3X8EVBMachineState, S32K3X8EVB_MACHINE)
 
 static void S32K3X8EVB_init(MachineState *machine){
-    MemoryRegion *QEMU_memory = get_system_memory();
-    S32K3X8EVBMachineState *s = S32K3X8EVB_MACHINE(machine);
+    DeviceState *dev;
+    Clock *sysclk;
 
-    //MCU init
-    object_initialize_child(OBJECT(machine), "S32K3X8", &s->S32K3X8, TYPE_S32K3x8_MCU);
-    //Memory init
-    object_property_set_link(OBJECT(&s->S32K3X8), "memory",OBJECT(QEMU_memory), &error_fatal);
-    //MCU realize
-    sysbus_realize(SYS_BUS_DEVICE(&s->S32K3X8), &error_fatal);
+    /* This clock doesn't need migration because it is fixed-frequency */
+    sysclk = clock_new(OBJECT(machine), "SYSCLK");
+    clock_set_hz(sysclk, HCLK_FRQ);
+
+    dev = qdev_new(TYPE_S32K3x8_MCU);
+    object_property_add_child(OBJECT(machine), "soc", OBJECT(dev));
+    qdev_connect_clock_in(dev, "sysclk", sysclk);
+    sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
+
+    armv7m_load_kernel(ARM_CPU(first_cpu), machine->kernel_filename,
+                       0, S32K3x8_FLASH0_SIZE);
+    
+
+    /*MemoryRegion *QEMU_memory = get_system_memory();*/
+    /*S32K3X8EVBMachineState *s = S32K3X8EVB_MACHINE(machine);*/
+    /**/
+    /*//MCU init*/
+    /*object_initialize_child(OBJECT(machine), "S32K3X8", &s->S32K3X8, TYPE_S32K3x8_MCU);*/
+    /*//Memory init*/
+    /*object_property_set_link(OBJECT(&s->S32K3X8), "memory",OBJECT(QEMU_memory), &error_fatal);*/
+    /*//MCU realize*/
+    /*sysbus_realize(SYS_BUS_DEVICE(&s->S32K3X8), &error_fatal);*/
 }
     
 

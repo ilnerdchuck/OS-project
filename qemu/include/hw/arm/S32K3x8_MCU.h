@@ -1,7 +1,7 @@
 #pragma once
 
+#include <glib.h>
 #include "qemu/atomic.h"
-#include "glib.h"
 #include "glibconfig.h"
 #include "hw/sysbus.h"
 #include "hw/arm/armv7m.h"
@@ -9,9 +9,10 @@
 #include "qemu/typedefs.h"
 #include "qom/object.h"
 #include "hw/arm/S32K3X8EVB.h"
-
-//Clock freq TODO: quale cavolo é la nostra dato che l'S32k3 arriva fino a 320?
-#define HCLK_FRQ 120000000
+#include "hw/or-irq.h"
+#include "hw/arm/armv7m.h"
+#include "qom/object.h"
+#define HCLK_FRQ 240000000
 
 
 #define TYPE_S32K3x8_MCU "S32K3x8_MCU"
@@ -29,6 +30,7 @@ struct S32K3x8State{
     //Memory declaration
     MemoryRegion sram0;
     MemoryRegion flash0;
+    MemoryRegion flash_alias;
     MemoryRegion *board_memory;
     //Main memory
     MemoryRegion container;
