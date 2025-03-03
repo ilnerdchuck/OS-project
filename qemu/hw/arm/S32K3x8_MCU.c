@@ -21,13 +21,46 @@
 #include "hw/qdev-clock.h"
 #include "hw/misc/unimp.h"
 
+//Peripheral 
+#include "hw/char/S32K_uart.h"
+
+static const uint32_t usart_addr[NXP_NUM_UARTS] = { 
+0x40328000, //Uart 0 
+0x4032C000, //Uart 1 
+0x40330000, //Uart 2
+0x40334000, //Uart 3
+0x40338000, //Uart 4
+0x4033C000, //Uart 5
+0x40340000, //Uart 6
+0x40344000, //Uart 7
+0x4048C000, //Uart 8
+0x40490000, //Uart 9
+0x40494000, //Uart 10
+0x40498000, //Uart 11
+0x4049C000, //Uart 12
+0x404A0000, //Uart 13
+0x404A4000, //Uart 14
+0x404A8000, //Uart 15
+};
+
+static const int usart_irq[NXP_NUM_UARTS] = {141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,153, 154, 155, 156};
+
 static void S32K3x8_init(Object  *obj){
     S32K3x8State *s = S32K3x8_MCU(obj);
-
-    //Clock initializer
+    //Peripheral initialization
+    
+    error_reportf_err(NULL, "Palle");
+    //UART
+    int i =0;
+    for ( i = 0; i < NXP_NUM_UARTS; i++) {
+        object_initialize_child(obj, "usart[n]", &s->usart[i],
+                                TYPE_S32K3x8_MCU);
+    }
+    //SPI
 
     //cpu initializer
     object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
+    //Clock initializer
     s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
 }
 
@@ -47,13 +80,8 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
     /*    return;*/
     /*}*/
 
-
-    /*object_property_set_link(OBJECT(&s->cpu), "memory", OBJECT(&s->container),&error_abort);*/
-    
-    
-    //memory initializer
-    /*memory_region_init(&s->container, dev_mcu, "S32K3x8-container", UINT64_MAX);*/
-    //FLash region init 
+    //Memory Initializer
+    //Flash region init 
     memory_region_init_rom(&s->flash0, OBJECT(dev_mcu), "S32K3.flash",S32K3x8_FLASH0_SIZE , &err);
     if (err != NULL) {
         error_propagate(errp, err);
@@ -86,6 +114,21 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
     if (!sysbus_realize(SYS_BUS_DEVICE(&s->cpu),errp)) {
        return; 
     }
+
+    SysBusDevice *busdev;
+    /* Attach UART (uses USART registers) and USART controllers */
+    int i = 0;
+    for (i = 0; i < NXP_NUM_UARTS; i++) {
+        dev = DEVICE(&(s->usart[i]));
+        qdev_prop_set_chr(dev, "chardev", serial_hd(i));
+        if (!sysbus_realize(SYS_BUS_DEVICE(&s->usart[i]), errp)) {
+            return;
+        }
+        busdev = SYS_BUS_DEVICE(dev);
+        sysbus_mmio_map(busdev, 0, usart_addr[i]);
+        sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, usart_irq[i]));
+    }
+
 }
 
 static Property S32K3x8_properties[] = {

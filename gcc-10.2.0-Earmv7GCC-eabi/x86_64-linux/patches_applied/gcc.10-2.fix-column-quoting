@@ -1,0 +1,27 @@
+From: Nathan Sidwell <nathan@acm.org>
+Date: Fri, 15 Jan 2021 14:47:13 +0000 (-0800)
+Subject: preprocessor: Make quoting : [PR 95253]
+X-Git-Tag: releases/gcc-10.3.0~322
+X-Git-Url: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff_plain;h=ab1aa8c0044aeff22dccae3170571a8ddeea5935
+
+preprocessor: Make quoting : [PR 95253]
+
+Make doesn't need ':' quoting (in a filename).
+
+	PR preprocessor/95253
+	libcpp/
+	* mkdeps.c (munge): Do not escape ':'.
+---
+
+diff --git a/libcpp/mkdeps.c b/libcpp/mkdeps.c
+index 09a111fcdd50..c4b301dddaea 100644
+--- a/libcpp/mkdeps.c
++++ b/libcpp/mkdeps.c
+@@ -156,7 +156,6 @@ munge (const char *str, const char *trail = NULL, ...)
+ 	      /* FALLTHROUGH  */
+ 
+ 	    case '#':
+-	    case ':':
+ 	      buf[dst++] = '\\';
+ 	      /* FALLTHROUGH  */
+ 

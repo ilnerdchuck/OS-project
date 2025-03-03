@@ -1,0 +1,24 @@
+The specific source code versions used in this distribution, and their
+corresponding locations are the following:
+
+gcc-10.2.0              ftp://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
+binutils-2.38           http://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.xz
+gdb-9.2                 ftp://ftp.gnu.org/gnu/gdb/gdb-9.2.tar.xz
+glibc-2.33              http://ftp.gnu.org/gnu/glibc/glibc-2.33.tar.gz
+libtirpc-1.2.6          http://downloads.sourceforge.net/project/libtirpc/libtirpc/1.2.6/libtirpc-1.2.6.tar.bz2
+newlib-3.3.0            ftp://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz
+linux-5.4.69            https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.69.tar.bz2
+zlib-1.2.11             http://sourceforge.net/projects/libpng/files/zlib/1.2.11/zlib-1.2.11.tar.gz/download
+libelf-0.8.13           https://fossies.org/linux/misc/old/libelf-0.8.13.tar.gz
+libiconv-1.15           http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz
+gettext-0.19.5          http://ftp.gnu.org/gnu/gettext/gettext-0.19.5.tar.gz
+gmp-6.2.0               ftp://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2
+mpfr-4.1.0              https://www.mpfr.org/mpfr-current/mpfr-4.1.0.tar.bz2
+mpc-1.2.0               https://ftp.gnu.org/gnu/mpc/mpc-1.2.0.tar.gz
+ppl-1.2                 http://bugseng.com/products/ppl/download/ftp/releases/1.2/ppl-1.2.tar.bz2
+cloog-0.18.4            bastoul.net/cloog/pages/download/cloog-0.18.4.tar.gz
+isl-0.16.1              ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.16.1.tar.bz2
+tzdata2020b             ftp://ftp.iana.org/tz/releases/tzdata2020b.tar.gz
+expat-2.2.9             http://downloads.sourceforge.net/expat/expat-2.2.9.tar.bz2
+termcap-1.3.1           https://ftp.gnu.org/gnu/termcap/termcap-1.3.1.tar.gz
+python-2.7              http://master.qt.io/development_releases/prebuilt/gdb/build-prerequisites/python.zip

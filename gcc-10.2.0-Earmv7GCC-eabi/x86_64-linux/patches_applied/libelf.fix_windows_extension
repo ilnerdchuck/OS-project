@@ -1,0 +1,12 @@
+diff -ruN libelf-0.8.13-orig/configure libelf-0.8.13/configure
+--- libelf-0.8.13-orig/configure	2023-11-20 13:19:44.390728698 -0700
++++ libelf-0.8.13/configure	2023-11-20 13:20:05.895066000 -0700
+@@ -527,7 +527,7 @@
+ ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
+ cross_compiling=$ac_cv_prog_cc_cross
+ 
+-ac_exeext=
++ac_exeext=.exe
+ ac_objext=o
+ if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+   # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.

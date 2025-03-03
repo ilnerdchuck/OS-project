@@ -78,3 +78,7 @@ config GOLDFISH_TTY
 
 config SHAKTI_UART
     bool
+
+config S32K3x8_UART
+    bool
+

@@ -1,0 +1,11 @@
+--- src_gcc/libgfortran/runtime/string.c-orig	2016-02-23 12:24:36.204910930 -0600
++++ src_gcc/libgfortran/runtime/string.c	2016-02-23 12:24:46.619911036 -0600
+@@ -106,7 +106,7 @@
+ 
+ 
+ #ifndef HAVE_STRNDUP
+-static char *
++char *
+ strndup (const char *s, size_t n)
+ {
+   size_t len = strnlen (s, n);

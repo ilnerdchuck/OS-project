@@ -593,8 +593,6 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./build/uart.o
  .data          0x0000000000000000        0x0 ./build/uart.o
  .bss           0x0000000000000000        0x0 ./build/uart.o
- .text.UART_init
-                0x0000000000000000        0xe ./build/uart.o
  .debug_macro   0x0000000000000000      0xa60 ./build/uart.o
  .debug_macro   0x0000000000000000      0x174 ./build/uart.o
  .debug_macro   0x0000000000000000      0x34e ./build/uart.o
@@ -694,206 +692,214 @@ END GROUP
                 0x0000000000400000                isr_vector
                 0x0000000000400078                . = ALIGN (0x4)
 
-.text           0x0000000000400078       0x41
+.text           0x0000000000400078       0x48
  *(.text)
  *(.rodata*)
  .rodata.vTaskStartScheduler.str1.1
                 0x0000000000400078        0x5 ./build/tasks.o
+ .rodata.producer.str1.1
+                0x000000000040007d        0x7 ./build/main.o
  .rodata.main.str1.1
-                0x000000000040007d        0x6 ./build/main.o
+                0x0000000000400084        0x6 ./build/main.o
  .rodata.prvGetRegistersFromStack.str1.1
-                0x0000000000400083       0x36 ./build/startup.o
+                0x000000000040008a       0x36 ./build/startup.o
  *(.constdata*)
-                0x00000000004000b9                _etext = .
-                0x00000000004000b9                _sidata = .
+                0x00000000004000c0                _etext = .
+                0x00000000004000c0                _sidata = .
 
-.glue_7         0x00000000004000bc        0x0
- .glue_7        0x00000000004000bc        0x0 linker stubs
+.glue_7         0x00000000004000c0        0x0
+ .glue_7        0x00000000004000c0        0x0 linker stubs
 
-.glue_7t        0x00000000004000bc        0x0
- .glue_7t       0x00000000004000bc        0x0 linker stubs
+.glue_7t        0x00000000004000c0        0x0
+ .glue_7t       0x00000000004000c0        0x0 linker stubs
 
-.vfp11_veneer   0x00000000004000bc        0x0
- .vfp11_veneer  0x00000000004000bc        0x0 linker stubs
+.vfp11_veneer   0x00000000004000c0        0x0
+ .vfp11_veneer  0x00000000004000c0        0x0 linker stubs
 
-.v4_bx          0x00000000004000bc        0x0
- .v4_bx         0x00000000004000bc        0x0 linker stubs
+.v4_bx          0x00000000004000c0        0x0
+ .v4_bx         0x00000000004000c0        0x0 linker stubs
 
 .text.vListInitialise
-                0x00000000004000ba       0x16
+                0x00000000004000c0       0x16
  .text.vListInitialise
-                0x00000000004000ba       0x16 ./build/list.o
-                0x00000000004000ba                vListInitialise
+                0x00000000004000c0       0x16 ./build/list.o
+                0x00000000004000c0                vListInitialise
 
 .text.vListInitialiseItem
-                0x00000000004000d0        0x6
+                0x00000000004000d6        0x6
  .text.vListInitialiseItem
-                0x00000000004000d0        0x6 ./build/list.o
-                0x00000000004000d0                vListInitialiseItem
+                0x00000000004000d6        0x6 ./build/list.o
+                0x00000000004000d6                vListInitialiseItem
 
 .text.vListInsert
-                0x00000000004000d6       0x2e
+                0x00000000004000dc       0x2e
  .text.vListInsert
-                0x00000000004000d6       0x2e ./build/list.o
-                0x00000000004000d6                vListInsert
+                0x00000000004000dc       0x2e ./build/list.o
+                0x00000000004000dc                vListInsert
 
 .text.uxListRemove
-                0x0000000000400104       0x1e
+                0x000000000040010a       0x1e
  .text.uxListRemove
-                0x0000000000400104       0x1e ./build/list.o
-                0x0000000000400104                uxListRemove
+                0x000000000040010a       0x1e ./build/list.o
+                0x000000000040010a                uxListRemove
 
 .text.prvAddCurrentTaskToDelayedList
-                0x0000000000400124       0xb4
+                0x0000000000400128       0xb4
  .text.prvAddCurrentTaskToDelayedList
-                0x0000000000400124       0xb4 ./build/tasks.o
+                0x0000000000400128       0xb4 ./build/tasks.o
 
 .text.prvResetNextTaskUnblockTime
-                0x00000000004001d8       0x24
+                0x00000000004001dc       0x24
  .text.prvResetNextTaskUnblockTime
-                0x00000000004001d8       0x24 ./build/tasks.o
+                0x00000000004001dc       0x24 ./build/tasks.o
 
 .text.prvCheckTasksWaitingTermination
-                0x00000000004001fc       0x48
+                0x0000000000400200       0x48
  .text.prvCheckTasksWaitingTermination
-                0x00000000004001fc       0x48 ./build/tasks.o
+                0x0000000000400200       0x48 ./build/tasks.o
 
 .text.prvIdleTask
-                0x0000000000400244        0x8
+                0x0000000000400248        0x8
  .text.prvIdleTask
-                0x0000000000400244        0x8 ./build/tasks.o
+                0x0000000000400248        0x8 ./build/tasks.o
 
 .text.xTaskCreate
-                0x000000000040024c      0x1bc
+                0x0000000000400250      0x1bc
  .text.xTaskCreate
-                0x000000000040024c      0x1bc ./build/tasks.o
-                0x000000000040024c                xTaskCreate
+                0x0000000000400250      0x1bc ./build/tasks.o
+                0x0000000000400250                xTaskCreate
 
 .text.vTaskStartScheduler
-                0x0000000000400408       0x78
+                0x000000000040040c       0x78
  .text.vTaskStartScheduler
-                0x0000000000400408       0x78 ./build/tasks.o
-                0x0000000000400408                vTaskStartScheduler
+                0x000000000040040c       0x78 ./build/tasks.o
+                0x000000000040040c                vTaskStartScheduler
 
 .text.vTaskSuspendAll
-                0x0000000000400480       0x10
+                0x0000000000400484       0x10
  .text.vTaskSuspendAll
-                0x0000000000400480       0x10 ./build/tasks.o
-                0x0000000000400480                vTaskSuspendAll
+                0x0000000000400484       0x10 ./build/tasks.o
+                0x0000000000400484                vTaskSuspendAll
 
 .text.xTaskIncrementTick
-                0x0000000000400490      0x17c
+                0x0000000000400494      0x17c
  .text.xTaskIncrementTick
-                0x0000000000400490      0x17c ./build/tasks.o
-                0x0000000000400490                xTaskIncrementTick
+                0x0000000000400494      0x17c ./build/tasks.o
+                0x0000000000400494                xTaskIncrementTick
 
 .text.xTaskResumeAll
-                0x000000000040060c      0x154
+                0x0000000000400610      0x154
  .text.xTaskResumeAll
-                0x000000000040060c      0x154 ./build/tasks.o
-                0x000000000040060c                xTaskResumeAll
+                0x0000000000400610      0x154 ./build/tasks.o
+                0x0000000000400610                xTaskResumeAll
 
 .text.vTaskDelay
-                0x0000000000400760       0x3c
+                0x0000000000400764       0x3c
  .text.vTaskDelay
-                0x0000000000400760       0x3c ./build/tasks.o
-                0x0000000000400760                vTaskDelay
+                0x0000000000400764       0x3c ./build/tasks.o
+                0x0000000000400764                vTaskDelay
 
 .text.vTaskSwitchContext
-                0x000000000040079c       0x68
+                0x00000000004007a0       0x68
  .text.vTaskSwitchContext
-                0x000000000040079c       0x68 ./build/tasks.o
-                0x000000000040079c                vTaskSwitchContext
+                0x00000000004007a0       0x68 ./build/tasks.o
+                0x00000000004007a0                vTaskSwitchContext
 
-.iplt           0x0000000000400804        0x0
- .iplt          0x0000000000400804        0x0 ./build/tasks.o
+.iplt           0x0000000000400808        0x0
+ .iplt          0x0000000000400808        0x0 ./build/tasks.o
 
 .text.pvPortMalloc
-                0x0000000000400804      0x128
+                0x0000000000400808      0x128
  .text.pvPortMalloc
-                0x0000000000400804      0x128 ./build/heap_4.o
-                0x0000000000400804                pvPortMalloc
+                0x0000000000400808      0x128 ./build/heap_4.o
+                0x0000000000400808                pvPortMalloc
 
 .text.vPortFree
-                0x000000000040092c       0xb8
+                0x0000000000400930       0xb8
  .text.vPortFree
-                0x000000000040092c       0xb8 ./build/heap_4.o
-                0x000000000040092c                vPortFree
+                0x0000000000400930       0xb8 ./build/heap_4.o
+                0x0000000000400930                vPortFree
 
 .text.prvTaskExitError
-                0x00000000004009e4       0x30
+                0x00000000004009e8       0x30
  .text.prvTaskExitError
-                0x00000000004009e4       0x30 ./build/port.o
+                0x00000000004009e8       0x30 ./build/port.o
 
 .text.vPortSVCHandler
-                0x0000000000400a14       0x24
+                0x0000000000400a18       0x24
  .text.vPortSVCHandler
-                0x0000000000400a14       0x24 ./build/port.o
-                0x0000000000400a14                vPortSVCHandler
+                0x0000000000400a18       0x24 ./build/port.o
+                0x0000000000400a18                vPortSVCHandler
 
 .text.prvPortStartFirstTask
-                0x0000000000400a38       0x20
+                0x0000000000400a3c       0x20
  .text.prvPortStartFirstTask
-                0x0000000000400a38       0x20 ./build/port.o
+                0x0000000000400a3c       0x20 ./build/port.o
 
 .text.xPortPendSVHandler
-                0x0000000000400a58       0x44
+                0x0000000000400a5c       0x44
  .text.xPortPendSVHandler
-                0x0000000000400a58       0x44 ./build/port.o
-                0x0000000000400a58                xPortPendSVHandler
+                0x0000000000400a5c       0x44 ./build/port.o
+                0x0000000000400a5c                xPortPendSVHandler
 
 .text.pxPortInitialiseStack
-                0x0000000000400a9c       0x1c
+                0x0000000000400aa0       0x1c
  .text.pxPortInitialiseStack
-                0x0000000000400a9c       0x1c ./build/port.o
-                0x0000000000400a9c                pxPortInitialiseStack
+                0x0000000000400aa0       0x1c ./build/port.o
+                0x0000000000400aa0                pxPortInitialiseStack
 
 .text.vPortEnterCritical
-                0x0000000000400ab8       0x30
+                0x0000000000400abc       0x30
  .text.vPortEnterCritical
-                0x0000000000400ab8       0x30 ./build/port.o
-                0x0000000000400ab8                vPortEnterCritical
+                0x0000000000400abc       0x30 ./build/port.o
+                0x0000000000400abc                vPortEnterCritical
 
 .text.vPortExitCritical
-                0x0000000000400ae8       0x18
+                0x0000000000400aec       0x18
  .text.vPortExitCritical
-                0x0000000000400ae8       0x18 ./build/port.o
-                0x0000000000400ae8                vPortExitCritical
+                0x0000000000400aec       0x18 ./build/port.o
+                0x0000000000400aec                vPortExitCritical
 
 .text.xPortSysTickHandler
-                0x0000000000400b00       0x2c
+                0x0000000000400b04       0x2c
  .text.xPortSysTickHandler
-                0x0000000000400b00       0x2c ./build/port.o
-                0x0000000000400b00                xPortSysTickHandler
+                0x0000000000400b04       0x2c ./build/port.o
+                0x0000000000400b04                xPortSysTickHandler
 
 .text.vPortSetupTimerInterrupt
-                0x0000000000400b2c       0x16
+                0x0000000000400b30       0x16
  .text.vPortSetupTimerInterrupt
-                0x0000000000400b2c       0x16 ./build/port.o
-                0x0000000000400b2c                vPortSetupTimerInterrupt
+                0x0000000000400b30       0x16 ./build/port.o
+                0x0000000000400b30                vPortSetupTimerInterrupt
 
 .text.xPortStartScheduler
-                0x0000000000400b44       0xe4
+                0x0000000000400b48       0xe4
  .text.xPortStartScheduler
-                0x0000000000400b44       0xe4 ./build/port.o
-                0x0000000000400b44                xPortStartScheduler
+                0x0000000000400b48       0xe4 ./build/port.o
+                0x0000000000400b48                xPortStartScheduler
 
-.text.producer  0x0000000000400c28       0x18
+.text.producer  0x0000000000400c2c       0x24
  .text.producer
-                0x0000000000400c28       0x18 ./build/main.o
-                0x0000000000400c28                producer
+                0x0000000000400c2c       0x24 ./build/main.o
+                0x0000000000400c2c                producer
 
 .text.startup.main
-                0x0000000000400c40       0x24
+                0x0000000000400c50       0x28
  .text.startup.main
-                0x0000000000400c40       0x24 ./build/main.o
-                0x0000000000400c40                main
+                0x0000000000400c50       0x28 ./build/main.o
+                0x0000000000400c50                main
+
+.text.UART_init
+                0x0000000000400c78       0x10
+ .text.UART_init
+                0x0000000000400c78       0x10 ./build/uart.o
+                0x0000000000400c78                UART_init
 
 .text.UART_printf
-                0x0000000000400c64       0x12
+                0x0000000000400c88       0x14
  .text.UART_printf
-                0x0000000000400c64       0x12 ./build/uart.o
-                0x0000000000400c64                UART_printf
+                0x0000000000400c88       0x14 ./build/uart.o
+                0x0000000000400c88                UART_printf
 
 .text.Default_Handler
                 0x0000000000400d00        0xc
@@ -1152,23 +1158,23 @@ END GROUP
 OUTPUT(./build/demo.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x0000000000000000     0x43a6
+.debug_info     0x0000000000000000     0x43db
  .debug_info    0x0000000000000000      0x2d3 ./build/list.o
  .debug_info    0x00000000000002d3     0x31d2 ./build/tasks.o
  .debug_info    0x00000000000034a5      0x60f ./build/heap_4.o
  .debug_info    0x0000000000003ab4      0x483 ./build/port.o
- .debug_info    0x0000000000003f37      0x1b4 ./build/main.o
- .debug_info    0x00000000000040eb       0xd0 ./build/uart.o
- .debug_info    0x00000000000041bb      0x1eb ./build/startup.o
+ .debug_info    0x0000000000003f37      0x1e9 ./build/main.o
+ .debug_info    0x0000000000004120       0xd0 ./build/uart.o
+ .debug_info    0x00000000000041f0      0x1eb ./build/startup.o
 
-.debug_abbrev   0x0000000000000000      0xd31
+.debug_abbrev   0x0000000000000000      0xd44
  .debug_abbrev  0x0000000000000000      0x102 ./build/list.o
  .debug_abbrev  0x0000000000000102      0x47a ./build/tasks.o
  .debug_abbrev  0x000000000000057c      0x29a ./build/heap_4.o
  .debug_abbrev  0x0000000000000816      0x278 ./build/port.o
- .debug_abbrev  0x0000000000000a8e       0xef ./build/main.o
- .debug_abbrev  0x0000000000000b7d       0x96 ./build/uart.o
- .debug_abbrev  0x0000000000000c13      0x11e ./build/startup.o
+ .debug_abbrev  0x0000000000000a8e      0x102 ./build/main.o
+ .debug_abbrev  0x0000000000000b90       0x96 ./build/uart.o
+ .debug_abbrev  0x0000000000000c26      0x11e ./build/startup.o
 
 .debug_loc      0x0000000000000000     0x308e
  .debug_loc     0x0000000000000000       0xaf ./build/list.o
@@ -1267,14 +1273,14 @@ LOAD linker stubs
  .debug_macro   0x0000000000003f73       0x22 ./build/uart.o
  .debug_macro   0x0000000000003f95       0x97 ./build/startup.o
 
-.debug_line     0x0000000000000000     0x503e
+.debug_line     0x0000000000000000     0x5047
  .debug_line    0x0000000000000000      0x59e ./build/list.o
  .debug_line    0x000000000000059e     0x30f2 ./build/tasks.o
  .debug_line    0x0000000000003690      0x9dc ./build/heap_4.o
  .debug_line    0x000000000000406c      0x63f ./build/port.o
- .debug_line    0x00000000000046ab      0x514 ./build/main.o
- .debug_line    0x0000000000004bbf      0x20a ./build/uart.o
- .debug_line    0x0000000000004dc9      0x275 ./build/startup.o
+ .debug_line    0x00000000000046ab      0x51d ./build/main.o
+ .debug_line    0x0000000000004bc8      0x20a ./build/uart.o
+ .debug_line    0x0000000000004dd2      0x275 ./build/startup.o
 
 .debug_str      0x0000000000000000    0x160ca
  .debug_str     0x0000000000000000     0xf867 ./build/list.o
@@ -1285,9 +1291,9 @@ LOAD linker stubs
                                       0x11577 (size before relaxing)
  .debug_str     0x00000000000136fc      0x807 ./build/port.o
                                        0xebd3 (size before relaxing)
- .debug_str     0x0000000000013f03     0x212f ./build/main.o
-                                      0x12edf (size before relaxing)
- .debug_str     0x0000000000016032       0x1d ./build/uart.o
+ .debug_str     0x0000000000013f03     0x2145 ./build/main.o
+                                      0x12ef5 (size before relaxing)
+ .debug_str     0x0000000000016048        0x7 ./build/uart.o
                                        0xc3fd (size before relaxing)
  .debug_str     0x000000000001604f       0x7b ./build/startup.o
                                        0xc467 (size before relaxing)
