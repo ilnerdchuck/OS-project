@@ -1,9 +1,9 @@
 #ifndef HW_S32K3x8_USART
 #define HW_S32K3x8_USART
 
+#include "qom/object.h"
 #include "hw/sysbus.h"
 #include "chardev/char-fe.h"
-#include "qom/object.h"
 
 #define USART_SR   0x00
 #define USART_DR   0x04
@@ -26,7 +26,7 @@
 #define USART_CR1_TE     (1 << 3)
 #define USART_CR1_RE     (1 << 2)
 
-#define TYPE_S32K3x8_UART "S32K3x8-usart"
+#define TYPE_S32K3x8_UART "S32K3x8_UART"
 OBJECT_DECLARE_SIMPLE_TYPE(S32K3x8UartState, S32K3x8_UART)
 
 struct S32K3x8UartState {

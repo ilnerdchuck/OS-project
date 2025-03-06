@@ -81,4 +81,5 @@ config SHAKTI_UART
 
 config S32K3x8_UART
     bool
+    default y
 

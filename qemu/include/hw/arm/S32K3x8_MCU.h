@@ -5,6 +5,7 @@
 #include "glibconfig.h"
 #include "hw/sysbus.h"
 #include "hw/arm/armv7m.h"
+#include "hw/char/S32K_uart.h"
 #include "hw/clock.h"
 #include "qemu/typedefs.h"
 #include "qom/object.h"
@@ -12,7 +13,6 @@
 #include "hw/or-irq.h"
 #include "hw/arm/armv7m.h"
 #include "qom/object.h"
-#include "hw/char/S32K_uart.h"
 
 #define HCLK_FRQ 240000000
 #define NXP_NUM_UARTS 16  
@@ -42,6 +42,6 @@ struct S32K3x8State{
     MemoryRegion container;
     
     //Peripherals 
-    S32K3x8UartState usart[NXP_NUM_UARTS];
+    S32K3x8UartState uart[NXP_NUM_UARTS];
 };
 
