@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 	(void) argc;
 	(void) argv;
 
-  UART_init();
+  /*UART_init();*/
   
 
 	xTaskCreate(
@@ -45,7 +45,7 @@ void producer(void *pvParameters) {
 	(void) pvParameters;
     for (;;) {
         pippo += 10;
-        UART_printf("Puzzo\n");
+        /*UART_printf("Puzzo\n");*/
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

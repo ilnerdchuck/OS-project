@@ -51,11 +51,11 @@ static void S32K3x8_init(Object  *obj){
     
     error_reportf_err(NULL, "Palle");
     //UART
-    int i =0;
-    for ( i = 0; i < NXP_NUM_UARTS; i++) {
-        object_initialize_child(obj, "usart[n]", &s->usart[i],
+    /*int i =0;*/
+    /*for ( i = 0; i < NXP_NUM_UARTS; i++) {*/
+        object_initialize_child(obj, "usart[n]", &s->usart[0],
                                 TYPE_S32K3x8_MCU);
-    }
+    /*}*/
     //SPI
 
     //cpu initializer
@@ -117,17 +117,17 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
 
     SysBusDevice *busdev;
     /* Attach UART (uses USART registers) and USART controllers */
-    int i = 0;
-    for (i = 0; i < NXP_NUM_UARTS; i++) {
-        dev = DEVICE(&(s->usart[i]));
-        qdev_prop_set_chr(dev, "chardev", serial_hd(i));
-        if (!sysbus_realize(SYS_BUS_DEVICE(&s->usart[i]), errp)) {
+    /*int i = 0;*/
+    /*for (i = 0; i < NXP_NUM_UARTS; i++) {*/
+        dev = DEVICE(&(s->usart[0]));
+        qdev_prop_set_chr(dev, "chardev", serial_hd(0));
+        if (!sysbus_realize(SYS_BUS_DEVICE(&s->usart[0]), errp)) {
             return;
         }
         busdev = SYS_BUS_DEVICE(dev);
-        sysbus_mmio_map(busdev, 0, usart_addr[i]);
-        sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, usart_irq[i]));
-    }
+        sysbus_mmio_map(busdev, 0, usart_addr[0]);
+        sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, usart_irq[0]));
+    /*}*/
 
 }
 

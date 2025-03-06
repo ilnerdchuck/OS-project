@@ -29,8 +29,8 @@ struct S32K3x8State{
     Clock *sysclk;
 
     // Memory Setions 
-    uint32_t sram0_size;         /* SRAM size. */
-    uint32_t flash0_size;        /* Flash memory size */
+    uint32_t sram0_size;         //SRAM size
+    uint32_t flash0_size;        //Flash memory size
     
     //Memory declaration
     MemoryRegion sram0;
