@@ -12,10 +12,12 @@
 #include "hw/arm/S32K3X8EVB.h"
 #include "hw/or-irq.h"
 #include "hw/arm/armv7m.h"
+#include "include/hw/ssi/S32K3x8_spi.h"
 #include "qom/object.h"
 
 #define HCLK_FRQ 240000000
 #define NXP_NUM_UARTS 16  
+#define NXP_NUM_SPI 6  
 
 #define TYPE_S32K3x8_MCU "S32K3x8_MCU"
 OBJECT_DECLARE_SIMPLE_TYPE(S32K3x8State, S32K3x8_MCU)
@@ -43,5 +45,6 @@ struct S32K3x8State{
     
     //Peripherals 
     S32K3x8UartState uart[NXP_NUM_UARTS];
+    S32K3x8SPIState spi[NXP_NUM_SPI];
 };
 

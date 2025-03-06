@@ -4,6 +4,7 @@
 #include "hw/char/S32K_uart.h"
 #include "hw/arm/S32K3x8_MCU.h"
 #include "hw/arm/S32K3X8EVB.h"
+#include "include/hw/ssi/S32K3x8_spi.h"
 #include "hw/sysbus.h"
 #include "qemu/osdep.h"
 #include "qapi/error.h"
@@ -45,6 +46,23 @@ static const uint32_t usart_addr[NXP_NUM_UARTS] = {
 
 static const int usart_irq[NXP_NUM_UARTS] = {141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,153, 154, 155, 156};
 
+static const uint32_t spi_addr[NXP_NUM_SPI] = { 
+    0x40358000,
+    0x4035C000,
+    0x40360000,
+    0x40364000,
+    0x404BC000,
+    0x404C0000
+};
+
+static const int spi_irq[NXP_NUM_SPI] = {
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+};
 static void S32K3x8_init(Object  *obj){
     S32K3x8State *s = S32K3x8_MCU(obj);
     //Peripheral initialization
@@ -56,7 +74,9 @@ static void S32K3x8_init(Object  *obj){
                                 TYPE_S32K3x8_UART);
     }
     //SPI
-
+    for (i = 0; i < NXP_NUM_SPI; i++) {
+        object_initialize_child(obj, "spi[*]", &s->spi[i], TYPE_S32K3x8_SPI);
+    }
     //cpu initializer
     object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
     //Clock initializer
@@ -128,6 +148,15 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
         sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, usart_irq[i]));
     }
 
+    for (i = 0; i < NXP_NUM_SPI; i++) {
+        dev = DEVICE(&(s->spi[i]));
+        if (!sysbus_realize(SYS_BUS_DEVICE(&s->spi[i]), errp)) {
+            return;
+        }
+        busdev = SYS_BUS_DEVICE(dev);
+        sysbus_mmio_map(busdev, 0, spi_addr[i]);
+        sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, spi_irq[i]));
+    }
 }
 
 static Property S32K3x8_properties[] = {
