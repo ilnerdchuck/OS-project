@@ -1,0 +1,10 @@
+diff -ruN libelf-0.8.13-orig/po/gmo2msg.c libelf-0.8.13/po/gmo2msg.c
+--- libelf-0.8.13-orig/libelf/po/gmo2msg.c      2024-09-18 18:11:39.236482326 +0300
++++ libelf-0.8.13/po/gmo2msg.c  2024-09-18 19:31:26.062044789 +0300
+@@ -26,6 +26,7 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <libintl.h>
++#include <locale.h>
+
+ #define DOMAIN "libelf"

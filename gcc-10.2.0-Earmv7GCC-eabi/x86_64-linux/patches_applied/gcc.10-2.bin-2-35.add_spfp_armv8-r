@@ -1,0 +1,67 @@
+diff -ruN gcc-10.1.0-orig/gcc/config/arm/t-multilib gcc-10.1.0-new/gcc/config/arm/t-multilib
+--- gcc-10.1.0-orig/gcc/config/arm/t-multilib	2020-08-04 10:16:16.956730225 -0500
++++ gcc-10.1.0-new/gcc/config/arm/t-multilib	2020-08-04 10:18:13.651302193 -0500
+@@ -121,15 +121,6 @@
+ 
+ MULTILIB_MATCHES	+= $(foreach ARCH, $(all_early_arch), \
+ 			     march?armv5te+fp=march?$(ARCH)+fp)
+-# Map v8-r down onto common v7 code or v7-r sp.
+-MULTILIB_MATCHES	+= march?armv7=march?armv8-r
+-MULTILIB_MATCHES	+= $(foreach ARCH, $(v8_r_nosimd_variants), \
+-			     march?armv7=march?armv8-r$(ARCH))
+-MULTILIB_MATCHES	+= $(foreach ARCH,+simd +crypto, \
+-			     march?armv7+fp=march?armv8-r$(ARCH) \
+-			     march?armv7+fp=march?armv8-r+crc$(ARCH))
+-MULTILIB_MATCHES	+= march?armv7-r+fp.sp=march?armv8-r+fp.sp
+-MULTILIB_MATCHES	+= march?armv7-r+fp.sp=march?armv8-r+crc+fp.sp
+ 
+ ifeq (,$(HAS_APROFILE))
+ # Map all v7-a
+diff -ruN gcc-10.1.0-orig/gcc/config/arm/t-rmprofile gcc-10.1.0-new/gcc/config/arm/t-rmprofile
+--- gcc-10.1.0-orig/gcc/config/arm/t-rmprofile	2020-08-04 10:16:16.954730249 -0500
++++ gcc-10.1.0-new/gcc/config/arm/t-rmprofile	2020-08-04 10:19:42.224218295 -0500
+@@ -27,8 +27,8 @@
+ 
+ # Arch and FPU variants to build libraries with
+ 
+-MULTI_ARCH_OPTS_RM	= march=armv6s-m/march=armv7-m/march=armv7e-m/march=armv7e-m+fp/march=armv7e-m+fp.dp/march=armv8-m.base/march=armv8-m.main/march=armv8-m.main+fp/march=armv8-m.main+fp.dp/march=armv8.1-m.main+mve
+-MULTI_ARCH_DIRS_RM	= v6-m v7-m v7e-m v7e-m+fp v7e-m+dp v8-m.base v8-m.main v8-m.main+fp v8-m.main+dp v8.1-m.main+mve
++MULTI_ARCH_OPTS_RM	= march=armv6s-m/march=armv7-m/march=armv7e-m/march=armv7e-m+fp/march=armv7e-m+fp.dp/march=armv8-m.base/march=armv8-m.main/march=armv8-m.main+fp/march=armv8-m.main+fp.dp/march=armv8.1-m.main+mve/march=armv8-r+simd/march=armv8-r+fp.sp/march=armv8-r+crc/march=armv8-r+crc+simd/march=armv8-r+crc+fp.sp
++MULTI_ARCH_DIRS_RM	= v6-m v7-m v7e-m v7e-m+fp v7e-m+dp v8-m.base v8-m.main v8-m.main+fp v8-m.main+dp v8.1-m.main+mve v8-r+simd v8-r+fp.sp v8-r+crc v8-r+crc+simd v8-r+crc+fp.sp
+ 
+ # Base M-profile (no fp)
+ MULTILIB_REQUIRED	+= mthumb/march=armv6s-m/mfloat-abi=soft
+@@ -50,6 +50,33 @@
+ MULTILIB_REQUIRED	+= mthumb/march=armv8-m.main+fp.dp/mfloat-abi=softfp
+ MULTILIB_REQUIRED	+= mthumb/march=armv8.1-m.main+mve/mfloat-abi=hard
+ 
++# Cortex-R52
++MULTILIB_REQUIRED	+= marm/march=armv8-r+crc/mfloat-abi=soft
++MULTILIB_REQUIRED	+= marm/march=armv8-r+simd/mfloat-abi=hard
++MULTILIB_REQUIRED	+= marm/march=armv8-r+simd/mfloat-abi=softfp
++MULTILIB_REQUIRED	+= marm/march=armv8-r+fp.sp/mfloat-abi=hard
++MULTILIB_REQUIRED	+= marm/march=armv8-r+fp.sp/mfloat-abi=softfp
++MULTILIB_REQUIRED	+= mthumb/march=armv8-r+crc/mfloat-abi=soft
++MULTILIB_REQUIRED	+= mthumb/march=armv8-r+simd/mfloat-abi=hard
++MULTILIB_REQUIRED	+= mthumb/march=armv8-r+simd/mfloat-abi=softfp
++MULTILIB_REQUIRED	+= mthumb/march=armv8-r+fp.sp/mfloat-abi=hard
++MULTILIB_REQUIRED	+= mthumb/march=armv8-r+fp.sp/mfloat-abi=softfp
++
++MULTILIB_REUSE		+= marm/march.armv8-r+simd/mfloat-abi.hard=marm/march.armv8-r+crc/mfloat-abi.hard
++MULTILIB_REUSE		+= marm/march.armv8-r+simd/mfloat-abi.softfp=marm/march.armv8-r+crc/mfloat-abi.softfp
++MULTILIB_REUSE		+= mthumb/march.armv8-r+simd/mfloat-abi.hard=mthumb/march.armv8-r+crc/mfloat-abi.hard
++MULTILIB_REUSE		+= mthumb/march.armv8-r+simd/mfloat-abi.softfp=mthumb/march.armv8-r+crc/mfloat-abi.softfp
++
++MULTILIB_REUSE		+= marm/march.armv8-r+simd/mfloat-abi.hard=marm/march.armv8-r+crc+simd/mfloat-abi.hard
++MULTILIB_REUSE		+= marm/march.armv8-r+simd/mfloat-abi.softfp=marm/march.armv8-r+crc+simd/mfloat-abi.softfp
++MULTILIB_REUSE		+= mthumb/march.armv8-r+simd/mfloat-abi.hard=mthumb/march.armv8-r+crc+simd/mfloat-abi.hard
++MULTILIB_REUSE		+= mthumb/march.armv8-r+simd/mfloat-abi.softfp=mthumb/march.armv8-r+crc+simd/mfloat-abi.softfp
++
++MULTILIB_REUSE		+= marm/march.armv8-r+fp\.sp/mfloat-abi.hard=marm/march.armv8-r+crc+fp\.sp/mfloat-abi.hard
++MULTILIB_REUSE		+= marm/march.armv8-r+fp\.sp/mfloat-abi.softfp=marm/march.armv8-r+crc+fp\.sp/mfloat-abi.softfp
++MULTILIB_REUSE		+= mthumb/march.armv8-r+fp\.sp/mfloat-abi.hard=mthumb/march.armv8-r+crc+fp\.sp/mfloat-abi.hard
++MULTILIB_REUSE		+= mthumb/march.armv8-r+fp\.sp/mfloat-abi.softfp=mthumb/march.armv8-r+crc+fp\.sp/mfloat-abi.softfp
++
+ # Arch Matches
+ MULTILIB_MATCHES	+= march?armv6s-m=march?armv6-m
+ 

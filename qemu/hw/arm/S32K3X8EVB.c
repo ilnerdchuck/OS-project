@@ -52,15 +52,6 @@ static void S32K3X8EVB_init(MachineState *machine){
                        0, S32K3x8_FLASH0_SIZE);
     
 
-    /*MemoryRegion *QEMU_memory = get_system_memory();*/
-    /*S32K3X8EVBMachineState *s = S32K3X8EVB_MACHINE(machine);*/
-    /**/
-    /*//MCU init*/
-    /*object_initialize_child(OBJECT(machine), "S32K3X8", &s->S32K3X8, TYPE_S32K3x8_MCU);*/
-    /*//Memory init*/
-    /*object_property_set_link(OBJECT(&s->S32K3X8), "memory",OBJECT(QEMU_memory), &error_fatal);*/
-    /*//MCU realize*/
-    /*sysbus_realize(SYS_BUS_DEVICE(&s->S32K3X8), &error_fatal);*/
 }
     
 

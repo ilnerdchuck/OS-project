@@ -1,0 +1,827 @@
+diff -ruN gcc-10.1.0/gcc/c-family/c-pragma.c gcc-10.1.0-new/gcc/c-family/c-pragma.c
+--- gcc-10.1.0/gcc/c-family/c-pragma.c	2020-05-07 05:49:59.000000000 -0500
++++ gcc-10.1.0-new/gcc/c-family/c-pragma.c	2020-07-07 10:09:14.437817048 -0500
+@@ -854,6 +854,180 @@
+ 			  global_dc);
+ }
+ 
++extern GTY(()) const char *text_section_string;
++extern GTY(()) const char *data_section_string;
++extern GTY(()) const char *bss_section_string;
++extern GTY(()) const char *rodata_section_string;
++
++#include <stdlib.h>
++#include <string.h>
++#define CONTEXT_SECTION_INITIAL_SIZE (256)
++class GTY(()) context_section
++{
++ public:
++  const char * add (const char *name) {
++    // Binary search to find if name is already there
++    // if yes, return ptr to string found
++    // if not, check space; strdup input; insert string
++    //          keep sorted; return ptr to string
++    unsigned int s1, s2, n;
++    int r1, r2;
++    // Take care of corner cases fisrt
++    if (cnt == 0) {
++      names[0] = ggc_strdup (name);
++      cnt++;
++      return names[0];
++    } else if (cnt == 1) {
++      r1 = strcmp (name, names[0]);
++      if (r1 == 0) {
++	return names[0];
++      } else if (r1 > 0) {
++	names[1] = ggc_strdup (name);
++	cnt++;
++	return names[1];
++      } else {
++	names[1] = names[0];
++	names[0] = ggc_strdup (name);
++	cnt++;
++	return names[0];
++      }
++    }
++    // We have 2 or more names on the stack already
++    s1 = 0;
++    s2 = cnt - 1;
++    n = (s1 + s2) >> 1;
++    while (n != s1 && n != s2) {
++      r1 = strcmp (name, names[n]);
++      if (r1 == 0)
++	return names[n];
++      else if (r1 > 0)
++	s1 = n;
++      else
++	s2 = n;
++      n = (s1 + s2) >> 1;
++    }
++    r1 = strcmp (name, names[s1]);
++    if (r1 == 0)
++      return names[s1];
++    r2 = strcmp (name, names[s2]);
++    if (r2 == 0)
++      return names[s2];
++    // We have a new string, and it should be inserted between s1 and s2
++    check_space ();
++    if (r1 < 0 && s1 == 0) {
++      memmove (&names[1], &names[0], cnt * sizeof(char *));
++      names[0] = ggc_strdup (name);
++      cnt++;
++      return names[0];
++    }
++    if (r2 > 0 && s2 == cnt - 1) {
++      names[cnt] = ggc_strdup (name);
++      cnt++;
++      return names[cnt - 1];
++    }
++    // Use s2 here, it works in case s1 == s2
++    memmove (&names[s2+1], &names[s2], (cnt - s2) * sizeof(char *));
++    names[s2] = ggc_strdup (name);
++    cnt++;
++    return names[s2];
++  }
++
++  const char **names;
++  unsigned int size;
++  unsigned int cnt;
++
++  context_section () {
++    names = (const char **) xmalloc (CONTEXT_SECTION_INITIAL_SIZE * sizeof(const char *));
++    size = CONTEXT_SECTION_INITIAL_SIZE;
++    cnt = 0;
++  }
++
++  inline void check_space (void) {
++    if (cnt == size) {
++      // Need more space
++      names = (const char **) xrealloc (names, size * sizeof(const char *));
++      size *= 2;
++    }
++  }
++};
++
++context_section GTY(()) cs;
++
++static void
++handle_pragma_section(cpp_reader *ARG_UNUSED(dummy))
++{
++  tree x;
++  location_t loc;
++  enum cpp_ttype token = pragma_lex (&x, &loc);
++  if (token != CPP_NAME)
++    {
++      warning_at (loc, 0,
++		  "missing [text|data|bss|rodata]"
++		  " after %<#pragma GCC section%>");
++      return;
++    }
++
++  const char *kind_string = IDENTIFIER_POINTER (x);
++
++  token = pragma_lex (&x, &loc);
++  if (token != CPP_STRING)
++    {
++      if (strcmp (kind_string, "text") == 0)
++	text_section_string = NULL;
++      else if (strcmp (kind_string, "data") == 0)
++	data_section_string = NULL;
++      else if (strcmp (kind_string, "bss") == 0)
++	bss_section_string = NULL;
++      else if (strcmp (kind_string, "rodata") == 0)
++	rodata_section_string = NULL;
++      else
++	{
++	  warning_at (loc, 0,
++		      "Unsupported section name [text|data|bss|rodata]"
++		      " after %<#pragma GCC section%>");
++	}
++      return;
++    }
++
++  const char *section_string = cs.add(TREE_STRING_POINTER (x));
++
++  if (strcmp (kind_string, "text") == 0)
++    {
++      if (strcmp (section_string, "default") == 0)
++	text_section_string = NULL;
++      else
++	text_section_string = section_string;
++    }
++  else if (strcmp (kind_string, "data") == 0)
++    {
++      if (strcmp (section_string, "default") == 0)
++	data_section_string = NULL;
++      else
++	data_section_string = section_string;
++    }
++  else if (strcmp (kind_string, "bss") == 0)
++    {
++      if (strcmp (section_string, "default") == 0)
++	bss_section_string = NULL;
++      else
++	bss_section_string = section_string;
++    }
++  else if (strcmp (kind_string, "rodata") == 0)
++    {
++      if (strcmp (section_string, "default") == 0)
++	rodata_section_string = NULL;
++      else
++	rodata_section_string = section_string;
++    }
++  else
++    {
++      warning_at (loc, 0,
++		  "Unsupported section name [text|data|bss|rodata]"
++		  " after %<#pragma GCC section%>");
++      return;
++    }
++}
++
+ /*  Parse #pragma GCC target (xxx) to set target specific options.  */
+ static void
+ handle_pragma_target(cpp_reader *ARG_UNUSED(dummy))
+@@ -1559,6 +1733,7 @@
+   c_register_pragma ("GCC", "visibility", handle_pragma_visibility);
+ 
+   c_register_pragma ("GCC", "diagnostic", handle_pragma_diagnostic);
++  c_register_pragma ("GCC", "section", handle_pragma_section);	\
+   c_register_pragma ("GCC", "target", handle_pragma_target);
+   c_register_pragma ("GCC", "optimize", handle_pragma_optimize);
+   c_register_pragma ("GCC", "push_options", handle_pragma_push_options);
+diff -ruN gcc-10.1.0/gcc/config/arm/aout.h gcc-10.1.0-new/gcc/config/arm/aout.h
+--- gcc-10.1.0/gcc/config/arm/aout.h	2020-05-07 05:49:59.000000000 -0500
++++ gcc-10.1.0-new/gcc/config/arm/aout.h	2020-07-07 10:09:14.462816741 -0500
+@@ -34,6 +34,10 @@
+ #define TEXT_SECTION_ASM_OP  	"\t.text"
+ #define DATA_SECTION_ASM_OP  	"\t.data"
+ #define BSS_SECTION_ASM_OP   	"\t.bss"
++#undef TEXT_SECTION_ASM_OP
++#undef DATA_SECTION_ASM_OP
++#undef BSS_SECTION_ASM_OP
++#undef READONLY_DATA_SECTION_ASM_OP
+ 
+ /* Note: If USER_LABEL_PREFIX or LOCAL_LABEL_PREFIX are changed,
+    make sure that this change is reflected in the function
+@@ -270,14 +274,7 @@
+ /* Output a common block.  */
+ #ifndef ASM_OUTPUT_COMMON
+ #define ASM_OUTPUT_COMMON(STREAM, NAME, SIZE, ROUNDED)	\
+-  do							\
+-    {							\
+-      fprintf (STREAM, "\t.comm\t");			\
+-      assemble_name (STREAM, NAME);			\
+-      asm_fprintf (STREAM, ", %d\t%@ %d\n", 		\
+-	           (int)(ROUNDED), (int)(SIZE));	\
+-    }							\
+-  while (0)
++  asm_output_aligned_bss (STREAM, NULL, NAME, SIZE, 1<<ROUNDED)
+ #endif
+      
+ /* Output a local common block.  /bin/as can't do this, so hack a
+diff -ruN gcc-10.1.0/gcc/config/arm/arm.c gcc-10.1.0-new/gcc/config/arm/arm.c
+--- gcc-10.1.0/gcc/config/arm/arm.c	2020-05-07 05:49:59.000000000 -0500
++++ gcc-10.1.0-new/gcc/config/arm/arm.c	2020-07-07 10:09:14.467816679 -0500
+@@ -3220,6 +3220,9 @@
+       tune_opts = strchr (opts->x_arm_tune_string, '+');
+     }
+ 
++  if (!global_options_set.x_flag_no_common)
++    flag_no_common = 1;
++
+   if (arm_selected_arch)
+     {
+       arm_initialize_isa (target->isa, arm_selected_arch->common.isa_bits);
+@@ -29277,10 +29280,21 @@
+ 					   "\t.handlerdata");
+ #endif /* ARM_UNWIND_INFO */
+ 
++  text_section = get_unnamed_section (SECTION_CODE, output_section_asm_op,
++                                      "\t.text");
++
+ #ifdef OBJECT_FORMAT_ELF
+   if (target_pure_code)
+     text_section->unnamed.data = "\t.section .text,\"0x20000006\",%progbits";
+ #endif
++
++  data_section = get_unnamed_section (SECTION_WRITE, output_section_asm_op,
++                                      "\t.data");
++  bss_section = get_unnamed_section (SECTION_WRITE | SECTION_BSS,
++                                     output_section_asm_op,
++                                     "\t.bss");
++  readonly_data_section = get_unnamed_section (0, output_section_asm_op,
++                                               "\t.section\t.rodata");
+ }
+ 
+ /* Output unwind directives for the start/end of a function.  */
+diff -ruN gcc-10.1.0/gcc/config/arm/unknown-elf.h gcc-10.1.0-new/gcc/config/arm/unknown-elf.h
+--- gcc-10.1.0/gcc/config/arm/unknown-elf.h	2020-05-07 05:49:59.000000000 -0500
++++ gcc-10.1.0-new/gcc/config/arm/unknown-elf.h	2020-07-07 10:09:14.467816679 -0500
+@@ -61,7 +61,7 @@
+       if (IN_NAMED_SECTION_P (DECL))					\
+ 	switch_to_section (get_named_section (DECL, NULL, 0));		\
+       else								\
+-	switch_to_section (bss_section);				\
++	switch_to_section (get_context_bss(DECL, bss_section));		\
+       									\
+       ASM_OUTPUT_ALIGN (FILE, floor_log2 (ALIGN / BITS_PER_UNIT));	\
+ 									\
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-1.c gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-1.c
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-1.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-1.c	2020-07-07 10:09:14.467816679 -0500
+@@ -0,0 +1,47 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++// Tests that pragma changes sections and also returns to default
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++char c1;
++char c2 = 2;
++const char c3 = 3;
++int f1 (int x) { return x; }
++#pragma GCC section bss "default"
++#pragma GCC section data "default"
++#pragma GCC section rodata "default"
++#pragma GCC section text
++char c4;
++char c5 = 5;
++const char c6 = 6;
++int f2 (int x) { return x; }
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++int v1[8];
++int v2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g1 (int x) { return x; }
++#pragma GCC section bss
++#pragma GCC section data
++#pragma GCC section rodata
++#pragma GCC section text
++int v4[8];
++int v5[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v6[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g2 (int x) { return x; }
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-2.c gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-2.c
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-2.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-2.c	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,15 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++// Tests that attributes prevails over pragmas (except for text)
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++char c1 __attribute__ ((section (".attrbss")));
++char c2 __attribute__ ((section (".attrdata"))) = 2;
++const char c3 __attribute__ ((section (".attrrodata"))) = 3;
++
++/* { dg-final { scan-assembler-times ".section\t.attrbss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.attrdata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.attrrodata" 1 } } */
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-3.c gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-3.c
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-3.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-3.c	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,31 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++// Tests that pragma changes sections over previous pragmas
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++char c1;
++char c2 = 2;
++const char c3 = 3;
++int f1 (int x) { return x; }
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++int v1[8];
++int v2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g1 (int x) { return x; }
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-4.c gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-4.c
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-4.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-4.c	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,35 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++// Tests that pragma changes sections over macros expansions
++
++#define DECL(x) char x
++#define CDECL(x) const char x
++#define FDECL(x) int x (int p) { return p; }
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++DECL(c10);
++DECL(c11 = 11);
++CDECL(c12 = 12);
++FDECL(f10);
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++DECL(c13);
++DECL(c14 = 14);
++CDECL(c15 = 15);
++FDECL(g10);
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5a.h gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5a.h
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5a.h	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5a.h	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,4 @@
++DECL(c10);
++DECL(c11 = 11);
++CDECL(c12 = 12);
++FDECL(f10);
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5b.h gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5b.h
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5b.h	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5b.h	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,4 @@
++DECL(c13);
++DECL(c14 = 14);
++CDECL(c15 = 15);
++FDECL(g10);
+diff -ruN gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5.c gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5.c
+--- gcc-10.1.0/gcc/testsuite/gcc.target/arm/section-5.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-10.1.0-new/gcc/testsuite/gcc.target/arm/section-5.c	2020-07-07 10:09:14.468816667 -0500
+@@ -0,0 +1,29 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++// Tests that pragma changes sections over include files
++
++#define DECL(x) char x
++#define CDECL(x) const char x
++#define FDECL(x) int x (int p) { return p; }
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++#include "section-5a.h"
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++#include "section-5b.h"
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */
+diff -ruN gcc-10.1.0/gcc/tree.c gcc-10.1.0-new/gcc/tree.c
+--- gcc-10.1.0/gcc/tree.c	2020-05-07 05:50:02.000000000 -0500
++++ gcc-10.1.0-new/gcc/tree.c	2020-07-07 10:09:14.470816643 -0500
+@@ -2125,6 +2125,11 @@
+   return clobber;
+ }
+ 
++const char GTY(()) *text_section_string = NULL;
++const char GTY(()) *data_section_string = NULL;
++const char GTY(()) *bss_section_string = NULL;
++const char GTY(()) *rodata_section_string = NULL;
++
+ /* Return a new FIXED_CST node whose type is TYPE and value is F.  */
+ 
+ tree
+@@ -2161,6 +2166,13 @@
+   TREE_TYPE (v) = type;
+   TREE_REAL_CST_PTR (v) = dp;
+   TREE_OVERFLOW (v) = overflow;
++  if (TREE_CODE(v) == REAL_CST)
++    {
++      v->base.context_section_data = data_section_string;
++      v->base.context_section_bss = bss_section_string;
++      v->base.context_section_rodata = rodata_section_string;
++      v->base.context_section_text = text_section_string;
++    }
+   return v;
+ }
+ 
+@@ -2228,6 +2240,13 @@
+   TREE_STRING_LENGTH (s) = len;
+   memcpy (s->string.str, str, len);
+   s->string.str[len] = '\0';
++  if (TREE_CODE(s) == STRING_CST)
++    {
++      s->base.context_section_data = data_section_string;
++      s->base.context_section_bss = bss_section_string;
++      s->base.context_section_rodata = rodata_section_string;
++      s->base.context_section_text = text_section_string;
++    }
+ 
+   return s;
+ }
+@@ -2249,6 +2268,13 @@
+   TREE_IMAGPART (t) = imag;
+   TREE_TYPE (t) = type ? type : build_complex_type (TREE_TYPE (real));
+   TREE_OVERFLOW (t) = TREE_OVERFLOW (real) | TREE_OVERFLOW (imag);
++  if (TREE_CODE(t) == COMPLEX_CST)
++    {
++      t->base.context_section_data = data_section_string;
++      t->base.context_section_bss = bss_section_string;
++      t->base.context_section_rodata = rodata_section_string;
++      t->base.context_section_text = text_section_string;
++    }
+   return t;
+ }
+ 
+@@ -5085,6 +5111,14 @@
+   if (code == VAR_DECL || code == PARM_DECL || code == RESULT_DECL)
+     layout_decl (t, 0);
+ 
++  if (code == VAR_DECL || code == FUNCTION_DECL)
++    {
++      t->base.context_section_data = data_section_string;
++      t->base.context_section_bss = bss_section_string;
++      t->base.context_section_rodata = rodata_section_string;
++      t->base.context_section_text = text_section_string;
++    }
++
+   return t;
+ }
+ 
+diff -ruN gcc-10.1.0/gcc/tree-core.h gcc-10.1.0-new/gcc/tree-core.h
+--- gcc-10.1.0/gcc/tree-core.h	2020-05-07 05:50:01.000000000 -0500
++++ gcc-10.1.0-new/gcc/tree-core.h	2020-07-07 10:09:14.471816630 -0500
+@@ -983,6 +983,11 @@
+   unsigned deprecated_flag : 1;
+   unsigned default_def_flag : 1;
+ 
++  const char *context_section_data;
++  const char *context_section_bss;
++  const char *context_section_rodata;
++  const char *context_section_text;
++
+   union {
+     /* The bits in the following structure should only be used with
+        accessor macros that constrain inputs with tree checking.  */
+diff -ruN gcc-10.1.0/gcc/varasm.c gcc-10.1.0-new/gcc/varasm.c
+--- gcc-10.1.0/gcc/varasm.c	2020-05-07 05:50:02.000000000 -0500
++++ gcc-10.1.0-new/gcc/varasm.c	2020-07-07 10:10:26.433930327 -0500
+@@ -115,13 +115,11 @@
+ 					       unsigned int, bool, bool);
+ static void globalize_decl (tree);
+ static bool decl_readonly_section_1 (enum section_category);
+-#ifdef BSS_SECTION_ASM_OP
+ #ifdef ASM_OUTPUT_ALIGNED_BSS
+ static void asm_output_aligned_bss (FILE *, tree, const char *,
+ 				    unsigned HOST_WIDE_INT, int)
+      ATTRIBUTE_UNUSED;
+ #endif
+-#endif /* BSS_SECTION_ASM_OP */
+ static void mark_weak (tree);
+ static void output_constant_pool (const char *, tree);
+ static void handle_vtv_comdat_section (section *, const_tree);
+@@ -472,8 +470,6 @@
+     }
+ }
+ 
+-#ifdef BSS_SECTION_ASM_OP
+-
+ #ifdef ASM_OUTPUT_ALIGNED_BSS
+ 
+ /* Utility function for targets to use in implementing
+@@ -500,7 +496,72 @@
+ 
+ #endif
+ 
+-#endif /* BSS_SECTION_ASM_OP */
++section *
++get_context_text (tree decl, section *sec)
++{
++  char section_name[256];
++  if (TREE_CODE(decl) == FUNCTION_DECL
++      && decl->base.context_section_text)
++    {
++      section_name[0] = '\0';
++      strcat (section_name, "\t.section\t");
++      strcat (section_name, decl->base.context_section_text);
++      strcat (section_name, ",\"ax\",%progbits");
++      return get_unnamed_section (SECTION_CODE, output_section_asm_op, ggc_strdup(section_name));
++    }
++  return sec;
++}
++
++section *
++get_context_bss (tree decl, section *sec)
++{
++  char section_name[256];
++  if ((TREE_CODE(decl) == VAR_DECL || TREE_CODE(decl) == COMPLEX_CST
++       || TREE_CODE(decl) == REAL_CST || TREE_CODE(decl) == STRING_CST)
++      && decl->base.context_section_bss)
++    {
++      section_name[0] = '\0';
++      strcat (section_name, "\t.section\t");
++      strcat (section_name, decl->base.context_section_bss);
++      strcat (section_name, ",\"aw\",%progbits");
++      return get_unnamed_section (SECTION_WRITE | SECTION_BSS, output_section_asm_op, ggc_strdup(section_name));
++    }
++  return sec;
++}
++
++section *
++get_context_data (tree decl, section *sec)
++{
++  char section_name[256];
++  if ((TREE_CODE(decl) == VAR_DECL || TREE_CODE(decl) == COMPLEX_CST
++       || TREE_CODE(decl) == REAL_CST || TREE_CODE(decl) == STRING_CST)
++      && decl->base.context_section_data)
++    {
++      section_name[0] = '\0';
++      strcat (section_name, "\t.section\t");
++      strcat (section_name, decl->base.context_section_data);
++      strcat (section_name, ",\"aw\",%progbits");
++      return get_unnamed_section (SECTION_WRITE, output_section_asm_op, ggc_strdup(section_name));
++    }
++  return sec;
++}
++
++section *
++get_context_rodata (tree decl, section *sec)
++{
++  char section_name[256];
++  if ((TREE_CODE(decl) == VAR_DECL || TREE_CODE(decl) == COMPLEX_CST
++       || TREE_CODE(decl) == REAL_CST || TREE_CODE(decl) == STRING_CST)
++      && decl->base.context_section_rodata)
++    {
++      section_name[0] = '\0';
++      strcat (section_name, "\t.section\t");
++      strcat (section_name, decl->base.context_section_rodata);
++      strcat (section_name, ",\"a\",%progbits");
++      return get_unnamed_section (0, output_section_asm_op, ggc_strdup(section_name));
++    }
++  return sec;
++}
+ 
+ #ifndef USE_SELECT_SECTION_FOR_FUNCTIONS
+ /* Return the hot section for function DECL.  Return text_section for
+@@ -514,7 +575,7 @@
+       && targetm_common.have_named_sections)
+     return get_named_section (decl, NULL, 0);
+   else
+-    return text_section;
++    return get_context_text(decl, text_section);
+ }
+ #endif
+ 
+@@ -583,7 +644,7 @@
+ 
+   if (!flag_reorder_functions
+       || !targetm_common.have_named_sections)
+-    return NULL;
++    return get_context_text(decl, NULL);
+   /* Startup code should go to startup subsection unless it is
+      unlikely executed (this happens especially with function splitting
+      where we can split away unnecessary parts of static constructors.  */
+@@ -6667,7 +6728,7 @@
+   if (DECL_P (decl))
+     {
+       if (decl_readonly_section (decl, reloc))
+-	return readonly_data_section;
++	return get_context_rodata (decl, readonly_data_section); 
+     }
+   else if (TREE_CODE (decl) == CONSTRUCTOR)
+     {
+@@ -6682,7 +6743,7 @@
+   else if (! (flag_pic && reloc))
+     return readonly_data_section;
+ 
+-  return data_section;
++  return get_context_data (decl, data_section);
+ }
+ 
+ enum section_category
+@@ -6821,7 +6882,7 @@
+       /* We're not supposed to be called on FUNCTION_DECLs.  */
+       gcc_unreachable ();
+     case SECCAT_RODATA:
+-      return readonly_data_section;
++      return get_context_rodata (decl, readonly_data_section);
+     case SECCAT_RODATA_MERGE_STR:
+       return mergeable_string_section (decl, align, 0);
+     case SECCAT_RODATA_MERGE_STR_INIT:
+@@ -6832,7 +6893,7 @@
+       sname = ".sdata2";
+       break;
+     case SECCAT_DATA:
+-      return data_section;
++      return get_context_data (decl, data_section);
+     case SECCAT_DATA_REL:
+       sname = ".data.rel";
+       break;
+@@ -6859,9 +6920,7 @@
+ 	  break;
+ 	}
+ 
+-      if (bss_section)
+-	return bss_section;
+-      sname = ".bss";
++      return get_context_bss (decl, bss_section);
+       break;
+     case SECCAT_SBSS:
+       sname = ".sbss";
+diff -ruN gcc-9.3.0-orig/gcc/config/arm/unknown-elf.h gcc-9.3.0/gcc/config/arm/unknown-elf.h
+--- gcc-9.3.0-orig/gcc/config/arm/unknown-elf.h	2021-06-18 11:24:33.168127258 -0500
++++ gcc-9.3.0/gcc/config/arm/unknown-elf.h	2021-06-18 11:23:20.784958227 -0500
+@@ -78,7 +78,7 @@
+       if ((DECL) != NULL && IN_NAMED_SECTION_P (DECL))			\
+ 	switch_to_section (get_named_section (DECL, NULL, 0));		\
+       else								\
+-	switch_to_section (bss_section);				\
++	switch_to_section (get_context_bss(DECL, (bss_section)));	\
+ 									\
+       ASM_OUTPUT_ALIGN (FILE, floor_log2 (ALIGN / BITS_PER_UNIT));	\
+       ASM_OUTPUT_LABEL (FILE, NAME);					\
+diff -ruN gcc-9.3.0-orig/gcc/testsuite/gcc.target/arm/section-1a.c gcc-9.3.0/gcc/testsuite/gcc.target/arm/section-1a.c
+--- gcc-9.3.0-orig/gcc/testsuite/gcc.target/arm/section-1a.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-9.3.0/gcc/testsuite/gcc.target/arm/section-1a.c	2021-06-18 11:33:29.554386451 -0500
+@@ -0,0 +1,56 @@
++/* { dg-do compile } */
++/* { dg-options "-O0" } */
++
++// Tests that pragma changes sections with -O0 and also static
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++char c1;
++char c2 = 2;
++const char c3 = 3;
++static char s1;
++static char s2 = 2;
++static const char s3 = 3;
++int f1 (int x) { return x; }
++#pragma GCC section bss "default"
++#pragma GCC section data "default"
++#pragma GCC section rodata "default"
++#pragma GCC section text
++char c4;
++char c5 = 5;
++const char c6 = 6;
++static char s4;
++static char s5 = 5;
++static const char s6 = 6;
++int f2 (int x) { return x; }
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++int v1[8];
++int v2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++static int sv1[8];
++static int sv2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++static const int sv3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g1 (int x) { return x; }
++#pragma GCC section bss
++#pragma GCC section data
++#pragma GCC section rodata
++#pragma GCC section text
++int v4[8];
++int v5[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v6[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g2 (int x) { return x; }
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */
+diff -ruN gcc-9.3.0-orig/gcc/testsuite/gcc.target/arm/section-3a.c gcc-9.3.0/gcc/testsuite/gcc.target/arm/section-3a.c
+--- gcc-9.3.0-orig/gcc/testsuite/gcc.target/arm/section-3a.c	1969-12-31 18:00:00.000000000 -0600
++++ gcc-9.3.0/gcc/testsuite/gcc.target/arm/section-3a.c	2021-06-18 11:37:42.939983855 -0500
+@@ -0,0 +1,37 @@
++/* { dg-do compile } */
++/* { dg-options "-O0" } */
++
++// Tests that pragma changes sections over previous pragmas and also with static and -O0
++
++#pragma GCC section bss ".foobss"
++#pragma GCC section data ".foodata"
++#pragma GCC section rodata ".foorodata"
++#pragma GCC section text ".footext"
++char c1;
++char c2 = 2;
++const char c3 = 3;
++static char s1;
++static char s2 = 2;
++static const char s3 = 3;
++int f1 (int x) { return x; }
++
++#pragma GCC section bss ".barbss"
++#pragma GCC section data ".bardata"
++#pragma GCC section rodata ".barrodata"
++#pragma GCC section text ".bartext"
++int v1[8];
++int v2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++const int v3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++static int sv1[8];
++static int sv2[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++static const int sv3[8] = {1, 2, 3, 4, 5, 6, 7, 8};
++int g1 (int x) { return x; }
++
++/* { dg-final { scan-assembler-times ".section\t.foobss" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.foodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.foorodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.footext" 1 } } */
++/* { dg-final { scan-assembler-times ".section\t.barbss" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.bardata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.barrodata" 2 } } */
++/* { dg-final { scan-assembler-times ".section\t.bartext" 1 } } */

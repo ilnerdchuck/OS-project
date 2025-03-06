@@ -1,0 +1,14 @@
+Fix CMPGCCARM-114. Since moving on new Fedora 26 host we got new dependecy for GDB on gLibc 2.25. GDB uses Expat library that pulls in getrandom from gLibc 2.25.
+But we need to support old Linux distros with gLibc 2.19.
+
+--- expat-2.2.9/lib/xmlparse.c.orig	2021-01-27 09:10:18.700968079 -0600
++++ expat-2.2.9/lib/xmlparse.c	2021-01-27 09:15:06.056327110 -0600
+@@ -70,6 +70,8 @@
+ #include "expat.h"
+ #include "siphash.h"
+ 
++#undef HAVE_GETRANDOM /* remove dependency on getrandom@GLIBC_2.25 */
++
+ #if defined(HAVE_GETRANDOM) || defined(HAVE_SYSCALL_GETRANDOM)
+ #  if defined(HAVE_GETRANDOM)
+ #    include <sys/random.h> /* getrandom */
