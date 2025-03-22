@@ -12,3 +12,18 @@ void UART_printf(const char *s) {
         s++;
     }
 }
+
+void SPI_init( void )
+{
+    LPSPI0_CTRL = 1;
+}
+
+void SPI_write(uint8_t s) {
+    
+    LPSPI0_DR = s;
+}
+
+void SPI_get(uint8_t *s) {
+      *s = LPSPI0_DR;
+}
+

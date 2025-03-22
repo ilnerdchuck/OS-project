@@ -61,6 +61,7 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     case STM_SPI_DR:
         S32Kx8_spi_transfer(s);
         s->spi_sr &= ~STM_SPI_SR_RXNE;
+        s->spi_dr = (uint32_t)69;
         return s->spi_dr;
     case STM_SPI_CRCPR:
         qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers " \
