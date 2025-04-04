@@ -5,6 +5,8 @@
 #include "hw/ssi/ssi.h"
 #include "qom/object.h"
 
+
+// TODO: finish setting al lthe register form the datasheet
 #define STM_SPI_CR1     0x00
 #define STM_SPI_CR2     0x04
 #define STM_SPI_SR      0x08

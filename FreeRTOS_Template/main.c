@@ -58,7 +58,7 @@ void producer(void *pvParameters) {
         
         SPI_get(&pluto);
         /*sprintf(buff, "%d\n", pluto);*/
-        UART_printf((char *)pluto);
+        UART_printf("hello");
     }
 }
 

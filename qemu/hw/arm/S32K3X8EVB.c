@@ -17,45 +17,33 @@
 #include "hw/qdev-clock.h"
 #include "qemu/error-report.h"
 #include "hw/arm/boot.h"
-//#include "hw/arm/samd21_mcu.h"
-//#include "hw/i2c/microbit_i2c.h"
-//#include "hw/qdev-properties.h"
 
-
-// Device class for our board
-
-struct S32K3X8EVBMachineState {
-    /* Parent machine state. */
-    MachineState parent;
-    
-    S32K3x8State S32K3X8;
-};
-
-
-#define TYPE_S32K3X8EVB_MACHINE MACHINE_TYPE_NAME("S32K3X8EVB")
-OBJECT_DECLARE_SIMPLE_TYPE(S32K3X8EVBMachineState, S32K3X8EVB_MACHINE)
 
 static void S32K3X8EVB_init(MachineState *machine){
+    //MCU PUSH
     DeviceState *dev;
     Clock *sysclk;
-
+    // Clock instantiation 
     /* This clock doesn't need migration because it is fixed-frequency */
     sysclk = clock_new(OBJECT(machine), "SYSCLK");
     clock_set_hz(sysclk, HCLK_FRQ);
 
+    // MCU initalization and realization
     dev = qdev_new(TYPE_S32K3x8_MCU);
     object_property_add_child(OBJECT(machine), "soc", OBJECT(dev));
+    // Clock connection to the MCU
     qdev_connect_clock_in(dev, "sysclk", sysclk);
+    // Attach the MCU to the "Bus"
     sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
-
     armv7m_load_kernel(ARM_CPU(first_cpu), machine->kernel_filename,
                        0, S32K3x8_FLASH0_SIZE);
-    
-
+    // END MCU PUSH
 }
     
 
-// QEMU machine init     
+
+// BOARD PUSH
+// QEMU machine class initalization     
 static void S32K3X8EVB_machine_class_init(ObjectClass *oc, void *data)
 {
     MachineClass *mc = MACHINE_CLASS(oc);
@@ -79,9 +67,11 @@ static const TypeInfo S32K3X8EVB_info = {
     .class_init = S32K3X8EVB_machine_class_init,
 };
 
+// QEMU registration of the board 
 static void S32K3X8EVB_machine_init(void){
     type_register_static(&S32K3X8EVB_info);
 }
 
 type_init(S32K3X8EVB_machine_init);
+//END  BOARD PUSH
 

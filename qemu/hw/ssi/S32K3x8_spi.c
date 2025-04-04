@@ -42,6 +42,9 @@ static void S32Kx8_spi_transfer(S32K3x8SPIState *s)
     DB_PRINT("Data received: 0x%x\n", s->spi_dr);
 }
 
+// TODO: check datasheet for correct behavior
+// when an read request is made, select the correct behavior 
+// based on the requested address => register
 static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
                                      unsigned int size)
 {
@@ -91,6 +94,9 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     return 0;
 }
 
+// TODO: check datasheet for correct behavior
+// when an write request is made, select the correct behavior 
+// based on the requested address => register
 static void S32Kx8_spi_write(void *opaque, hwaddr addr,
                                 uint64_t val64, unsigned int size)
 {
