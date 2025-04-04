@@ -22,19 +22,6 @@
 //#include "hw/qdev-properties.h"
 
 
-// Device class for our board
-
-struct S32K3X8EVBMachineState {
-    /* Parent machine state. */
-    MachineState parent;
-    
-    S32K3x8State S32K3X8;
-};
-
-
-#define TYPE_S32K3X8EVB_MACHINE MACHINE_TYPE_NAME("S32K3X8EVB")
-OBJECT_DECLARE_SIMPLE_TYPE(S32K3X8EVBMachineState, S32K3X8EVB_MACHINE)
-
 static void S32K3X8EVB_init(MachineState *machine){
     DeviceState *dev;
     Clock *sysclk;
