@@ -32,3 +32,9 @@ config PNV_SPI
 config ALLWINNER_A10_SPI
     bool
     select SSI
+
+config S32K3x8_SPI
+    bool
+    default y
+    select SSI
+

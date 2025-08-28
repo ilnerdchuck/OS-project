@@ -44,8 +44,8 @@ static void s32k3x8_usart_receive(void *opaque, const uint8_t *buf, int size)
 {
     S32K3x8UartState *s = opaque;
 
+    // USART not enabled - drop the chars
     if (!(s->usart_cr1 & USART_CR1_UE && s->usart_cr1 & USART_CR1_RE)) {
-        /* USART not enabled - drop the chars */
         DB_PRINT("Dropping the chars\n");
         return;
     }
@@ -73,6 +73,10 @@ static void s32k3x8_usart_reset(DeviceState *dev)
     s32k3x8_update_irq(s);
 }
 
+
+// TODO: check datasheet for correct behavior
+// when an read request is made, select the correct behavior 
+// based on the requested address => register
 static uint64_t s32k3x8_usart_read(void *opaque, hwaddr addr,
                                        unsigned int size)
 {
@@ -112,6 +116,9 @@ static uint64_t s32k3x8_usart_read(void *opaque, hwaddr addr,
     return 0;
 }
 
+// TODO: check datasheet for correct behavior
+// when an write request is made, select the correct behavior 
+// based on the requested address => register
 static void s32k3x8_usart_write(void *opaque, hwaddr addr,
                                   uint64_t val64, unsigned int size)
 {
@@ -160,6 +167,8 @@ static void s32k3x8_usart_write(void *opaque, hwaddr addr,
     }
 }
 
+
+// --------- UART initialization and realization ----------
 static const MemoryRegionOps s32k3x8_usart_ops = {
     .read = s32k3x8_usart_read,
     .write = s32k3x8_usart_write,
@@ -176,9 +185,14 @@ static void s32k3x8_usart_init(Object *obj)
     S32K3x8UartState *s = S32K3x8_UART(obj);
 
     sysbus_init_irq(SYS_BUS_DEVICE(obj), &s->irq);
-
-    memory_region_init_io(&s->mmio, obj, &s32k3x8_usart_ops, s,
-                          TYPE_S32K3x8_UART, 0x400);
+    memory_region_init_io(
+                            &s->mmio, 
+                            obj, 
+                            &s32k3x8_usart_ops, 
+                            s,
+                            TYPE_S32K3x8_UART, 
+                            0x400
+                        );
     sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->mmio);
 }
 
@@ -186,9 +200,16 @@ static void s32k3x8_usart_realize(DeviceState *dev, Error **errp)
 {
     S32K3x8UartState *s = S32K3x8_UART(dev);
 
-    qemu_chr_fe_set_handlers(&s->chr, s32k3x8_usart_can_receive,
-                             s32k3x8_usart_receive, NULL, NULL,
-                             s, NULL, true);
+    qemu_chr_fe_set_handlers(
+                                &s->chr, 
+                                s32k3x8_usart_can_receive,
+                                s32k3x8_usart_receive, 
+                                NULL, 
+                                NULL,
+                                s, 
+                                NULL, 
+                                true
+                             );
 }
 
 static void s32k3x8_usart_class_init(ObjectClass *klass, void *data)

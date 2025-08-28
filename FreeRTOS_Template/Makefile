@@ -132,11 +132,11 @@ clean:
 
 qemu_start:
 	../qemu/build/qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
-	$(ELF) -monitor none -nographic -serial stdio
+		$(ELF) -monitor none -nographic -serial stdio -d strace --trace "memory_region_ops_*" -D ./log.txt 
 
 qemu_debug:
 	../qemu/build/qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
-	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS_DBG)
+	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS_DBG) 
 # TODO: add a rule to spawn a terminal with qemu and start gdb 
 gdb_start:
 	gdb $(ELF) -ex "target remote :1234" 

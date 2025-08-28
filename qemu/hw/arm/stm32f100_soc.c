@@ -39,9 +39,9 @@
 static const uint32_t usart_addr[STM_NUM_USARTS] = { 0x40013800, 0x40004400,
     0x40004800 };
 static const uint32_t spi_addr[STM_NUM_SPIS] = { 0x40013000, 0x40003800 };
+static const int spi_irq[STM_NUM_SPIS] = {35, 36};
 
 static const int usart_irq[STM_NUM_USARTS] = {37, 38, 39};
-static const int spi_irq[STM_NUM_SPIS] = {35, 36};
 
 static void stm32f100_soc_initfn(Object *obj)
 {

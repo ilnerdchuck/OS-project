@@ -33,16 +33,15 @@
 #define S32K3x8_SRAM0_BASE 0x20400000
 #define S32K3x8_SRAM0_SIZE 256*1024
 
-
+// BOARD PUSH
 #define TYPE_S32K3X8EVB_MACHINE MACHINE_TYPE_NAME("S32K3X8EVB")
 OBJECT_DECLARE_SIMPLE_TYPE(S32K3X8EVBMachineState, S32K3X8EVB_MACHINE)
 
-// Device class for our board
-
 struct S32K3X8EVBMachineState {
     /* Parent machine state. */
-
     MachineState parent;
     
     S32K3x8State S32K3X8;
 };
+
+// END BOARD PUSH
