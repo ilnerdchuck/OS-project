@@ -43,5 +43,5 @@ struct S32K3X8EVBMachineState {
     
     S32K3x8State S32K3X8;
 };
-// END BOARD PUSH
 
+// END BOARD PUSH
