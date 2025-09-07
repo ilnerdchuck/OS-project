@@ -5,12 +5,12 @@
 #include "hw/ssi/S32K3x8_spi.h"
 #include "migration/vmstate.h"
 
-#ifndef STM_SPI_ERR_DEBUG
-#define STM_SPI_ERR_DEBUG 0
+#ifndef S32_SPI_ERR_DEBUG
+#define S32_SPI_ERR_DEBUG 0
 #endif
 
 #define DB_PRINT_L(lvl, fmt, args...) do { \
-    if (STM_SPI_ERR_DEBUG >= lvl) { \
+    if (S32_SPI_ERR_DEBUG >= lvl) { \
         qemu_log("%s: " fmt, __func__, ## args); \
     } \
 } while (0)
@@ -31,20 +31,18 @@ static void S32Kx8_spi_reset(DeviceState *dev)
     s->spi_i2scfgr = 0x00000000;
     s->spi_i2spr = 0x00000002;
 }
-
+// Function to handle SPI data transfer
 static void S32Kx8_spi_transfer(S32K3x8SPIState *s)
 {
     DB_PRINT("Data to send: 0x%x\n", s->spi_dr);
 
     s->spi_dr = ssi_transfer(s->ssi, s->spi_dr);
-    s->spi_sr |= STM_SPI_SR_RXNE;
+    // Clear the RXNE flag and set it again to indicate that new data is available
+    s->spi_sr |= S32_SPI_SR_RXNE;
 
     DB_PRINT("Data received: 0x%x\n", s->spi_dr);
 }
 
-// TODO: check datasheet for correct behavior
-// when an read request is made, select the correct behavior 
-// based on the requested address => register
 static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
                                      unsigned int size)
 {
@@ -53,38 +51,33 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     DB_PRINT("Address: 0x%" HWADDR_PRIx "\n", addr);
 
     switch (addr) {
-    case STM_SPI_CR1:
+    case S32_SPI_CR1:
         return s->spi_cr1;
-    case STM_SPI_CR2:
+    case S32_SPI_CR2:
         qemu_log_mask(LOG_UNIMP, "%s: Interrupts and DMA are not implemented\n",
                       __func__);
         return s->spi_cr2;
-    case STM_SPI_SR:
+    case S32_SPI_SR:
         return s->spi_sr;
-    case STM_SPI_DR:
+    case S32_SPI_DR:
         S32Kx8_spi_transfer(s);
-        s->spi_sr &= ~STM_SPI_SR_RXNE;
-        s->spi_dr = (uint32_t)69;
+        s->spi_sr &= ~S32_SPI_SR_RXNE;
+        s->spi_dr |= 0xFFFFFF66;
         return s->spi_dr;
-    case STM_SPI_CRCPR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers " \
-                      "are included for compatibility\n", __func__);
+    case S32_SPI_CRCPR:
+        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_crcpr;
-    case STM_SPI_RXCRCR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers " \
-                      "are included for compatibility\n", __func__);
+    case S32_SPI_RXCRCR:
+        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_rxcrcr;
-    case STM_SPI_TXCRCR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers " \
-                      "are included for compatibility\n", __func__);
+    case S32_SPI_TXCRCR:
+        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_txcrcr;
-    case STM_SPI_I2SCFGR:
-        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers " \
-                      "are included for compatibility\n", __func__);
+    case S32_SPI_I2SCFGR:
+        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers \n", __func__);
         return s->spi_i2scfgr;
-    case STM_SPI_I2SPR:
-        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers " \
-                      "are included for compatibility\n", __func__);
+    case S32_SPI_I2SPR:
+        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers \n", __func__);
         return s->spi_i2spr;
     default:
         qemu_log_mask(LOG_GUEST_ERROR, "%s: Bad offset 0x%" HWADDR_PRIx "\n",
@@ -94,9 +87,6 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     return 0;
 }
 
-// TODO: check datasheet for correct behavior
-// when an write request is made, select the correct behavior 
-// based on the requested address => register
 static void S32Kx8_spi_write(void *opaque, hwaddr addr,
                                 uint64_t val64, unsigned int size)
 {
@@ -106,39 +96,39 @@ static void S32Kx8_spi_write(void *opaque, hwaddr addr,
     DB_PRINT("Address: 0x%" HWADDR_PRIx ", Value: 0x%x\n", addr, value);
 
     switch (addr) {
-    case STM_SPI_CR1:
+    case S32_SPI_CR1:
         s->spi_cr1 = value;
         return;
-    case STM_SPI_CR2:
+    case S32_SPI_CR2:
         qemu_log_mask(LOG_UNIMP, "%s: " \
                       "Interrupts and DMA are not implemented\n", __func__);
         s->spi_cr2 = value;
         return;
-    case STM_SPI_SR:
+    case S32_SPI_SR:
         /* Read only register, except for clearing the CRCERR bit, which
          * is not supported
          */
         return;
-    case STM_SPI_DR:
+    case S32_SPI_DR:
         s->spi_dr = value;
         S32Kx8_spi_transfer(s);
         return;
-    case STM_SPI_CRCPR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented\n", __func__);
+    case S32_SPI_CRCPR:
+        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented \n", __func__);
         return;
-    case STM_SPI_RXCRCR:
+    case S32_SPI_RXCRCR:
         qemu_log_mask(LOG_GUEST_ERROR, "%s: Read only register: " \
                       "0x%" HWADDR_PRIx "\n", __func__, addr);
         return;
-    case STM_SPI_TXCRCR:
+    case S32_SPI_TXCRCR:
         qemu_log_mask(LOG_GUEST_ERROR, "%s: Read only register: " \
                       "0x%" HWADDR_PRIx "\n", __func__, addr);
         return;
-    case STM_SPI_I2SCFGR:
+    case S32_SPI_I2SCFGR:
         qemu_log_mask(LOG_UNIMP, "%s: " \
                       "I2S is not implemented\n", __func__);
         return;
-    case STM_SPI_I2SPR:
+    case S32_SPI_I2SPR:
         qemu_log_mask(LOG_UNIMP, "%s: " \
                       "I2S is not implemented\n", __func__);
         return;
