@@ -6,9 +6,10 @@
 // UART
 // UART Initialization
 void UART_init(void) {
-
-  *((uint32_t *)(UART0_BAUDDIV)) = 16; // Set baud rate divisor for 115200 baud
-  *((uint32_t *)(UART0_CTRL)) = 1; // Enable UART0
+  // Set baud rate
+  *((uint32_t *)(UART0_BAUDDIV)) = 16;
+  // Enable transmitter and receiver
+  *((uint32_t *)(UART0_CTRL)) = 1;
 }
 
 static void uart_send_char(char c)
@@ -96,6 +97,21 @@ void SPI_init(void) {
   *((uint32_t *)(LPSPI0_I2SPR)) = 0;        // Default configuration
   *((uint32_t *)(LPSPI0_CTRL)) |= (1 << 6); // Enable SPI
   *((uint32_t *)(LPSPI0_CTRL)) |= (1 << 2); // Master mode
+}
+
+// SPI all register status read
+void SPI_status(void) {
+  uart_printf("---------- SPI Registers Status ----------\n");
+  uart_printf("LPSPI0_CTRL: %X\n", *((uint32_t *)(LPSPI0_CTRL)));
+  uart_printf("LPSPI0_CTRL2: %x\n", *((uint32_t *)(LPSPI0_CTRL2)));
+  uart_printf("LPSPI0_SR: %X\n", *((uint32_t *)(LPSPI0_SR)));
+  uart_printf("LPSPI0_DR: %X\n", *((uint32_t *)(LPSPI0_DR)));
+  uart_printf("LPSPI0_CRCPR: %X\n", *((uint32_t *)(LPSPI0_CRCPR)));
+  uart_printf("LPSPI0_RXCRCR: %X\n", *((uint32_t *)(LPSPI0_RXCRCR)));
+  uart_printf("LPSPI0_TXCRCR: %X\n", *((uint32_t *)(LPSPI0_TXCRCR)));
+  uart_printf("LPSPI0_I2SCFGR: %X\n", *((uint32_t *)(LPSPI0_I2SCFGR)));
+  uart_printf("LPSPI0_I2SPR: %X\n", *((uint32_t *)(LPSPI0_I2SPR)));
+  uart_printf("------------------------------------------\n");
 }
 
 // SPI Write 

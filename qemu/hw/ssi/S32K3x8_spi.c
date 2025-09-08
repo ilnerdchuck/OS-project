@@ -31,6 +31,7 @@ static void S32Kx8_spi_reset(DeviceState *dev)
     s->spi_i2scfgr = 0x00000000;
     s->spi_i2spr = 0x00000002;
 }
+
 // Function to handle SPI data transfer
 static void S32Kx8_spi_transfer(S32K3x8SPIState *s)
 {
@@ -43,6 +44,8 @@ static void S32Kx8_spi_transfer(S32K3x8SPIState *s)
     DB_PRINT("Data received: 0x%x\n", s->spi_dr);
 }
 
+// Memory-mapped I/O read
+// When reading from the data register, perform a transfer
 static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
                                      unsigned int size)
 {
@@ -62,22 +65,19 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     case S32_SPI_DR:
         S32Kx8_spi_transfer(s);
         s->spi_sr &= ~S32_SPI_SR_RXNE;
-        s->spi_dr |= 0xFFFFFF66;
+        // s->spi_dr |= 0xFFFFFF66;
+        // For testing purposes, increment the value read each time
+        s->spi_dr = s->test_var + 0x01;
         return s->spi_dr;
     case S32_SPI_CRCPR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_crcpr;
     case S32_SPI_RXCRCR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_rxcrcr;
     case S32_SPI_TXCRCR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented, the registers \n", __func__);
         return s->spi_txcrcr;
     case S32_SPI_I2SCFGR:
-        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers \n", __func__);
         return s->spi_i2scfgr;
     case S32_SPI_I2SPR:
-        qemu_log_mask(LOG_UNIMP, "%s: I2S is not implemented, the registers \n", __func__);
         return s->spi_i2spr;
     default:
         qemu_log_mask(LOG_GUEST_ERROR, "%s: Bad offset 0x%" HWADDR_PRIx "\n",
@@ -87,6 +87,8 @@ static uint64_t S32Kx8_spi_read(void *opaque, hwaddr addr,
     return 0;
 }
 
+// Memory-mapped I/O write
+// Writing to the data register initiates a transfer
 static void S32Kx8_spi_write(void *opaque, hwaddr addr,
                                 uint64_t val64, unsigned int size)
 {
@@ -105,16 +107,14 @@ static void S32Kx8_spi_write(void *opaque, hwaddr addr,
         s->spi_cr2 = value;
         return;
     case S32_SPI_SR:
-        /* Read only register, except for clearing the CRCERR bit, which
-         * is not supported
-         */
         return;
     case S32_SPI_DR:
         s->spi_dr = value;
+        s->test_var = value; // Reset test_var on write
         S32Kx8_spi_transfer(s);
         return;
     case S32_SPI_CRCPR:
-        qemu_log_mask(LOG_UNIMP, "%s: CRC is not implemented \n", __func__);
+        s->spi_crcpr = value;
         return;
     case S32_SPI_RXCRCR:
         qemu_log_mask(LOG_GUEST_ERROR, "%s: Read only register: " \
@@ -125,12 +125,10 @@ static void S32Kx8_spi_write(void *opaque, hwaddr addr,
                       "0x%" HWADDR_PRIx "\n", __func__, addr);
         return;
     case S32_SPI_I2SCFGR:
-        qemu_log_mask(LOG_UNIMP, "%s: " \
-                      "I2S is not implemented\n", __func__);
+        s->spi_i2scfgr = value;
         return;
     case S32_SPI_I2SPR:
-        qemu_log_mask(LOG_UNIMP, "%s: " \
-                      "I2S is not implemented\n", __func__);
+        s->spi_i2spr = value;
         return;
     default:
         qemu_log_mask(LOG_GUEST_ERROR,

@@ -33,6 +33,7 @@ void uart_printf(const char *fmt, ...);
 #define LPSPI0_I2SPR (LPSPI0_BASE + 0x20UL)
 
 void SPI_init(void);
+void SPI_status(void);
 void SPI_write(uint8_t);
 void SPI_get(uint8_t *);
 #endif
