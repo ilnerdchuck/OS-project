@@ -15,7 +15,7 @@ DEMO_NAME := demo
 ELF := $(OUTPUT_DIR)/$(DEMO_NAME).elf
 MAP := $(OUTPUT_DIR)/$(DEMO_NAME).map
 
-# Compiler toolchain
+# NXP toolchain
 CC := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-gcc
 LD := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-gcc
 SIZE := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-size
@@ -23,7 +23,6 @@ SIZE := ../gcc-10.2.0-Earmv7GCC-eabi/x86_64-linux/bin/arm-none-eabi-size
 # Target embedded board and CPU
 MACHINE := S32K3X8EVB 
 CPU := cortex-m7
-
 
 # Use -s to connect to gdb port 1234 and -S to wait before executing
 QEMU_FLAGS_DBG = -s -S 
@@ -97,7 +96,7 @@ SOURCE_FILES += $(KERNEL_DIR)/portable/GCC/ARM_CM3/port.c
 
 # Demo files
 SOURCE_FILES += $(DEMO_PROJECT)/main.c
-SOURCE_FILES += $(DEMO_PROJECT)/uart.c
+SOURCE_FILES += $(DEMO_PROJECT)/peripherals.c
 
 # Start-up code
 SOURCE_FILES += ./startup.c

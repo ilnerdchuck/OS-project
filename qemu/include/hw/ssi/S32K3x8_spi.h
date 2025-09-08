@@ -41,6 +41,9 @@ struct S32K3x8SPIState {
   uint32_t spi_i2scfgr;
   uint32_t spi_i2spr;
 
+  // For testing purposes
+  uint32_t test_var;
+
   qemu_irq irq;
   SSIBus *ssi;
 };
