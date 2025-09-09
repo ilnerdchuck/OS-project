@@ -1,0 +1,121 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Available variables from the bash script}
+
+\PYG{c}{\PYGZsh{} Load the design}
+\PYG{n+nb}{source}\PYG{+w}{ }.\PYG{o}{/}scripts\PYG{o}{/}scripts\PYGZus{}template\PYG{o}{/}DLX.globals
+\PYG{c}{\PYGZsh{} Do the physical design}
+
+\PYG{c}{\PYGZsh{} init\PYGZus{}design}
+\PYG{c}{\PYGZsh{} getIoFlowFlag}
+\PYG{c}{\PYGZsh{} setIoFlowFlag 0}
+\PYG{c}{\PYGZsh{} floorPlan \PYGZhy{}coreMarginsBy die \PYGZhy{}site FreePDK45\PYGZus{}38x28\PYGZus{}10R\PYGZus{}NP\PYGZus{}162NW\PYGZus{}34O \PYGZhy{}r 1.0 0.6 5 5 5 5}
+\PYG{c}{\PYGZsh{} uiSetTool select}
+\PYG{c}{\PYGZsh{} getIoFlowFlag}
+\PYG{c}{\PYGZsh{} fit}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} setAddRingMode \PYGZhy{}ring\PYGZus{}target default \PYGZhy{}extend\PYGZus{}over\PYGZus{}row 0 \PYGZhy{}ignore\PYGZus{}rows 0 \PYGZhy{}avoid\PYGZus{}short 0 \PYGZhy{}skip\PYGZus{}crossing\PYGZus{}trunks none \PYGZhy{}stacked\PYGZus{}via\PYGZus{}top\PYGZus{}layer metal10 \PYGZhy{}stacked\PYGZus{}via\PYGZus{}bottom\PYGZus{}layer metal1 \PYGZhy{}via\PYGZus{}using\PYGZus{}exact\PYGZus{}crossover\PYGZus{}size 1 \PYGZhy{}orthogonal\PYGZus{}only true \PYGZhy{}skip\PYGZus{}via\PYGZus{}on\PYGZus{}pin \PYGZob{}  standardcell \PYGZcb{} \PYGZhy{}skip\PYGZus{}via\PYGZus{}on\PYGZus{}wire\PYGZus{}shape \PYGZob{}  noshape \PYGZcb{}}
+\PYG{c}{\PYGZsh{} addRing \PYGZhy{}nets \PYGZob{}vdd gnd\PYGZcb{} \PYGZhy{}type core\PYGZus{}rings \PYGZhy{}follow core \PYGZhy{}layer \PYGZob{}top metal9 bottom metal9 left metal10 right metal10\PYGZcb{} \PYGZhy{}width \PYGZob{}top 0.8 bottom 0.8 left 0.8 right 0.8\PYGZcb{} \PYGZhy{}spacing \PYGZob{}top 0.8 bottom 0.8 left 0.8 right 0.8\PYGZcb{} \PYGZhy{}offset \PYGZob{}top 1.8 bottom 1.8 left 1.8 right 1.8\PYGZcb{} \PYGZhy{}center 1 \PYGZhy{}threshold 0 \PYGZhy{}jog\PYGZus{}distance 0 \PYGZhy{}snap\PYGZus{}wire\PYGZus{}center\PYGZus{}to\PYGZus{}grid None}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingOffset 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingThreshold 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingJogDistance 1.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeRingLayers \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeWidth 10.0}
+\PYG{c}{\PYGZsh{} set sprCreateIeStripeThreshold 1.0}
+\PYG{c}{\PYGZsh{} setAddStripeMode \PYGZhy{}ignore\PYGZus{}block\PYGZus{}check false \PYGZhy{}break\PYGZus{}at none \PYGZhy{}route\PYGZus{}over\PYGZus{}rows\PYGZus{}only false \PYGZhy{}rows\PYGZus{}without\PYGZus{}stripes\PYGZus{}only false \PYGZhy{}extend\PYGZus{}to\PYGZus{}closest\PYGZus{}target none \PYGZhy{}stop\PYGZus{}at\PYGZus{}last\PYGZus{}wire\PYGZus{}for\PYGZus{}area false \PYGZhy{}partial\PYGZus{}set\PYGZus{}thru\PYGZus{}domain false \PYGZhy{}ignore\PYGZus{}nondefault\PYGZus{}domains false \PYGZhy{}trim\PYGZus{}antenna\PYGZus{}back\PYGZus{}to\PYGZus{}shape none \PYGZhy{}spacing\PYGZus{}type edge\PYGZus{}to\PYGZus{}edge \PYGZhy{}spacing\PYGZus{}from\PYGZus{}block 0 \PYGZhy{}stripe\PYGZus{}min\PYGZus{}length stripe\PYGZus{}width \PYGZhy{}stacked\PYGZus{}via\PYGZus{}top\PYGZus{}layer metal10 \PYGZhy{}stacked\PYGZus{}via\PYGZus{}bottom\PYGZus{}layer metal1 \PYGZhy{}via\PYGZus{}using\PYGZus{}exact\PYGZus{}crossover\PYGZus{}size false \PYGZhy{}split\PYGZus{}vias false \PYGZhy{}orthogonal\PYGZus{}only true \PYGZhy{}allow\PYGZus{}jog \PYGZob{} padcore\PYGZus{}ring  block\PYGZus{}ring \PYGZcb{} \PYGZhy{}skip\PYGZus{}via\PYGZus{}on\PYGZus{}pin \PYGZob{}  standardcell \PYGZcb{} \PYGZhy{}skip\PYGZus{}via\PYGZus{}on\PYGZus{}wire\PYGZus{}shape \PYGZob{}  noshape   \PYGZcb{}}
+\PYG{c}{\PYGZsh{} addStripe \PYGZhy{}nets \PYGZob{}vdd gnd\PYGZcb{} \PYGZhy{}layer metal10 \PYGZhy{}direction vertical \PYGZhy{}width 0.8 \PYGZhy{}spacing 0.8 \PYGZhy{}set\PYGZus{}to\PYGZus{}set\PYGZus{}distance 20 \PYGZhy{}start\PYGZus{}from left \PYGZhy{}start\PYGZus{}offset 15 \PYGZhy{}switch\PYGZus{}layer\PYGZus{}over\PYGZus{}obs false \PYGZhy{}max\PYGZus{}same\PYGZus{}layer\PYGZus{}jog\PYGZus{}length 2 \PYGZhy{}padcore\PYGZus{}ring\PYGZus{}top\PYGZus{}layer\PYGZus{}limit metal10 \PYGZhy{}padcore\PYGZus{}ring\PYGZus{}bottom\PYGZus{}layer\PYGZus{}limit metal1 \PYGZhy{}block\PYGZus{}ring\PYGZus{}top\PYGZus{}layer\PYGZus{}limit metal10 \PYGZhy{}block\PYGZus{}ring\PYGZus{}bottom\PYGZus{}layer\PYGZus{}limit metal1 \PYGZhy{}use\PYGZus{}wire\PYGZus{}group 0 \PYGZhy{}snap\PYGZus{}wire\PYGZus{}center\PYGZus{}to\PYGZus{}grid None}
+\PYG{c}{\PYGZsh{} setSrouteMode \PYGZhy{}viaConnectToShape \PYGZob{} noshape \PYGZcb{}}
+\PYG{c}{\PYGZsh{} sroute \PYGZhy{}connect \PYGZob{} blockPin padPin padRing corePin floatingStripe \PYGZcb{} \PYGZhy{}layerChangeRange \PYGZob{} metal1(1) metal10(10) \PYGZcb{} \PYGZhy{}blockPinTarget \PYGZob{} nearestTarget \PYGZcb{} \PYGZhy{}padPinPortConnect \PYGZob{} allPort oneGeom \PYGZcb{} \PYGZhy{}padPinTarget \PYGZob{} nearestTarget \PYGZcb{} \PYGZhy{}corePinTarget \PYGZob{} firstAfterRowEnd \PYGZcb{} \PYGZhy{}floatingStripeTarget \PYGZob{} blockring padring ring stripe ringpin blockpin followpin \PYGZcb{} \PYGZhy{}allowJogging 1 \PYGZhy{}crossoverViaLayerRange \PYGZob{} metal1(1) metal10(10) \PYGZcb{} \PYGZhy{}nets \PYGZob{} vdd gnd \PYGZcb{} \PYGZhy{}allowLayerChange 1 \PYGZhy{}blockPin useLef \PYGZhy{}targetViaLayerRange \PYGZob{} metal1(1) metal10(10) \PYGZcb{}}
+\PYG{c}{\PYGZsh{} setPlaceMode \PYGZhy{}prerouteAsObs \PYGZob{}1 2 3 4 5 6 7 8\PYGZcb{}}
+\PYG{c}{\PYGZsh{} setPlaceMode \PYGZhy{}fp false}
+\PYG{c}{\PYGZsh{} place\PYGZus{}design}
+\PYG{c}{\PYGZsh{} fit}
+\PYG{c}{\PYGZsh{} fit}
+\PYG{c}{\PYGZsh{} fit}
+\PYG{c}{\PYGZsh{} getPinAssignMode \PYGZhy{}pinEditInBatch \PYGZhy{}quiet}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch true}
+\PYG{c}{\PYGZsh{} editPin \PYGZhy{}fixOverlap 1 \PYGZhy{}unit MICRON \PYGZhy{}spreadDirection clockwise \PYGZhy{}side Left \PYGZhy{}layer 1 \PYGZhy{}spreadType center \PYGZhy{}spacing 0.14 \PYGZhy{}pin CLK}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch false}
+\PYG{c}{\PYGZsh{} getPinAssignMode \PYGZhy{}pinEditInBatch \PYGZhy{}quiet}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch true}
+\PYG{c}{\PYGZsh{} editPin \PYGZhy{}fixOverlap 1 \PYGZhy{}unit MICRON \PYGZhy{}spreadDirection clockwise \PYGZhy{}side Left \PYGZhy{}layer 1 \PYGZhy{}spreadType center \PYGZhy{}spacing 0.14 \PYGZhy{}pin RST}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch false}
+\PYG{c}{\PYGZsh{} getPinAssignMode \PYGZhy{}pinEditInBatch \PYGZhy{}quiet}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch true}
+\PYG{c}{\PYGZsh{} editPin \PYGZhy{}pinWidth 0.07 \PYGZhy{}pinDepth 0.07 \PYGZhy{}fixOverlap 1 \PYGZhy{}unit MICRON \PYGZhy{}spreadDirection clockwise \PYGZhy{}side Left \PYGZhy{}layer 1 \PYGZhy{}spreadType center \PYGZhy{}spacing 0.14 \PYGZhy{}pin RST}
+\PYG{c}{\PYGZsh{} setPinAssignMode \PYGZhy{}pinEditInBatch false}
+\PYG{c}{\PYGZsh{} setOptMode \PYGZhy{}fixCap true \PYGZhy{}fixTran true \PYGZhy{}fixFanoutLoad false}
+\PYG{c}{\PYGZsh{} optDesign \PYGZhy{}postCTS}
+\PYG{c}{\PYGZsh{} optDesign \PYGZhy{}postCTS \PYGZhy{}hold}
+\PYG{c}{\PYGZsh{} getFillerMode \PYGZhy{}quiet}
+\PYG{c}{\PYGZsh{} addFiller \PYGZhy{}cell FILLCELL\PYGZus{}X1 FILLCELL\PYGZus{}X2 FILLCELL\PYGZus{}X4 FILLCELL\PYGZus{}X8 FILLCELL\PYGZus{}X16 FILLCELL\PYGZus{}X32 \PYGZhy{}prefix FILLER}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}timingEngine \PYGZob{}\PYGZcb{}}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}routeWithSiPostRouteFix 0}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}drouteStartIteration default}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}routeTopRoutingLayer default}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}routeBottomRoutingLayer default}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}drouteEndIteration default}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}routeWithTimingDriven false}
+\PYG{c}{\PYGZsh{} setNanoRouteMode \PYGZhy{}quiet \PYGZhy{}routeWithSiDriven false}
+\PYG{c}{\PYGZsh{} routeDesign \PYGZhy{}globalDetail}
+\PYG{c}{\PYGZsh{} setAnalysisMode \PYGZhy{}analysisType onChipVariation}
+\PYG{c}{\PYGZsh{} setOptMode \PYGZhy{}fixCap true \PYGZhy{}fixTran true \PYGZhy{}fixFanoutLoad false}
+\PYG{c}{\PYGZsh{} optDesign \PYGZhy{}postRoute}
+\PYG{c}{\PYGZsh{} optDesign \PYGZhy{}postRoute \PYGZhy{}hold}
+\PYG{c}{\PYGZsh{} saveDesign DLX}
+
+
+\PYG{c}{\PYGZsh{} \PYGZsh{} genarate the reports}
+\PYG{c}{\PYGZsh{} source analyses.tcl}
+
+\PYG{c}{\PYGZsh{} set\PYGZus{}analysis\PYGZus{}view \PYGZhy{}setup \PYGZob{}default\PYGZcb{} \PYGZhy{}hold \PYGZob{}default\PYGZcb{}}
+\PYG{c}{\PYGZsh{} reset\PYGZus{}parasitics}
+\PYG{c}{\PYGZsh{} extractRC}
+\PYG{c}{\PYGZsh{} rcOut \PYGZhy{}setload DLX.setload \PYGZhy{}rc\PYGZus{}corner standard}
+\PYG{c}{\PYGZsh{} rcOut \PYGZhy{}setres DLX.setres \PYGZhy{}rc\PYGZus{}corner standard}
+\PYG{c}{\PYGZsh{} rcOut \PYGZhy{}spf DLXspf \PYGZhy{}rc\PYGZus{}corner standard}
+\PYG{c}{\PYGZsh{} rcOut \PYGZhy{}spef DLX.spef \PYGZhy{}rc\PYGZus{}corner standard}
+\PYG{c}{\PYGZsh{} redirect \PYGZhy{}quiet \PYGZob{}set honorDomain [getAnalysisMode \PYGZhy{}honorClockDomains]\PYGZcb{} \PYGZgt{} /dev/null}
+\PYG{c}{\PYGZsh{} timeDesign \PYGZhy{}postRoute \PYGZhy{}pathReports \PYGZhy{}drvReports \PYGZhy{}slackReports \PYGZhy{}numPaths 50 \PYGZhy{}prefix DLX\PYGZus{}postRoute \PYGZhy{}outDir ./physical\PYGZus{}design/timingReport}
+\PYG{c}{\PYGZsh{} redirect \PYGZhy{}quiet \PYGZob{}set honorDomain [getAnalysisMode \PYGZhy{}honorClockDomains]\PYGZcb{} \PYGZgt{} /dev/null}
+\PYG{c}{\PYGZsh{} timeDesign \PYGZhy{}postRoute \PYGZhy{}hold \PYGZhy{}pathReports \PYGZhy{}slackReports \PYGZhy{}numPaths 50 \PYGZhy{}prefix DLX\PYGZus{}postRoute \PYGZhy{}outDir ./physical\PYGZus{}design/timingReport}
+\PYG{c}{\PYGZsh{} getAnalysisMode \PYGZhy{}checkType}
+\PYG{c}{\PYGZsh{} getAnalysisMode \PYGZhy{}checkType}
+\PYG{c}{\PYGZsh{} get\PYGZus{}time\PYGZus{}unit}
+\PYG{c}{\PYGZsh{} report\PYGZus{}timing \PYGZhy{}machine\PYGZus{}readable \PYGZhy{}max\PYGZus{}paths 10000 \PYGZhy{}max\PYGZus{}slack 0.75 \PYGZhy{}path\PYGZus{}exceptions all \PYGZhy{}late \PYGZgt{} top.mtarpt}
+\PYG{c}{\PYGZsh{} load\PYGZus{}timing\PYGZus{}debug\PYGZus{}report \PYGZhy{}name default\PYGZus{}report top.mtarpt}
+\PYG{c}{\PYGZsh{} verifyConnectivity \PYGZhy{}type all \PYGZhy{}error 1000 \PYGZhy{}warning 50}
+\PYG{c}{\PYGZsh{} reportGateCount \PYGZhy{}level 5 \PYGZhy{}limit 100 \PYGZhy{}outfile DLX.gateCount}
+\PYG{c}{\PYGZsh{} saveNetlist ./physical\PYGZus{}design/DLX.v}
+\PYG{c}{\PYGZsh{} all\PYGZus{}hold\PYGZus{}analysis\PYGZus{}views}
+\PYG{c}{\PYGZsh{} all\PYGZus{}setup\PYGZus{}analysis\PYGZus{}views}
+\PYG{c}{\PYGZsh{} write\PYGZus{}sdf  \PYGZhy{}ideal\PYGZus{}clock\PYGZus{}network ./physical\PYGZus{}design/DLX.sdf}
+\end{Verbatim}

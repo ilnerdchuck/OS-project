@@ -1,0 +1,52 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/sh}
+
+\PYG{k}{function}\PYG{+w}{ }cassiopeia\PYG{o}{()}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}   Cassiopeia   \PYGZdq{}}
+\PYG{+w}{    }cat\PYG{+w}{ }./scripts/utils/stars.txt
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Physical Design tool\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Cassiopeia script to run innouvs with specified parameters}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} clean previous runs}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }./physical\PYGZus{}design\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }rm\PYG{+w}{ }\PYGZhy{}rf\PYG{+w}{ }./physical\PYGZus{}design/*
+\PYG{+w}{    }\PYG{k}{fi}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }./physical\PYGZus{}design
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }touch\PYG{+w}{ }./physical\PYGZus{}design/physical\PYGZus{}design.log
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the name of the synthesis iteration of what you want to do physical design\PYGZdq{}}\PYG{+w}{ }SYN\PYGZus{}FOLDER
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}./synthesis/}\PYG{n+nv}{\PYGZdl{}SYN\PYGZus{}FOLDER}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis folder }\PYG{n+nv}{\PYGZdl{}SYN\PYGZus{}FOLDER}\PYG{l+s+s2}{ does not exist.\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the name of the top level synthetsized \PYGZdq{}}\PYG{+w}{ }TOP\PYGZus{}LELVEL
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}./synthesis/structural/}\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZhy{}structural\PYGZhy{}no\PYGZhy{}opt.v\PYGZdq{}}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Structural files for }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LELVEL}\PYG{l+s+s2}{ does not exist.\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }./physical\PYGZus{}design/designs
+\PYG{+w}{    }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }./physical\PYGZus{}design/constraints
+\PYG{+w}{    }mikdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }./physical\PYGZus{}design/timingReport
+\PYG{+w}{    }cp\PYG{+w}{ }./synthesis/\PYG{n+nv}{\PYGZdl{}SYN\PYGZus{}FOLDER}/structural/*.v\PYG{+w}{ }./physical\PYGZus{}design/designs/
+\PYG{+w}{    }cp\PYG{+w}{ }./synthesis/\PYG{n+nv}{\PYGZdl{}SYN\PYGZus{}FOLDER}/synthesized\PYGZus{}constraints/*.sdc\PYG{+w}{ }./physical\PYGZus{}design/constraints/
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }/eda/scripts/init\PYGZus{}cadence\PYGZus{}2020\PYGZhy{}21\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n+nb}{source}\PYG{+w}{ }/eda/scripts/init\PYGZus{}cadence\PYGZus{}2020\PYGZhy{}21
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Check if the physical design script template exists}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }./scripts/scripts\PYGZus{}templates/physical\PYGZus{}design.tcl\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Physical design script template not found.\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Starting Physical Design with Innouvs\PYGZdq{}}
+\PYG{+w}{    }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}This may take a while, please be patient.\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Run the innouvs command with the physical design script}
+\PYG{+w}{    }innouvs\PYG{+w}{ }\PYGZhy{}no\PYGZus{}gui\PYG{+w}{ }\PYGZhy{}files\PYG{+w}{ }./scripts/scripts\PYGZus{}templates/physical\PYGZus{}design.tcl\PYG{+w}{ }\PYGZhy{}log\PYG{+w}{ }./physical\PYGZus{}design/physical\PYGZus{}design.log
+
+\PYG{o}{\PYGZcb{}}\PYG{+w}{ }
+\end{Verbatim}

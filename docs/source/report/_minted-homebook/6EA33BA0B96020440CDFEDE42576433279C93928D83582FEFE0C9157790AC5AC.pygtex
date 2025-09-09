@@ -1,0 +1,141 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{}==============================================================================}
+\PYG{c}{\PYGZsh{}  Project     : DLX Processor Implementation}
+\PYG{c}{\PYGZsh{}  File        : synthesis\PYGZus{}template.tcl}
+\PYG{c}{\PYGZsh{}  Description : TCL file used to run the synthesis of the DLX processor}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{}  Group Name  : Group 02}
+\PYG{c}{\PYGZsh{}  Members     : Sabina Sarcuni}
+\PYG{c}{\PYGZsh{}                Leonadro Gallina}
+\PYG{c}{\PYGZsh{}                Francesco Mignone}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{}  Supervisor  : Mariagrazia Graziano, Giavanna Turvani}
+\PYG{c}{\PYGZsh{}  Institution : Polytechnic of Turin, Italy}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{}  Created     : 11 July 2025}
+\PYG{c}{\PYGZsh{}  Last Edited : 11 July 2025}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{}  Notes       : \PYGZhy{} 5\PYGZhy{}stage pipeline (IF, ID, EX, MEM, WB)}
+\PYG{c}{\PYGZsh{}                \PYGZhy{} Supports basic instruction set: R\PYGZhy{}type, I\PYGZhy{}type, J\PYGZhy{}type}
+\PYG{c}{\PYGZsh{}                \PYGZhy{} Hazard detection and forwarding implemented}
+\PYG{c}{\PYGZsh{}                \PYGZhy{} Designed for simulation in ModelSim/Questasim}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{}==============================================================================}
+\PYG{c}{\PYGZsh{} Available variables from the bash script}
+\PYG{n+nv}{setMultiCpuUsage}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}localCpu\PYG{+w}{ }\PYG{l+m+mi}{8}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}cpuAutoAdjust\PYG{+w}{ }true
+
+\PYG{c}{\PYGZsh{} Load the design}
+\PYG{n+nb}{source}\PYG{+w}{ }.\PYG{o}{/}scripts\PYG{o}{/}scripts\PYGZus{}templates\PYG{o}{/}DLX.globals
+\PYG{c}{\PYGZsh{} Do the physical design}
+\PYG{n+nv}{init\PYGZus{}design}
+\PYG{n+nv}{getIoFlowFlag}
+\PYG{n+nv}{setIoFlowFlag}\PYG{+w}{ }\PYG{l+m+mi}{0}
+\PYG{n+nv}{floorPlan}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}coreMarginsBy\PYG{+w}{ }die\PYG{+w}{ }\PYG{o}{\PYGZhy{}}site\PYG{+w}{ }FreePDK45\PYGZus{}38x28\PYGZus{}10R\PYGZus{}NP\PYGZus{}162NW\PYGZus{}34O\PYG{+w}{ }\PYG{o}{\PYGZhy{}}r\PYG{+w}{ }\PYG{l+m+mf}{1.0}\PYG{+w}{ }\PYG{l+m+mf}{0.6}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{l+m+mi}{5}
+\PYG{n+nv}{uiSetTool}\PYG{+w}{ }select
+\PYG{n+nv}{getIoFlowFlag}
+\PYG{n+nv}{fit}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{n+nv}{setAddRingMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}ring\PYGZus{}target\PYG{+w}{ }default\PYG{+w}{ }\PYG{o}{\PYGZhy{}}extend\PYGZus{}over\PYGZus{}row\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}ignore\PYGZus{}rows\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}avoid\PYGZus{}short\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}skip\PYGZus{}crossing\PYGZus{}trunks\PYG{+w}{ }none\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stacked\PYGZus{}via\PYGZus{}top\PYGZus{}layer\PYG{+w}{ }metal10\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stacked\PYGZus{}via\PYGZus{}bottom\PYGZus{}layer\PYG{+w}{ }metal1\PYG{+w}{ }\PYG{o}{\PYGZhy{}}via\PYGZus{}using\PYGZus{}exact\PYGZus{}crossover\PYGZus{}size\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}orthogonal\PYGZus{}only\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}skip\PYGZus{}via\PYGZus{}on\PYGZus{}pin\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{  }\PYG{n+nv}{standardcell}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}skip\PYGZus{}via\PYGZus{}on\PYGZus{}wire\PYGZus{}shape\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{  }\PYG{n+nv}{noshape}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{addRing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nets\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{vdd}\PYG{+w}{ }gnd\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}type\PYG{+w}{ }core\PYGZus{}rings\PYG{+w}{ }\PYG{o}{\PYGZhy{}}follow\PYG{+w}{ }core\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layer\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{top}\PYG{+w}{ }metal9\PYG{+w}{ }bottom\PYG{+w}{ }metal9\PYG{+w}{ }left\PYG{+w}{ }metal10\PYG{+w}{ }right\PYG{+w}{ }metal10\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}width\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{top}\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }bottom\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }left\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }right\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{top}\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }bottom\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }left\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }right\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}offset\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{top}\PYG{+w}{ }\PYG{l+m+mf}{1.8}\PYG{+w}{ }bottom\PYG{+w}{ }\PYG{l+m+mf}{1.8}\PYG{+w}{ }left\PYG{+w}{ }\PYG{l+m+mf}{1.8}\PYG{+w}{ }right\PYG{+w}{ }\PYG{l+m+mf}{1.8}\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}center\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}threshold\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}jog\PYGZus{}distance\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}snap\PYGZus{}wire\PYGZus{}center\PYGZus{}to\PYGZus{}grid\PYG{+w}{ }None
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingOffset\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingJogDistance\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeRingLayers\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeWidth\PYG{+w}{ }\PYG{l+m+mf}{10.0}
+\PYG{k}{set}\PYG{+w}{ }sprCreateIeStripeThreshold\PYG{+w}{ }\PYG{l+m+mf}{1.0}
+\PYG{n+nv}{setAddStripeMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}ignore\PYGZus{}block\PYGZus{}check\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}break\PYGZus{}at\PYG{+w}{ }none\PYG{+w}{ }\PYG{o}{\PYGZhy{}}route\PYGZus{}over\PYGZus{}rows\PYGZus{}only\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}rows\PYGZus{}without\PYGZus{}stripes\PYGZus{}only\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}extend\PYGZus{}to\PYGZus{}closest\PYGZus{}target\PYG{+w}{ }none\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stop\PYGZus{}at\PYGZus{}last\PYGZus{}wire\PYGZus{}for\PYGZus{}area\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}partial\PYGZus{}set\PYGZus{}thru\PYGZus{}domain\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}ignore\PYGZus{}nondefault\PYGZus{}domains\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}trim\PYGZus{}antenna\PYGZus{}back\PYGZus{}to\PYGZus{}shape\PYG{+w}{ }none\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYGZus{}type\PYG{+w}{ }edge\PYGZus{}to\PYGZus{}edge\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYGZus{}from\PYGZus{}block\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stripe\PYGZus{}min\PYGZus{}length\PYG{+w}{ }stripe\PYGZus{}width\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stacked\PYGZus{}via\PYGZus{}top\PYGZus{}layer\PYG{+w}{ }metal10\PYG{+w}{ }\PYG{o}{\PYGZhy{}}stacked\PYGZus{}via\PYGZus{}bottom\PYGZus{}layer\PYG{+w}{ }metal1\PYG{+w}{ }\PYG{o}{\PYGZhy{}}via\PYGZus{}using\PYGZus{}exact\PYGZus{}crossover\PYGZus{}size\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}split\PYGZus{}vias\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}orthogonal\PYGZus{}only\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}allow\PYGZus{}jog\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{padcore\PYGZus{}ring}\PYG{+w}{  }block\PYGZus{}ring\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}skip\PYGZus{}via\PYGZus{}on\PYGZus{}pin\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{  }\PYG{n+nv}{standardcell}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}skip\PYGZus{}via\PYGZus{}on\PYGZus{}wire\PYGZus{}shape\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{  }\PYG{n+nv}{noshape}\PYG{+w}{   }\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{addStripe}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nets\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{vdd}\PYG{+w}{ }gnd\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layer\PYG{+w}{ }metal10\PYG{+w}{ }\PYG{o}{\PYGZhy{}}direction\PYG{+w}{ }vertical\PYG{+w}{ }\PYG{o}{\PYGZhy{}}width\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYG{+w}{ }\PYG{l+m+mf}{0.8}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}set\PYGZus{}to\PYGZus{}set\PYGZus{}distance\PYG{+w}{ }\PYG{l+m+mi}{20}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}start\PYGZus{}from\PYG{+w}{ }left\PYG{+w}{ }\PYG{o}{\PYGZhy{}}start\PYGZus{}offset\PYG{+w}{ }\PYG{l+m+mi}{15}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}switch\PYGZus{}layer\PYGZus{}over\PYGZus{}obs\PYG{+w}{ }false\PYG{+w}{ }\PYG{o}{\PYGZhy{}}max\PYGZus{}same\PYGZus{}layer\PYGZus{}jog\PYGZus{}length\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}padcore\PYGZus{}ring\PYGZus{}top\PYGZus{}layer\PYGZus{}limit\PYG{+w}{ }metal10\PYG{+w}{ }\PYG{o}{\PYGZhy{}}padcore\PYGZus{}ring\PYGZus{}bottom\PYGZus{}layer\PYGZus{}limit\PYG{+w}{ }metal1\PYG{+w}{ }\PYG{o}{\PYGZhy{}}block\PYGZus{}ring\PYGZus{}top\PYGZus{}layer\PYGZus{}limit\PYG{+w}{ }metal10\PYG{+w}{ }\PYG{o}{\PYGZhy{}}block\PYGZus{}ring\PYGZus{}bottom\PYGZus{}layer\PYGZus{}limit\PYG{+w}{ }metal1\PYG{+w}{ }\PYG{o}{\PYGZhy{}}use\PYGZus{}wire\PYGZus{}group\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}snap\PYGZus{}wire\PYGZus{}center\PYGZus{}to\PYGZus{}grid\PYG{+w}{ }None
+\PYG{n+nv}{setSrouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}viaConnectToShape\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{noshape}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{sroute}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}connect\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{blockPin}\PYG{+w}{ }padPin\PYG{+w}{ }padRing\PYG{+w}{ }corePin\PYG{+w}{ }floatingStripe\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layerChangeRange\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{metal1}\PYG{k}{(}\PYG{n+nv}{1}\PYG{k}{)}\PYG{+w}{ }metal10\PYG{k}{(}\PYG{n+nv}{10}\PYG{k}{)}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}blockPinTarget\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{nearestTarget}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}padPinPortConnect\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{allPort}\PYG{+w}{ }oneGeom\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}padPinTarget\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{nearestTarget}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}corePinTarget\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{firstAfterRowEnd}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}floatingStripeTarget\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{blockring}\PYG{+w}{ }padring\PYG{+w}{ }ring\PYG{+w}{ }stripe\PYG{+w}{ }ringpin\PYG{+w}{ }blockpin\PYG{+w}{ }followpin\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}allowJogging\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}crossoverViaLayerRange\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{metal1}\PYG{k}{(}\PYG{n+nv}{1}\PYG{k}{)}\PYG{+w}{ }metal10\PYG{k}{(}\PYG{n+nv}{10}\PYG{k}{)}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nets\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{vdd}\PYG{+w}{ }gnd\PYG{+w}{ }\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}allowLayerChange\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}blockPin\PYG{+w}{ }useLef\PYG{+w}{ }\PYG{o}{\PYGZhy{}}targetViaLayerRange\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nv}{metal1}\PYG{k}{(}\PYG{n+nv}{1}\PYG{k}{)}\PYG{+w}{ }metal10\PYG{k}{(}\PYG{n+nv}{10}\PYG{k}{)}\PYG{+w}{ }\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{setPlaceMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}prerouteAsObs\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{1}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{l+m+mi}{4}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{l+m+mi}{6}\PYG{+w}{ }\PYG{l+m+mi}{7}\PYG{+w}{ }\PYG{l+m+mi}{8}\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{setPlaceMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fp\PYG{+w}{ }false
+\PYG{n+nv}{place\PYGZus{}design}
+\PYG{n+nv}{fit}
+\PYG{n+nv}{fit}
+\PYG{n+nv}{fit}
+\PYG{n+nv}{getPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }true
+\PYG{n+nv}{editPin}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixOverlap\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}unit\PYG{+w}{ }MICRON\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadDirection\PYG{+w}{ }clockwise\PYG{+w}{ }\PYG{o}{\PYGZhy{}}side\PYG{+w}{ }Left\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layer\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadType\PYG{+w}{ }center\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYG{+w}{ }\PYG{l+m+mf}{0.14}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pin\PYG{+w}{ }clk
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }false
+\PYG{n+nv}{getPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }true
+\PYG{n+nv}{editPin}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixOverlap\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}unit\PYG{+w}{ }MICRON\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadDirection\PYG{+w}{ }clockwise\PYG{+w}{ }\PYG{o}{\PYGZhy{}}side\PYG{+w}{ }Left\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layer\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadType\PYG{+w}{ }center\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYG{+w}{ }\PYG{l+m+mf}{0.14}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pin\PYG{+w}{ }rst
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }false
+\PYG{n+nv}{getPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }true
+\PYG{n+nv}{editPin}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinWidth\PYG{+w}{ }\PYG{l+m+mf}{0.07}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinDepth\PYG{+w}{ }\PYG{l+m+mf}{0.07}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixOverlap\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}unit\PYG{+w}{ }MICRON\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadDirection\PYG{+w}{ }clockwise\PYG{+w}{ }\PYG{o}{\PYGZhy{}}side\PYG{+w}{ }Left\PYG{+w}{ }\PYG{o}{\PYGZhy{}}layer\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spreadType\PYG{+w}{ }center\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spacing\PYG{+w}{ }\PYG{l+m+mf}{0.14}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pin\PYG{+w}{ }rst
+\PYG{n+nv}{setPinAssignMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pinEditInBatch\PYG{+w}{ }false
+\PYG{n+nv}{setOptMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixCap\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixTran\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixFanoutLoad\PYG{+w}{ }false
+\PYG{n+nv}{optDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postCTS
+\PYG{n+nv}{optDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postCTS\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hold
+\PYG{n+nv}{getFillerMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet
+\PYG{n+nv}{addFiller}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}cell\PYG{+w}{ }FILLCELL\PYGZus{}X1\PYG{+w}{ }FILLCELL\PYGZus{}X2\PYG{+w}{ }FILLCELL\PYGZus{}X4\PYG{+w}{ }FILLCELL\PYGZus{}X8\PYG{+w}{ }FILLCELL\PYGZus{}X16\PYG{+w}{ }FILLCELL\PYGZus{}X32\PYG{+w}{ }\PYG{o}{\PYGZhy{}}prefix\PYG{+w}{ }FILLER
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}timingEngine\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}routeWithSiPostRouteFix\PYG{+w}{ }\PYG{l+m+mi}{0}
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}drouteStartIteration\PYG{+w}{ }default
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}routeTopRoutingLayer\PYG{+w}{ }default
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}routeBottomRoutingLayer\PYG{+w}{ }default
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}drouteEndIteration\PYG{+w}{ }default
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}routeWithTimingDriven\PYG{+w}{ }false
+\PYG{n+nv}{setNanoRouteMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{o}{\PYGZhy{}}routeWithSiDriven\PYG{+w}{ }false
+\PYG{n+nv}{routeDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}globalDetail
+\PYG{n+nv}{setAnalysisMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}analysisType\PYG{+w}{ }onChipVariation
+\PYG{n+nv}{setOptMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixCap\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixTran\PYG{+w}{ }true\PYG{+w}{ }\PYG{o}{\PYGZhy{}}fixFanoutLoad\PYG{+w}{ }false
+\PYG{n+nv}{optDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postRoute
+\PYG{n+nv}{optDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postRoute\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hold
+\PYG{n+nv}{saveDesign}\PYG{+w}{ }DLX
+
+
+\PYG{c}{\PYGZsh{} genarate the reports}
+
+\PYG{n+nv}{set\PYGZus{}analysis\PYGZus{}view}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}setup\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{default}\PYG{k}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hold\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{default}\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{reset\PYGZus{}parasitics}
+\PYG{n+nv}{extractRC}
+\PYG{n+nv}{rcOut}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}spef\PYG{+w}{ }DLX.spef\PYG{+w}{ }\PYG{o}{\PYGZhy{}}rc\PYGZus{}corner\PYG{+w}{ }standard
+\PYG{n+nv}{redirect}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{k}{\PYGZob{}set}\PYG{+w}{ }honorDomain\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{getAnalysisMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}honorClockDomains\PYG{k}{]\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{/}dev\PYG{o}{/}null
+\PYG{n+nv}{timeDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postRoute\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pathReports\PYG{+w}{ }\PYG{o}{\PYGZhy{}}drvReports\PYG{+w}{ }\PYG{o}{\PYGZhy{}}slackReports\PYG{+w}{ }\PYG{o}{\PYGZhy{}}numPaths\PYG{+w}{ }\PYG{l+m+mi}{50}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}prefix\PYG{+w}{ }DLX\PYGZus{}postRoute\PYG{+w}{ }\PYG{o}{\PYGZhy{}}outDir\PYG{+w}{ }.\PYG{o}{/}physical\PYGZus{}design\PYG{o}{/}timingReport
+\PYG{n+nv}{redirect}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}quiet\PYG{+w}{ }\PYG{k}{\PYGZob{}set}\PYG{+w}{ }honorDomain\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{getAnalysisMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}honorClockDomains\PYG{k}{]\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{/}dev\PYG{o}{/}null
+\PYG{n+nv}{timeDesign}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}postRoute\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hold\PYG{+w}{ }\PYG{o}{\PYGZhy{}}pathReports\PYG{+w}{ }\PYG{o}{\PYGZhy{}}slackReports\PYG{+w}{ }\PYG{o}{\PYGZhy{}}numPaths\PYG{+w}{ }\PYG{l+m+mi}{50}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}prefix\PYG{+w}{ }DLX\PYGZus{}postRoute\PYG{+w}{ }\PYG{o}{\PYGZhy{}}outDir\PYG{+w}{ }.\PYG{o}{/}physical\PYGZus{}design\PYG{o}{/}timingReport
+\PYG{n+nv}{getAnalysisMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}checkType
+\PYG{n+nv}{getAnalysisMode}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}checkType
+\PYG{n+nv}{get\PYGZus{}time\PYGZus{}unit}
+\PYG{n+nv}{report\PYGZus{}timing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}machine\PYGZus{}readable\PYG{+w}{ }\PYG{o}{\PYGZhy{}}max\PYGZus{}paths\PYG{+w}{ }\PYG{l+m+mi}{10000}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}max\PYGZus{}slack\PYG{+w}{ }\PYG{l+m+mf}{0.75}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}path\PYGZus{}exceptions\PYG{+w}{ }all\PYG{+w}{ }\PYG{o}{\PYGZhy{}}late\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }top.mtarpt
+\PYG{n+nv}{load\PYGZus{}timing\PYGZus{}debug\PYGZus{}report}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}name\PYG{+w}{ }default\PYGZus{}report\PYG{+w}{ }top.mtarpt
+\PYG{n+nv}{verifyConnectivity}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}type\PYG{+w}{ }all\PYG{+w}{ }\PYG{o}{\PYGZhy{}}error\PYG{+w}{ }\PYG{l+m+mi}{1000}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}warning\PYG{+w}{ }\PYG{l+m+mi}{50}
+\PYG{n+nv}{reportGateCount}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}level\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}limit\PYG{+w}{ }\PYG{l+m+mi}{100}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}outfile\PYG{+w}{ }DLX.gateCount
+\PYG{n+nv}{saveNetlist}\PYG{+w}{ }.\PYG{o}{/}physical\PYGZus{}design\PYG{o}{/}DLX.v
+\PYG{n+nv}{all\PYGZus{}hold\PYGZus{}analysis\PYGZus{}views}
+\PYG{n+nv}{all\PYGZus{}setup\PYGZus{}analysis\PYGZus{}views}
+\PYG{n+nv}{write\PYGZus{}sdf}\PYG{+w}{  }\PYG{o}{\PYGZhy{}}ideal\PYGZus{}clock\PYGZus{}network\PYG{+w}{ }.\PYG{o}{/}physical\PYGZus{}design\PYG{o}{/}DLX.sdf
+
+\PYG{n+nb}{exit}
+\end{Verbatim}

@@ -1,0 +1,127 @@
+\chapter{Introduction}
+
+\section{Project Objectives}
+The primary objectives of the DLX project are as follows:
+\begin{itemize}
+    \item To design and implement a functional DLX microprocessor using VHDL.
+    \item To understand the principles of RISC architecture and pipeline processing.
+    \item To validate the design through simulation.
+    \item Synthesize the processor.
+    \item Use a standard cell layout for Physical Design.
+    \item Document the design process, challenges faced, and lessons learned.
+\end{itemize}
+
+\section{Tools used}
+The project utilizes several tools and technologies to facilitate the design, simulation, and testing of the DLX microprocessor:
+\begin{itemize}
+    \item \textbf{VHDL (VHSIC Hardware Description Language)}: The primary language used for describing and designing the microprocessor components like the control unit, Datapath, and functional units.
+    \item \textbf{ModelSim/QuestaSim}: A simulation tool used to test and validate the VHDL code.
+    \item \textbf{Design Compiler}: A synthesis tool used to convert the VHDL code into a gate-level netlist, optimizing the design on given constraints.
+    \item \textbf{Innovus}: A tool used for physical design starting from a synthesized netlist and constraints.
+    \item \textbf{Docker}: A containerization platform used to create a consistent development environment, ensuring that all team members can work with the same tools and configurations.
+    \item \textbf{Marley \& Co.}: A set of tools developed by the team to facilitate and automatize the design and testing of the DLX microprocessor:
+    \begin{itemize}
+        \item \textbf{Marley}: Main script that helps set up the user environment and manage the other scripts.
+        \item \textbf{Pupi}: program that generates the compilation list based on the dependencies between the VHDL files. 
+        \item \textbf{Briciola}: script that compiles the VHDL files with Modelsim or QuestaSim, generating the necessary libraries and simulation files.
+        \item \textbf{Scorzetta}: script that runs the simulation of a given testbench.
+        \item \textbf{Boh}: script that runs the synthesis of an entity, generating the synthesized netlist and constraints. 
+        \item \textbf{Cassiopeia}: script that runs the physical design of the synthesized netlist, generating the final layout and design files.
+    \end{itemize}
+\end{itemize}
+
+\section{The DLX Microprocessor}
+The DLX microprocessor is a simplified RISC (Reduced Instruction Set Computer) Harvard architecture designed to facilitate the understanding of microprocessor design principles. It serves as an educational tool, allowing to explore the fundamental concepts of computer architecture, instruction execution, and VHDL coding practices. The DLX architecture is characterized by its five-stage pipeline, which includes: Fetch, Decode, Execute, Memory Access, and Write Back stages. This design enables efficient instruction processing and enhances overall throughput.
+
+\subsection{DLX Architecture}
+As DLX architecture is based on a simplified RISC design, which emphasizes a small set of instructions and a streamlined execution process. The DLX microprocessor employs a five-stage pipeline architecture, which allows for In-Order instruction execution. The stages are:
+\begin{itemize}
+        \item Fetch (IF): Retrieve the instruction from the Instruction Memory given the current Program Counter (PC).
+        \item Decode (ID): Decode the instruction to fetch the necessary operands.
+        \item Execute (EX): Perform the operation specified by the instruction.
+        \item Memory Access (MEM): Access the Data Memory if required by the instruction.
+        \item Write Back (WB): Write the result back to the register file if needed.
+\end{itemize}
+
+Each stage of the pipeline, and it's implementation, will be discussed in detail in the following sections. The DLX architecture also includes a register file with 32 general-purpose registers, each 32 bits wide, and, being based on a Harvard Architecture, a dedicated instruction memory (IRAM) and data memory (DRAM) for storing instructions and data, respectively.
+
+\subsection{Instruction Set}
+The DLX instruction set is designed to be simple and efficient, adhering to the principles of RISC architecture. It includes instructions for arithmetic operations, logical operations, data movement, and control flow. The instruction set is divided into several categories:
+\begin{itemize}
+    \item \textbf{Arithmetic Instructions}: These instructions perform basic arithmetic operations such as addition, subtraction, multiplication, and division.
+    \item \textbf{Logical Instructions}: These instructions perform bitwise operations such as AND, OR, NOT, and XOR.
+    \item \textbf{Data Movement Instructions}: These instructions are used to move data between registers and memory, including load and store operations.
+    \item \textbf{Control Flow Instructions}: These instructions alter the flow of execution, including branches and jumps.
+\end{itemize}
+
+The RISC nature of the DLX instruction set allows for a reduced number of instructions, which simplifies the design and implementation of the microprocessor. Each instruction is encoded in a fixed-length format, typically 32 bits, which facilitates efficient decoding and execution. They are divided into three main formats: 
+
+% fast bite field 
+% \mybytefield{32}{{28;part1};{4;part2}}
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
+        \bitheader{0,15,16,20,21,25,26,31} \\
+        \bitbox{6}{OPCODE}\bitbox{5}{RS1}\bitbox{5}{RS2}\bitbox{16}{IMMEDIATE}
+    \end{bytefield}
+    \caption{I-Type Instruction Format}
+    \label{fig:i_type}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
+        \bitheader{0,10,11,15,16,20,21,25,26,31} \\
+        \bitbox{6}{OPCODE}\bitbox{5}{RS1}\bitbox{5}{RS2}\bitbox{5}{RD}\bitbox{11}{IMMEDIATE}
+    \end{bytefield}
+    \caption{R-Type Instruction Format}
+    \label{fig:r_type}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
+        \bitheader{0,25,26,31} \\
+        \bitbox{6}{OPCODE}\bitbox{26}{IMMEDIATE}
+    \end{bytefield}
+    \caption{J-Type Instruction Format}
+    \label{fig:j_type}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{R-type (Register)}: These instructions operate on registers and include operations like addition, subtraction, and logical operations. They typically have three register operands.
+    \item \textbf{I-type (Immediate)}: These instructions include an immediate value as one of the operands, allowing for operations that involve constants. They are used for operations like loading immediate values into registers or performing arithmetic with an immediate value.
+    \item \textbf{J-type (Jump)}: These instructions are used for control flow, allowing the program to jump to a specific address in memory. They are essential for implementing loops and conditional statements.
+    \item \textbf{Branch Instructions}: These instructions alter the flow of execution based on conditions, such as equality or inequality checks. They are used to implement loops and conditional statements.
+    \item \textbf{Load/Store Instructions}: These instructions are used to transfer data between registers and memory. Load instructions read data from memory into a register, while store instructions write data from a register to memory.
+\end{itemize}
+
+\subsection{DLX Base Version}
+
+The base version of the DLX microprocessor is designed to implement the core functionality of the DLX architecture. It includes the essential components required for instruction execution, such as the control unit, Datapath, and functional units. The base version serves as a foundation for further enhancements and optimizations, allowing for a clear understanding of the microprocessor's operation.
+
+\subsubsection{Base Instruction Set}
+The base version of the DLX microprocessor supports a limited set of instructions, focusing on the fundamental operations required for basic computation. The instruction set includes:
+\begin{itemize}
+    \item \textbf{Arithmetic Instructions: R-type}: ADD, SUB, SLL, SRL, SNE, SLE, SGE
+    \item \textbf{Arithmetic Instructions: I-type}: ADDi, SUBi, SLLi, SRLi, SNEi, SLEi, SGEi
+    \item \textbf{Logical Instructions: R-Type}: AND, OR, NOT, XOR
+    \item \textbf{Logical Instructions: I-Type}: ANDi, ORi, NOTi, XORi
+    \item \textbf{Memory Instructions: R-Type}: LOAD (LW), STORE (SW)
+    \item \textbf{Control Flow Instructions}: JUMP, JAL, BNEZ, BEQZ
+\end{itemize}
+
+
+These instructions are sufficient to perform basic arithmetic and logical operations, as well as control flow operations, allowing for the execution of simple programs.
+
+\section{DLX Pro Features}
+We implemented some features starting from the base version of DLX processor to enhance its functionality and performance. These features include:
+\begin{itemize}
+    \item \textbf{Forwarding Unit}: This unit is designed to handle data hazards by forwarding the results of previous instructions to subsequent instructions that require them, thus reducing the need for stalls in the pipeline.
+    \item \textbf{Branch Prediction}: The DLX microprocessor incorporates a simple static branch prediction mechanism to improve the performance of control flow instructions. This feature helps to minimize pipeline stalls caused by branch instructions.
+\end{itemize}
+
+
+

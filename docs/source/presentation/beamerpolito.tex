@@ -1,0 +1,83 @@
+\documentclass{beamer}
+\usepackage{amsfonts,amsmath,oldgerm}
+\usetheme{sintef}
+
+\newcommand{\testcolor}[1]{\colorbox{#1}{\textcolor{#1}{test}}~\texttt{#1}}
+
+\usefonttheme[onlymath]{serif}
+
+\titlebackground*{assets/background}
+
+\newcommand{\hrefcol}[2]{\textcolor{cyan}{\href{#1}{#2}}}
+
+\title{Group 10: NXP S32K3X8EVB in QEMU}
+\subtitle{Implementation and FreeRTOS porting}
+\course{Master's Degree in Computer Science: Embedded Systems}
+\author{Francesco Mignone \\ Leonardo Gallina \\ Silvia Bonenti \\ Andrea Baraldi \\ Lorenzo Parata} 
+
+\begin{document}
+\maketitle
+
+\begin{frame}
+
+In this presentation, we will discuss the implementation of the NXP S32K3X8EVB board in QEMU and the porting of FreeRTOS to this architecture.
+
+\vspace{\baselineskip}
+
+This is a collaborative effort by Francesco Mignone, Leonardo Gallina, Silvia Bonenti, Andrea Baraldi, and Lorenzo Parata as part of the Opereting Systems course.
+
+% This template is released under \hrefcol{https://creativecommons.org/licenses/by-nc/4.0/legalcode}{Creative Commons CC BY 4.0} license
+
+\end{frame}
+
+\section{QEMU Structure}
+
+\begin{frame}{Brief Introduction to QEMU structure}
+TODO: Talk about QEMU structure
+\begin{itemize}
+\end{itemize}
+\end{frame}
+
+\section{QEMU Implementation}
+
+\footlinecolor{}
+\begin{frame}[fragile]{Board}
+\begin{itemize}
+\end{itemize}
+\end{frame}
+
+
+\footlinecolor{}
+\begin{frame}[fragile]{UART}
+\begin{itemize}
+\end{itemize}
+\end{frame}
+
+\footlinecolor{}
+\begin{frame}[fragile]{SPI}
+\begin{itemize}
+\end{itemize}
+\end{frame}
+
+\section{FreeRTOS Porting}
+
+
+\footlinecolor{}
+\begin{frame}[fragile]{Setup}
+\end{frame}
+
+\footlinecolor{}
+\begin{frame}[fragile]{Peripheral test}
+Code snippets of the peripheral test
+\end{frame}
+
+
+\section{Summary}
+
+\begin{frame}
+\frametitle{Conclusions}
+add images of the terminal with the output of the tests
+\end{frame}
+
+\backmatter
+\end{document}

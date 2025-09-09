@@ -1,0 +1,168 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{library}\PYG{+w}{ }\PYG{n+nn}{ieee}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.std\PYGZus{}logic\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.numeric\PYGZus{}std.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.math\PYGZus{}real.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{work.myTypes.}\PYG{k}{all}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Entity Declaration}
+\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{execute\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{    }\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{11}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU function size in bits }
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU enable signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation signals}
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{          }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code input}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 1 select signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 2 select signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{    }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} PC input (Program Counter) (for jump instructions)}
+\PYG{+w}{    }\PYG{n}{A}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand A input}
+\PYG{+w}{    }\PYG{n}{B}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand B input}
+\PYG{+w}{    }\PYG{n}{IMM\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate 2 value input}
+
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result output}
+
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data output (B source bypass for memory operations)}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register output (connect directly to decode stage)}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding signals}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 00: no forwarding, 01: forward from MEM stage, 11: forward from WB stage}
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source A operand}
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source B operand}
+
+\PYG{+w}{    }\PYG{n}{RS\PYGZus{}wb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Data Forwarded from Write Back stage (WB stage)}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{execute\PYGZus{}stage}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{n+nc}{execute\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Selected source 1 operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Selected source 2 operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{a\PYGZus{}fw}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{b\PYGZus{}fw}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{result}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU output signal}
+
+\PYG{k}{begin}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} TODO: Use p4 adder, booth multiplier, and T2 shifter (this if we have time to implement them)}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding logic for source 1 operand}
+\PYG{+w}{  }\PYG{n}{a\PYGZus{}fw}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{A}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}00\PYGZdq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{result}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{RS\PYGZus{}wb}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source 1 operand}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding logic for source 2 operand}
+\PYG{+w}{  }\PYG{n}{b\PYGZus{}fw}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{B}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}00\PYGZdq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{result}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{RS\PYGZus{}wb}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source 2 operand}
+
+\PYG{+w}{  }\PYG{n}{source\PYGZus{}1}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{a\PYGZus{}fw}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Select source 1 operand}
+
+\PYG{+w}{  }\PYG{n}{source\PYGZus{}2}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{b\PYGZus{}fw}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{IMM\PYGZus{}in}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Select source 2 operand}
+
+\PYG{+w}{  }\PYG{n}{alu\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Assert ALU output}
+\PYG{+w}{  }\PYG{n}{EXECUTE\PYGZus{}PROCESS}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{process}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{clk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{begin}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{n}{result}\PYG{+w}{       }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset result to zero}
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset memory data output to zero}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{       }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset register file data output to zero}
+
+\PYG{+w}{    }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{rising\PYGZus{}edge}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{));}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ADD operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SUB}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{));}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SUB operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}AND}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1}\PYG{+w}{ }\PYG{k}{and}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} AND operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}OR}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1}\PYG{+w}{ }\PYG{k}{or}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OR operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}XOR}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1}\PYG{+w}{ }\PYG{k}{xor}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} XOR operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SLL}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{shift\PYGZus{}left}\PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{to\PYGZus{}integer}\PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{))));}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLL (Shift Left Logical)}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SRL}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{shift\PYGZus{}right}\PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{to\PYGZus{}integer}\PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{))));}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SRL (Shift Right Logical)}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SNE}\PYG{+w}{ }\PYG{k}{then}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SNE (Set Not Equal)}
+\PYG{+w}{          }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{/=}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{to\PYGZus{}signed}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{result}\PYG{n+na}{\PYGZsq{}length}\PYG{p}{));}
+\PYG{+w}{          }\PYG{k}{else}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{          }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SLE}\PYG{+w}{ }\PYG{k}{then}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLE (Set Less Than or Equal)}
+\PYG{+w}{          }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{                }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{to\PYGZus{}signed}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{result}\PYG{n+na}{\PYGZsq{}length}\PYG{p}{));}
+\PYG{+w}{          }\PYG{k}{else}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{          }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SGE}\PYG{+w}{ }\PYG{k}{then}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SGE (Set Greater Than or Equal)}
+\PYG{+w}{          }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{source\PYGZus{}2}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{to\PYGZus{}signed}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{result}\PYG{n+na}{\PYGZsq{}length}\PYG{p}{));}
+\PYG{+w}{          }\PYG{k}{else}
+\PYG{+w}{            }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{          }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{else}
+\PYG{+w}{          }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Default case, reset result}
+\PYG{+w}{        }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} case alu\PYGZus{}op\PYGZus{}int is}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}ADD =\PYGZgt{} \PYGZhy{}\PYGZhy{} ADD}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(unsigned(source\PYGZus{}1) + unsigned(source\PYGZus{}2));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SUB =\PYGZgt{} \PYGZhy{}\PYGZhy{} SUB}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(unsigned(source\PYGZus{}1) \PYGZhy{} unsigned(source\PYGZus{}2));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}AND =\PYGZgt{} \PYGZhy{}\PYGZhy{} AND}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= source\PYGZus{}1 and source\PYGZus{}2;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}OR =\PYGZgt{} \PYGZhy{}\PYGZhy{} OR}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= source\PYGZus{}1 or source\PYGZus{}2;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}XOR =\PYGZgt{} \PYGZhy{}\PYGZhy{} XOR}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= source\PYGZus{}1 xor source\PYGZus{}2;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SLL =\PYGZgt{} \PYGZhy{}\PYGZhy{} SLL (Shift Left Logical)}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(shift\PYGZus{}left(unsigned(source\PYGZus{}1), to\PYGZus{}integer(unsigned(source\PYGZus{}2))));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SRL =\PYGZgt{} \PYGZhy{}\PYGZhy{} SRL (Shift Right Logical)}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(shift\PYGZus{}right(unsigned(source\PYGZus{}1), to\PYGZus{}integer(unsigned(source\PYGZus{}2))));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SNE =\PYGZgt{} \PYGZhy{}\PYGZhy{} SNE (Set Not Equal)}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     if unsigned(source\PYGZus{}1) /= unsigned(source\PYGZus{}2) then}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(to\PYGZus{}signed(1, result\PYGZsq{}length));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     else}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{});}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     end if;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SLE =\PYGZgt{} \PYGZhy{}\PYGZhy{} SLE (Set Less Than)}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     if unsigned(source\PYGZus{}1) \PYGZlt{}= unsigned(source\PYGZus{}2) then}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result                \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(to\PYGZus{}signed(1, result\PYGZsq{}length));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     else}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{});}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     end if;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE\PYGZus{}SGE =\PYGZgt{} \PYGZhy{}\PYGZhy{} SGE (Set Greater Than)}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     if unsigned(source\PYGZus{}1) \PYGZgt{}= unsigned(source\PYGZus{}2) then}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result \PYGZlt{}= std\PYGZus{}logic\PYGZus{}vector(to\PYGZus{}signed(1, result\PYGZsq{}length));}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     else}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       result \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{});}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     end if;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when others       =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     result \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} Default case, reset result}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} end case;}
+\PYG{+w}{        }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{       }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}in}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Assert register file write address for destination register}
+\PYG{+w}{        }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{b\PYGZus{}fw}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Assert memory data output (for memory operations)}
+\PYG{+w}{      }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{process}\PYG{p}{;}
+
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\end{Verbatim}

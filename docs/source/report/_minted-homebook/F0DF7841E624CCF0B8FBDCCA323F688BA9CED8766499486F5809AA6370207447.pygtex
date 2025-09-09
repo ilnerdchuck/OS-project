@@ -1,0 +1,87 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\PYG{k}{library}\PYG{+w}{ }\PYG{n+nn}{ieee}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.std\PYGZus{}logic\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.numeric\PYGZus{}std.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.math\PYGZus{}real.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{work.myTypes.}\PYG{k}{all}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+
+\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{fetch\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{    }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter enable signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{    }\PYG{n}{next\PYGZus{}PC\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Program Counter}
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}out}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Instruction Register}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump/Branch signals}
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address input}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{fetch\PYGZus{}stage}\PYG{p}{;}
+
+\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{n+nc}{fetch\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}Instruction Ram}
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{IRAM}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{RAM\PYGZus{}DEPTH}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{48}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Depth of instruction RAM}
+\PYG{+w}{      }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{Rst}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{Addr}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{      }\PYG{n}{Dout}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{PC}\PYG{+w}{           }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{IR}\PYG{+w}{           }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{RAM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register}
+\PYG{k}{begin}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the IRAM component}
+\PYG{+w}{  }\PYG{n}{IRAM\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{work}\PYG{p}{.}\PYG{n}{IRAM}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{RAM\PYGZus{}DEPTH}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{48}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Depth of instruction RAM}
+\PYG{+w}{      }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{    }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{    }\PYG{p}{)}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{    }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{Rst}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n}{Addr}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PC}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Address for IRAM }
+\PYG{+w}{      }\PYG{n}{Dout}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RAM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Next instruction output}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Process to handle Program Counter and Instruction Register}
+\PYG{+w}{  }\PYG{n}{FETCH\PYGZus{}PROCESS}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{process}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{clk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{begin}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{n}{PC}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset Program Counter}
+\PYG{+w}{      }\PYG{n}{IR}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mh}{X\PYGZdq{}54000000\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset Instruction Register}
+\PYG{+w}{    }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{rising\PYGZus{}edge}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{PC}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{PC}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{jmp\PYGZus{}addr}\PYG{p}{));}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump to specified address}
+\PYG{+w}{          }\PYG{n}{IR}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+m+mh}{X\PYGZdq{}54000000\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Force a NOP operation to stall the pipeline}
+\PYG{+w}{        }\PYG{k}{else}
+\PYG{+w}{          }\PYG{n}{PC}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{PC}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Increment Program Counter}
+\PYG{+w}{          }\PYG{n}{IR}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RAM\PYGZus{}data\PYGZus{}out}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Load instruction from IRAM}
+\PYG{+w}{        }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{      }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{process}\PYG{+w}{ }\PYG{n+nc}{FETCH\PYGZus{}PROCESS}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output assignments}
+\PYG{+w}{  }\PYG{n}{next\PYGZus{}pc\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{PC}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Program Counter value}
+\PYG{+w}{  }\PYG{n}{ir\PYGZus{}out}\PYG{+w}{      }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{IR}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output fetched instruction}
+
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\end{Verbatim}

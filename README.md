@@ -12,7 +12,7 @@ The project is split in a couple of folders:
 - FreeRTOS_App: containing the application used to test the board and the peripherals
 - gcc-10.2.0: NXP toolchain
 - material: documents regarding the board functionalities and implementation 
-- qemu: modified qemu v6.0 with the added board
+- qemu: modified qemu v9.0 with the added board
 - docs: further documentation about the project and the presentation
 
 ## Qemu structure
@@ -38,7 +38,7 @@ sudo apt install build-essential zlib1g-dev libglib2.0-dev \
 
 ```
     sudo dnf update
-    sudo dnf install ... TDB (is a bit strange it varies too much distro by distro)
+    sudo dnf install ... TDB (is a bit strange, it varies too much distro by distro)
 ```
 
 - Move into the qemu build folder:
@@ -101,13 +101,14 @@ To run FreeRTOS applications a Makefile has been made inside the `./FreeRTOS_App
 - <https://github.com/qemu/qemu/blob/master/hw/arm/stellaris.c>
 - <https://github.com/qemu/qemu>
 - <https://github.com/quarkslab/sstic-tame-the-qemu/blob/b002e5033e70aa881daed95f92285916ac008a07/qemu/hw/arm/samd21.c#L286>
+- <https://www.nxp.com/docs/en/application-note/AN5413.pdf#G1027000>
 
 # Authors
 
  - Francesco Mignone (s336801)
- - Leonardo Gallina (s293704 --> s3)
+ - Leonardo Gallina (s293704 --> s349363)
  - Andrea Baraldi (s339846)
- - Silvia Bonenti (s339846)
+ - Silvia Bonenti (s339232)
  - Lorenzo Parata (s343744)
 
 [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by/4.0/)

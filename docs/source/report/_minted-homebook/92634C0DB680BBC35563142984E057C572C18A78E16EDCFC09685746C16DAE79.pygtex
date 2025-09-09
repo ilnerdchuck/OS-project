@@ -1,0 +1,93 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.std\PYGZus{}logic\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.numeric\PYGZus{}std.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.math\PYGZus{}real.}\PYG{k}{all}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Entity Declaration}
+\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stage enable }
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM enable signal }
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM read enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM write enable signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source select signal MEM/ALU}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}result}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result input}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}data\PYGZus{}in}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data input (from execute stage)}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage output}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file address input (WB stage)}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{n+nc}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{DRAM}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{DATA\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{      }\PYG{n}{RAM\PYGZus{}DEPTH}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{48}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Size}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{Rst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{re}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Read enable signal}
+\PYG{+w}{      }\PYG{n}{we}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Write enable signal}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Address and data ports}
+\PYG{+w}{      }\PYG{n}{Addr}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{DATA\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{      }\PYG{n}{data\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{DATA\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{      }\PYG{n}{data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{DATA\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{DRAM}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+
+\PYG{k}{begin}
+
+\PYG{+w}{  }\PYG{n}{DRAM\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{DRAM}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{DATA\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of data in bits}
+\PYG{+w}{    }\PYG{n}{RAM\PYGZus{}DEPTH}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{48}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Size (increase if needed)}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{rst}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{re}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}RE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{we}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}WE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{Addr}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}result}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{data\PYGZus{}in}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{MEM\PYGZus{}data\PYGZus{}in}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}out}
+\PYG{+w}{  }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{n}{MEM\PYGZus{}STAGE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{process}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{clk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{begin}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset memory stage output}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{        }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset register file data output}
+
+\PYG{+w}{    }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{rising\PYGZus{}edge}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}in}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output of memory stage}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{source\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}result}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forward ALU result to Write back stage}
+\PYG{+w}{        }\PYG{k}{else}
+\PYG{+w}{          }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}out}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forward DRAM output to Write back stage}
+\PYG{+w}{        }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{      }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{process}\PYG{+w}{ }\PYG{n+nc}{MEM\PYGZus{}STAGE}\PYG{p}{;}
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\end{Verbatim}

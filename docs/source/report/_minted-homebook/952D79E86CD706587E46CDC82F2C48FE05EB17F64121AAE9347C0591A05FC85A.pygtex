@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{2222}:22\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{5901}:5901\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{6080}:6080\PYG{+w}{ }\PYGZhy{}\PYGZhy{}name\PYG{+w}{ }hw\PYGZus{}tools\PYG{+w}{ }ilnerdchuck/hw\PYGZus{}tools:full
+\end{Verbatim}

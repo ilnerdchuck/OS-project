@@ -1,0 +1,27 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{set}\PYG{+w}{ }defHierChar\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{o}{/}\PYG{k}{\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }delaycal\PYGZus{}input\PYGZus{}transition\PYGZus{}delay\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{0.1ps}\PYG{k}{\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }fpIsMaxIoHeight\PYG{+w}{ }\PYG{l+m+mi}{0}
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}gnd\PYGZus{}net\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{gnd}\PYG{k}{\PYGZcb{}}
+
+\PYG{c}{\PYGZsh{} Load the structure of the top level entity}
+\PYG{c}{\PYGZsh{} TODO: make it a true template}
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}mmmc\PYGZus{}file\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{.}\PYG{o}{/}scripts\PYG{o}{/}scripts\PYGZus{}template\PYG{o}{/}default.view\PYG{k}{\PYGZcb{}}
+
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}oa\PYGZus{}search\PYGZus{}lib\PYG{+w}{ }\PYG{k}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}pwr\PYGZus{}net\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{vdd}\PYG{k}{\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}verilog\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{.}\PYG{o}{/}physical\PYGZus{}design\PYG{o}{/}designs\PYG{o}{/}dlx\PYGZhy{}structural\PYGZhy{}strictopt.v\PYG{k}{\PYGZcb{}}
+\PYG{k}{set}\PYG{+w}{ }lsgOCPGainMult\PYG{+w}{ }\PYG{l+m+mf}{1.000000}
+
+\PYG{k}{set}\PYG{+w}{ }LEF\PYGZus{}DIR\PYG{+w}{ }\PYG{o}{/}eda\PYG{o}{/}dk\PYG{o}{/}nangate45\PYG{o}{/}lef
+\PYG{k}{set}\PYG{+w}{ }LEF\PYGZus{}list\PYG{+w}{ }\PYG{k}{[}\PYG{n+nb}{list}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}LEF\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}NangateOpenCellLibrary.lef\PYG{k}{]}
+
+\PYG{k}{set}\PYG{+w}{ }init\PYGZus{}lef\PYGZus{}file\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZdl{}\PYGZob{}LEF\PYGZus{}list\PYGZcb{}\PYGZdq{}}
+
+\PYG{k}{set}\PYG{+w}{ }LIB\PYGZus{}DIR\PYG{+w}{ }\PYG{o}{/}eda\PYG{o}{/}dk\PYG{o}{/}nangate45\PYG{o}{/}liberty
+\PYG{k}{set}\PYG{+w}{ }MyTimingLibNom\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}LIB\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}NangateOpenCellLibrary\PYGZus{}typical\PYGZus{}ecsm\PYGZus{}nowlm.lib
+\PYG{k}{set}\PYG{+w}{ }MyTimingLibSlow\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}LIB\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}NangateOpenCellLibrary\PYGZus{}slow\PYGZus{}ecsm.lib
+\PYG{k}{set}\PYG{+w}{ }MyTimingLibFast\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}LIB\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}NangateOpenCellLibrary\PYGZus{}fast\PYGZus{}ecsm.lib
+
+\PYG{k}{set}\PYG{+w}{ }MycapTable\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}LEF\PYGZus{}DIR}\PYG{o}{/}captables\PYG{o}{/}NCSU\PYGZus{}FreePDK\PYGZus{}45nm.capTbl
+\end{Verbatim}

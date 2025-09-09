@@ -1,0 +1,186 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/bash}
+
+\PYG{k}{function}\PYG{+w}{ }scorzetta\PYG{o}{()}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} UI things}
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{215}\PYG{k}{)}
+
+\PYG{+w}{    }\PYG{n+nv}{VHDL\PYGZus{}FILES}\PYG{o}{=()}
+\PYG{+w}{    }\PYG{n+nv}{WORK\PYGZus{}DIR}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{pwd}\PYG{k}{)}
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}   Scorzetta   \PYGZdq{}}
+\PYG{+w}{    }cat\PYG{+w}{ }./scripts/utils/cat1.txt
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simulation tool\PYGZdq{}}
+
+\PYG{+w}{    }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Using a terminal with color support is raccomended!\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Check and ask if the user wants to run briciola before simulating}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }compile.list\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}warning\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}It seems that there was no previous compilation done by Briciola\PYGZdq{}}
+\PYG{+w}{        }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{            }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to continue? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{            }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{            }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }\PYG{k}{esac}
+\PYG{+w}{        }\PYG{k}{done}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{        }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to run Briciola to compile the files? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{        }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{            }briciola
+\PYG{+w}{            }\PYG{k}{break}
+\PYG{+w}{            }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{k}{esac}
+\PYG{+w}{    }\PYG{k}{done}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} If mode simulation are needed ask to name and put the output files in}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} a separate folder}
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{        }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to give a name to the current simulation? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{        }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{            }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simualation name: \PYGZdq{}}\PYG{+w}{ }SIM\PYGZus{}NAME
+\PYG{+w}{            }\PYG{n+nv}{WORK\PYGZus{}DIR}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/simulations/}\PYG{n+nv}{\PYGZdl{}SIM\PYGZus{}NAME}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{            }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}
+
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{                }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}
+\PYG{+w}{            }\PYG{k}{else}
+\PYG{+w}{                }e\PYGZus{}warning\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simulation with the same name present.\PYGZdq{}}
+\PYG{+w}{                }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{                    }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to overwrite  it? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{                    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{                    }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                        }rm\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/*
+\PYG{+w}{                        }\PYG{k}{break}
+\PYG{+w}{                        }\PYG{p}{;;}
+\PYG{+w}{                    }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                        }e\PYGZus{}warning\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Exiting Scorzetta\PYGZdq{}}
+\PYG{+w}{                        }\PYG{n+nb}{exit}
+\PYG{+w}{                        }\PYG{p}{;;}
+\PYG{+w}{                    }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{                    }\PYG{k}{esac}
+\PYG{+w}{                }\PYG{k}{done}
+\PYG{+w}{            }\PYG{k}{fi}
+\PYG{+w}{            }\PYG{k}{break}
+\PYG{+w}{            }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{k}{esac}
+\PYG{+w}{    }\PYG{k}{done}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }/eda/scripts/init\PYGZus{}questa\PYGZus{}core\PYGZus{}prime\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n+nb}{source}\PYG{+w}{ }/eda/scripts/init\PYGZus{}questa\PYGZus{}core\PYGZus{}prime
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} TODO: get the available entities or configurations from the library}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} ******************************}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Entity: TB\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Available Configurations:  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   TEST\PYGZus{}BEH\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   TEST\PYGZus{}STR\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Entity: ALU                *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Available Configurations:  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   STR\PYGZus{}ALU                  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   BEH\PYGZus{}ALU                  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} ******************************}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Ask for simulaiton parameters}
+\PYG{+w}{    }e\PYGZus{}bold\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter simulation resolution: Ex. \PYGZdq{}}1ns\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }SIM\PYGZus{}RES
+\PYG{+w}{    }e\PYGZus{}bold\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the simulation time: Ex \PYGZdq{}}40ns\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }SIM\PYGZus{}TIME
+\PYG{+w}{    }e\PYGZus{}bold\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the name of the top level entity to be simulated:\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }TOP\PYGZus{}LEVEL\PYGZus{}ENTITY
+
+\PYG{+w}{    }\PYG{n+nv}{WAVEFORM\PYGZus{}FILE}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/waveform.vcd\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nv}{MODELSIM\PYGZus{}FILE}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/waveform.wlf\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} TODO: add custom simulation file}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Build the tcl file with the user defined variables}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} NOT SAFE WE ARE USING EVAL, but we don´t need to export variables}
+\PYG{+w}{    }\PYG{n+nv}{TCL\PYGZus{}FILE}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{eval}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}echo \PYGZbs{}\PYGZdq{}}\PYG{k}{\PYGZdl{}(}\PYGZlt{}./scripts/scripts\PYGZus{}templates/simulation\PYGZus{}template.tcl\PYG{k}{)}\PYG{l+s+s2}{\PYGZbs{}\PYGZdq{}\PYGZdq{}}\PYG{+w}{ }\PYG{l+m}{2}\PYGZgt{}/dev/null\PYG{k}{)}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Safer but we need to export the variables}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} export TOP\PYGZus{}LEVEL\PYGZus{}ENTITY SIM\PYGZus{}RES SIM\PYGZus{}TIME WAVEFORM\PYGZus{}FILEe}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} TCL\PYGZus{}FILE=\PYGZdl{}(cat ./scripts\PYGZus{}templates/simulation\PYGZus{}template.tcl | envsubst)}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Run the tcl template}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} If you must call \PYGZdl{}finish for some reason (e.g. it\PYGZsq{}s called from within your test framework, and you can\PYGZsq{}t modify it), you can get your exit code out to the caller using \PYGZdq{}onfinish stop\PYGZdq{}. Example:}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} vsim \PYGZhy{}c test\PYGZus{}bench \PYGZhy{}do \PYGZdq{}on finish stop; run \PYGZhy{}all\PYGZdq{}}
+\PYG{+w}{    }vsim\PYG{+w}{ }\PYGZhy{}c\PYG{+w}{ }\PYGZhy{}do\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}TCL\PYGZus{}FILE}\PYG{l+s+s2}{\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Check vsim exit status}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}?}\PYG{+w}{ }\PYGZhy{}ne\PYG{+w}{ }\PYG{l+m}{0}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simulation of }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+s2}{    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simulation of }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+s2}{    [ OK ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} If the waveform file is created}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Create also a waveform file for modelsim, so we can use}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} both gtkwave and modelsim to view it}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WAWAVEFORM\PYGZus{}FILE}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Creation of the waveform file    [ OK ]\PYGZdq{}}
+\PYG{+w}{        }e\PYGZus{}arrow\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Creating WLF modelsim waveform file...\PYGZdq{}}
+\PYG{+w}{        }vcd2wlf\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WAVEFORM\PYGZus{}FILE}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}MODELSIM\PYGZus{}FILE}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}?}\PYG{+w}{ }\PYGZhy{}ne\PYG{+w}{ }\PYG{l+m}{0}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{            }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Creating WLF modelsim waveform file    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{            }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{        }\PYG{k}{else}
+
+\PYG{+w}{            }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Creating WLF modelsim waveform file    [ OK ]\PYGZdq{}}
+\PYG{+w}{            }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Simulation finished, results are in }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{            }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}You can find the waveform file in }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/waveform.vcd\PYGZdq{}}
+\PYG{+w}{            }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}You can find the modelsim waveform file in }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/waveform.wlf\PYGZdq{}}
+\PYG{+w}{            }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{                }e\PYGZus{}arrow\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to open the waveform file with gtkwave(Gg) or modelsim(Mm) or exit(Nn)?\PYGZdq{}}
+\PYG{+w}{                }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Choice (G/g, M/m or N/n): \PYGZdq{}}\PYG{+w}{ }WAVEFORM\PYGZus{}VIEWER
+\PYG{+w}{                }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WAVEFORM\PYGZus{}VIEWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{                }\PYG{o}{[}Gg\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                    }\PYG{k}{if}\PYG{+w}{ }!\PYG{+w}{ }\PYG{n+nb}{type}\PYG{+w}{ }gtkwave\PYG{+w}{ }\PYGZgt{}/dev/null\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{                        }\PYG{c+c1}{\PYGZsh{} install foobar here}
+\PYG{+w}{                        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}gtkwave not found\PYGZdq{}}
+\PYG{+w}{                        }\PYG{k}{continue}
+\PYG{+w}{                    }\PYG{k}{fi}
+
+\PYG{+w}{                    }gtkwave\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WAVEFORM\PYGZus{}FILE}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{p}{\PYGZam{}}
+\PYG{+w}{                    }\PYGZgt{}/dev/null
+\PYG{+w}{                    }\PYG{k}{break}
+\PYG{+w}{                    }\PYG{p}{;;}
+\PYG{+w}{                }\PYG{o}{[}Mm\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                    }\PYG{k}{if}\PYG{+w}{ }!\PYG{+w}{ }\PYG{n+nb}{type}\PYG{+w}{ }vsim\PYG{+w}{ }\PYGZgt{}/dev/null\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{                        }\PYG{c+c1}{\PYGZsh{} install foobar here}
+\PYG{+w}{                        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}ModelSim/QuestaSim not found\PYGZdq{}}
+\PYG{+w}{                        }\PYG{k}{continue}
+\PYG{+w}{                    }\PYG{k}{fi}
+\PYG{+w}{                    }vsim\PYG{+w}{ }\PYGZhy{}view\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}MODELSIM\PYGZus{}FILE}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{p}{\PYGZam{}}
+\PYG{+w}{                    }\PYGZgt{}/dev/null
+\PYG{+w}{                    }\PYG{k}{break}
+\PYG{+w}{                    }\PYG{p}{;;}
+\PYG{+w}{                }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                    }e\PYGZus{}note\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Oke exiting Scorzetta\PYGZdq{}}
+\PYG{+w}{                    }\PYG{k}{break}
+\PYG{+w}{                    }\PYG{p}{;;}
+\PYG{+w}{                }*\PYG{o}{)}
+\PYG{+w}{                    }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer G/g, M/m or N/n.\PYGZdq{}}
+\PYG{+w}{                    }\PYG{p}{;;}
+\PYG{+w}{                }\PYG{k}{esac}
+\PYG{+w}{            }\PYG{k}{done}
+\PYG{+w}{        }\PYG{k}{fi}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Creation of the waveform file    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} TODO: we can maybe integrate pushover to tell when the sim/synt is finished}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Revert UI things}
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{215}\PYG{k}{)}
+\PYG{o}{\PYGZcb{}}
+\end{Verbatim}

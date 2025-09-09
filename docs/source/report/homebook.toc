@@ -1,0 +1,61 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Abstract}{i}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Project Objectives}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Tools used}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}The DLX Microprocessor}{2}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}DLX Architecture}{2}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Instruction Set}{2}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}DLX Base Version}{3}{subsection.1.3.3}%
+\contentsline {subsubsection}{Base Instruction Set}{4}{subsubsection*.6}%
+\contentsline {section}{\numberline {1.4}DLX Pro Features}{4}{section.1.4}%
+\contentsline {chapter}{\numberline {2}DLX Project Structure}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Control Unit}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Control Word}{5}{subsection.2.1.1}%
+\contentsline {section}{\numberline {2.2}Datapath}{7}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Fetch Stage}{8}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Decode Stage}{9}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Execute Stage}{11}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Memory and Write Back Stage}{11}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Forwarding Unit}{12}{subsection.2.2.5}%
+\contentsline {section}{\numberline {2.3}Simulation, Synthesis and Physical Design}{13}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Synthesys}{14}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Synthesis Process}{14}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Results}{15}{section.3.2}%
+\contentsline {chapter}{\numberline {4}Physical Design}{17}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Results}{18}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Area and Gate Count}{18}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Timing Analysis}{18}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Conclusion}{19}{subsection.4.1.3}%
+\contentsline {chapter}{\numberline {5}Tools and Scripts}{20}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Docker Container}{20}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Marley}{20}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Pupi}{21}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Briciola}{21}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Scorzetta}{21}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Boh}{21}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Cassiopeia}{21}{subsection.5.2.5}%
+\contentsline {chapter}{\numberline {6}Conclusions}{22}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Further Work}{22}{section.6.1}%
+\contentsline {chapter}{\numberline {A}DLX VHDL Code}{23}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Control unit}{23}{section.A.1}%
+\contentsline {section}{\numberline {A.2}DataPath}{30}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Fetch Stage}{40}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Decode Stage}{42}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Execute Stage}{46}{section.A.5}%
+\contentsline {section}{\numberline {A.6}Memory and Write Back Stage}{50}{section.A.6}%
+\contentsline {section}{\numberline {A.7}Forwarding Unit}{52}{section.A.7}%
+\contentsline {chapter}{\numberline {B}User Scripts}{54}{appendix.B}%
+\contentsline {section}{\numberline {B.1}Pupi}{54}{section.B.1}%
+\contentsline {section}{\numberline {B.2}Marley}{57}{section.B.2}%
+\contentsline {section}{\numberline {B.3}Briciola}{60}{section.B.3}%
+\contentsline {section}{\numberline {B.4}Scorzetta}{61}{section.B.4}%
+\contentsline {section}{\numberline {B.5}Boh}{65}{section.B.5}%
+\contentsline {section}{\numberline {B.6}Cassiopeia}{69}{section.B.6}%
+\contentsline {chapter}{\numberline {C}TCL templates}{71}{appendix.C}%
+\contentsline {section}{\numberline {C.1}Simualtion}{71}{section.C.1}%
+\contentsline {section}{\numberline {C.2}Synthesis}{72}{section.C.2}%
+\contentsline {section}{\numberline {C.3}Physical Design}{74}{section.C.3}%
+\contentsline {subsection}{\numberline {C.3.1}Default.view}{74}{subsection.C.3.1}%
+\contentsline {subsection}{\numberline {C.3.2}DLX.globals}{74}{subsection.C.3.2}%
+\contentsline {subsection}{\numberline {C.3.3}Physical Design}{75}{subsection.C.3.3}%
