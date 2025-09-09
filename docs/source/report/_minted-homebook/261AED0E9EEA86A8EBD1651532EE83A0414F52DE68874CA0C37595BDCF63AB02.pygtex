@@ -1,0 +1,145 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{package}\PYG{+w}{ }\PYG{n+nx}{main}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}bufio\PYGZdq{}}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}fmt\PYGZdq{}}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}io\PYGZdq{}}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}os\PYGZdq{}}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}slices\PYGZdq{}}
+\PYG{+w}{	}\PYG{l+s}{\PYGZdq{}strings\PYGZdq{}}
+\PYG{p}{)}
+
+\PYG{c+c1}{// the basics is that every file that needs a component}
+\PYG{c+c1}{// is put in a waiting line until all it\PYGZsq{}s requests are}
+\PYG{c+c1}{// satisfied}
+
+\PYG{k+kd}{type}\PYG{+w}{ }\PYG{n+nx}{node}\PYG{+w}{ }\PYG{k+kd}{struct}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{	}\PYG{n+nx}{Name}\PYG{+w}{      }\PYG{k+kt}{string}
+\PYG{+w}{	}\PYG{n+nx}{Got}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{Want}\PYG{+w}{ }\PYG{k+kd}{map}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{]}\PYG{k+kd}{struct}\PYG{p}{\PYGZob{}\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kd}{func}\PYG{+w}{ }\PYG{n+nx}{main}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{	}\PYG{n+nx}{content}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{io}\PYG{p}{.}\PYG{n+nx}{ReadAll}\PYG{p}{(}\PYG{n+nx}{os}\PYG{p}{.}\PYG{n+nx}{Stdin}\PYG{p}{)}
+\PYG{+w}{	}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{		}\PYG{n+nb}{panic}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{	}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{	}\PYG{n+nx}{files}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{strings}\PYG{p}{.}\PYG{n+nx}{Split}\PYG{p}{(}\PYG{n+nb}{string}\PYG{p}{(}\PYG{n+nx}{content}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZbs{}n\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{	}\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nb}{make}\PYG{p}{([]}\PYG{o}{*}\PYG{n+nx}{node}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{files}\PYG{p}{))}
+\PYG{+w}{	}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{name}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{range}\PYG{+w}{ }\PYG{n+nx}{files}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{		}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{strings}\PYG{p}{.}\PYG{n+nx}{TrimSpace}\PYG{p}{(}\PYG{n+nx}{name}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{k}{continue}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{		}\PYG{n+nx}{nn}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{node}\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{n+nx}{Name}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{name}\PYG{p}{,}
+\PYG{+w}{			}\PYG{n+nx}{Got}\PYG{p}{:}\PYG{+w}{  }\PYG{k+kd}{map}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{]}\PYG{k+kd}{struct}\PYG{p}{\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{},}
+\PYG{+w}{			}\PYG{n+nx}{Want}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kd}{map}\PYG{p}{[}\PYG{k+kt}{string}\PYG{p}{]}\PYG{k+kd}{struct}\PYG{p}{\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{},}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{		}\PYG{n+nx}{f}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{os}\PYG{p}{.}\PYG{n+nx}{Open}\PYG{p}{(}\PYG{n+nx}{name}\PYG{p}{)}
+\PYG{+w}{		}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{n+nb}{panic}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{		}\PYG{n+nx}{s}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{bufio}\PYG{p}{.}\PYG{n+nx}{NewScanner}\PYG{p}{(}\PYG{n+nx}{f}\PYG{p}{)}
+
+\PYG{+w}{		}\PYG{c+c1}{// need to add priority to the packages}
+\PYG{+w}{		}\PYG{c+c1}{// Types of files}
+\PYG{+w}{		}\PYG{c+c1}{// Package only with constants =\PYGZgt{} no entities found first to compile (No Got no Want =\PYGZgt{} can be directly compiled)}
+\PYG{+w}{		}\PYG{c+c1}{// Package with entities =\PYGZgt{} need to sweep for entities and functions (Surely has Got and can have Want)}
+\PYG{+w}{		}\PYG{c+c1}{// Entity =\PYGZgt{} if no components needed has only Got but can request some packages for constants}
+\PYG{+w}{		}\PYG{c+c1}{// Top Entity =\PYGZgt{} can request other components \PYGZdq{}entities\PYGZdq{} has Want and less got}
+
+\PYG{+w}{		}\PYG{c+c1}{// we can sweep if package or not, in general:}
+\PYG{+w}{		}\PYG{c+c1}{// we see what entities declaration has and we put in the got}
+\PYG{+w}{		}\PYG{c+c1}{// we see what components needs and put in the want}
+\PYG{+w}{		}\PYG{c+c1}{// extra: we see what functions declares and put in the got}
+\PYG{+w}{		}\PYG{c+c1}{// extra: we see what functions needs and put in the want}
+\PYG{+w}{		}\PYG{c+c1}{// if no Want and no Got we output it (is a package with only constants)}
+
+\PYG{+w}{		}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{Scan}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{n+nx}{line}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{Text}\PYG{p}{()}
+\PYG{+w}{			}\PYG{n+nx}{line}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{strings}\PYG{p}{.}\PYG{n+nx}{ToLower}\PYG{p}{(}\PYG{n+nx}{line}\PYG{p}{)}
+
+\PYG{+w}{			}\PYG{c+c1}{// we need only the declatarions}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{strings}\PYG{p}{.}\PYG{n+nx}{Contains}\PYG{p}{(}\PYG{n+nx}{line}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{};\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{k}{continue}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{n+nx}{ff}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{strings}\PYG{p}{.}\PYG{n+nx}{Fields}\PYG{p}{(}\PYG{n+nx}{line}\PYG{p}{)}
+
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{ff}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{k}{continue}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{c+c1}{// the component keyword means a request =\PYGZgt{} thus a Want}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{idx}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{Index}\PYG{p}{(}\PYG{n+nx}{ff}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}component\PYGZdq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{n+nx}{idx}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{n+nx}{name}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{ff}\PYG{p}{[}\PYG{n+nx}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{+w}{				}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Want}\PYG{p}{[}\PYG{n+nx}{name}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{k+kd}{struct}\PYG{p}{\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{}}
+\PYG{+w}{				}\PYG{k}{continue}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{c+c1}{// the entity keyword means an entity declaration =\PYGZgt{} thus a got}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{idx}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{Index}\PYG{p}{(}\PYG{n+nx}{ff}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}entity\PYGZdq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{n+nx}{idx}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{n+nx}{name}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{ff}\PYG{p}{[}\PYG{n+nx}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{+w}{				}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Got}\PYG{p}{[}\PYG{n+nx}{name}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{k+kd}{struct}\PYG{p}{\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{}}
+\PYG{+w}{				}\PYG{k}{continue}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{c+c1}{//If nothing found it will have Want and Got empty}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{		}\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{append}\PYG{p}{(}\PYG{n+nx}{nodes}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{p}{)}
+\PYG{+w}{	}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{	}\PYG{c+c1}{//first we remove the ones without requests}
+\PYG{+w}{	}\PYG{n+nx}{todel}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{p}{[]}\PYG{o}{*}\PYG{n+nx}{node}\PYG{p}{\PYGZob{}\PYGZcb{}}
+
+\PYG{+w}{	}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{range}\PYG{+w}{ }\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{		}\PYG{c+c1}{// Simple package type}
+\PYG{+w}{		}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Want}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Got}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{c+c1}{// compile it}
+\PYG{+w}{				}\PYG{n+nx}{fmt}\PYG{p}{.}\PYG{n+nx}{Println}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Name}\PYG{p}{)}
+\PYG{+w}{				}\PYG{n+nx}{todel}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{append}\PYG{p}{(}\PYG{n+nx}{todel}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{p}{)}
+\PYG{+w}{				}\PYG{c+c1}{// Delete the actual compiled node}
+\PYG{+w}{				}\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{DeleteFunc}\PYG{p}{(}\PYG{n+nx}{nodes}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kd}{func}\PYG{p}{(}\PYG{n+nx}{n}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{node}\PYG{p}{)}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{Contains}\PYG{p}{(}\PYG{n+nx}{todel}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{n}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZcb{})}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{	}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{	}\PYG{c+c1}{// We iterate as long as there is a file with a want}
+\PYG{+w}{	}\PYG{c+c1}{// at each iteration we compile the nodes with only got}
+\PYG{+w}{	}\PYG{c+c1}{// instances}
+\PYG{+w}{	}\PYG{k}{for}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{		}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{nodes}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{k}{break}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{		}\PYG{n+nx}{todel}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{p}{[]}\PYG{o}{*}\PYG{n+nx}{node}\PYG{p}{\PYGZob{}\PYGZcb{}}
+
+\PYG{+w}{		}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{range}\PYG{+w}{ }\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{c+c1}{// Exclude the top level entity}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Want}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{k}{continue}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{c+c1}{// We only give out things so we compile and erase from the}
+\PYG{+w}{			}\PYG{c+c1}{// consumers}
+\PYG{+w}{			}\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Want}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{n+nx}{fmt}\PYG{p}{.}\PYG{n+nx}{Println}\PYG{p}{(}\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Name}\PYG{p}{)}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{			}\PYG{n+nx}{todel}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{append}\PYG{p}{(}\PYG{n+nx}{todel}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{p}{)}
+\PYG{+w}{			}\PYG{c+c1}{// delete from the other nodes what I just have compiled}
+\PYG{+w}{			}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{consumer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{range}\PYG{+w}{ }\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{				}\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{what}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{range}\PYG{+w}{ }\PYG{n+nx}{nn}\PYG{p}{.}\PYG{n+nx}{Got}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{					}\PYG{n+nb}{delete}\PYG{p}{(}\PYG{n+nx}{consumer}\PYG{p}{.}\PYG{n+nx}{Want}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{what}\PYG{p}{)}
+\PYG{+w}{				}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{			}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{		}\PYG{c+c1}{// Delete the actual compiled node}
+\PYG{+w}{		}\PYG{n+nx}{nodes}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{DeleteFunc}\PYG{p}{(}\PYG{n+nx}{nodes}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kd}{func}\PYG{p}{(}\PYG{n+nx}{n}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{node}\PYG{p}{)}\PYG{+w}{ }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{slices}\PYG{p}{.}\PYG{n+nx}{Contains}\PYG{p}{(}\PYG{n+nx}{todel}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{n}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZcb{})}
+\PYG{+w}{	}\PYG{p}{\PYGZcb{}}
+
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

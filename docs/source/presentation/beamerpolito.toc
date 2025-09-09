@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{QEMU Structure}{3}{0}{1}
+\beamer@sectionintoc {2}{QEMU Implementation}{5}{0}{2}
+\beamer@sectionintoc {3}{FreeRTOS Porting}{9}{0}{3}
+\beamer@sectionintoc {4}{Summary}{12}{0}{4}

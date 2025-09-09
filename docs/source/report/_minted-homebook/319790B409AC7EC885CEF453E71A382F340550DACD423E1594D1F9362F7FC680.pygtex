@@ -1,0 +1,343 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{library}\PYG{+w}{ }\PYG{n+nn}{ieee}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.std\PYGZus{}logic\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.numeric\PYGZus{}std.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{work.myTypes.}\PYG{k}{all}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+
+\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{control\PYGZus{}unit}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{MICROCODE\PYGZus{}MEM\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Microcode Memory Size}
+\PYG{+w}{    }\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{           }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{11}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Func Field Size for R\PYGZhy{}Type Ops}
+\PYG{+w}{    }\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{6}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Op Code Size}
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}SIZE}\PYG{+w}{            }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register Size    }
+\PYG{+w}{    }\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{            }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{15}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control Word Size}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset:Active\PYGZhy{}Low}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register}
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}IN}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{IR\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{fetch\PYGZus{}enable}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch Enable Signal}
+\PYG{+w}{    }\PYG{n}{decode\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Decode Enable Signal}
+\PYG{+w}{    }\PYG{n}{execute\PYGZus{}enable}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Execute Enable Signal}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory Enable Signal}
+\PYG{+w}{    }\PYG{n}{write\PYGZus{}back\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Write Back Enable Signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} IF Control Signal}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}EN}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register Latch Enable}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register 1 Read Enable}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register 2 Read Enable}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}we}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register Write Enable }
+
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}select\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal 1 for ALU}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}select\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal 2 for ALU}
+\PYG{+w}{    }\PYG{n}{ALU\PYGZus{}op}\PYG{+w}{          }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU Operation Code}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Enable Signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{         }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Write Enable Signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{         }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Read Enable Signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}select\PYGZus{}3}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal for Memory Stage \PYGZhy{}\PYGZgt{} Write back Stage}
+
+\PYG{+w}{    }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Type (R, I, J)}
+\PYG{+w}{    }\PYG{n}{opcode\PYGZus{}out}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OpCode of the Instruction}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{k}{end}\PYG{+w}{ }\PYG{n+nc}{control\PYGZus{}unit}\PYG{p}{;}
+\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{Behavioral}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{n+nc}{control\PYGZus{}unit}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{type}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}memory\PYGZus{}Type}\PYG{+w}{ }\PYG{k}{is}\PYG{+w}{ }\PYG{k}{array}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{k}{to}\PYG{+w}{ }\PYG{l+m+mi}{43}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} This is the cw\PYGZus{}memory table with all the CWs}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}memory}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}memory\PYGZus{}Type}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111111001000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x00 R Type}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x01 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}110001110000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x02 JTYPE\PYGZus{}JMP}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}110001111000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x03 JTYPE\PYGZus{}JAL}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x04 JTYPE\PYGZus{}BNEZ}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x05 JTYPE\PYGZus{}BEQZ}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x06 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x07 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x08 ADDI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x09 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0A SUBI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0B not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0C ANDI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0D ORI }
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0E XORI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x0F not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x10 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x11 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x12 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x13 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x14 SLLI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x15 NOP}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x16 SRLI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x17 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x18 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x19 SNEI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1A not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1B not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1C SLEI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011000011\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1D SGEI}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1E not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x1F not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x20 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x21 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x22 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011110111\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x23 ITYPE\PYGZus{}LW}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x24 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x25 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x26 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x27 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x28 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x29 not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}100000000000000\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x2A not implemented}
+\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}111101011101000\PYGZdq{}}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} op: 0x2B ITYPE\PYGZus{}SW}
+\PYG{+w}{  }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OpCode of the Instruction}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control Word for the decode stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}ex}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control Word for the execute stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control Word for the memory stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}wb}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{CW\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control Word for the write back stage}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}ex}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OpCode for the execute stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}mem}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OpCode for the memory stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}wb}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OpCode for the write back stage}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU Function Type for the execute stage}
+
+\PYG{k}{begin}
+\PYG{+w}{  }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{IR\PYGZus{}IN}\PYG{p}{(}\PYG{n}{IR\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{n}{IR\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{OP\PYGZus{}CODE\PYGZus{}SIZE}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{n}{TYPE\PYGZus{}NOP}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Extracting opcode from instruction register @reset default to NOP}
+\PYG{+w}{  }\PYG{n}{cw\PYGZus{}target}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}memory}\PYG{p}{(}\PYG{n}{to\PYGZus{}integer}\PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{(}\PYG{n}{opcode}\PYG{p}{)))}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Extracting control word from the microcode memory based on the opcode @reset default to NOP}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} need to output the opcode to the datapath for the forwarding unit to check for hazards for the execution stage}
+\PYG{+w}{  }\PYG{n}{opcode\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}mem}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} used to stall if the instruction is a load and the source register matches the destination register of the EX stage}
+\PYG{+w}{  }\PYG{n}{ALU\PYGZus{}op}\PYG{+w}{     }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code output}
+
+\PYG{+w}{  }\PYG{k}{process}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{begin}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{rising\PYGZus{}edge}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{))}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset all control words and opcode signals to a NOP filled pipeline}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}ex}\PYG{+w}{         }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}mem}\PYG{+w}{        }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}wb}\PYG{+w}{         }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}ex}\PYG{+w}{     }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}mem}\PYG{+w}{    }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}wb}\PYG{+w}{     }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}
+
+\PYG{+w}{      }\PYG{k}{else}
+
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} update control words for each stage}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}ex}\PYG{+w}{  }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}mem}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}ex}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{cw\PYGZus{}wb}\PYG{+w}{  }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{;}
+
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Extracting opcode for the next stages}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}ex}\PYG{+w}{  }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{opcode}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}mem}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}ex}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{opcode\PYGZus{}wb}\PYG{+w}{  }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{opcode\PYGZus{}mem}\PYG{p}{;}
+
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU function for the Execute stage}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}NOP}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ADDI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ADDI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SUBI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SUB}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SUBI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ANDI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}AND}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ANDI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ORI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}OR}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ORI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}XORI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}XOR}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} XORI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SLLI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SLL}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLLI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SRLI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SRL}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SRLI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SNEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SNE}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SNEI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SLEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SLE}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLEI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SGEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}SGE}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SGEI operation}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}LW}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} LW operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SW}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SW operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}JMP}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} JMP operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}JAL}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} JAL operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}BEQZ}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} BEQZ operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}BNEZ}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{RTYPE\PYGZus{}ADD}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} BNEZ operation, ALU adds offset to base address}
+\PYG{+w}{        }\PYG{k}{else}
+\PYG{+w}{          }\PYG{n}{alu\PYGZus{}func\PYGZus{}type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Default case, reset ALU function type }
+\PYG{+w}{        }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU function for the Execute stage}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} case opcode is}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when TYPE\PYGZus{}NOP            =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     opcode\PYGZus{}ex     \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     opcode\PYGZus{}mem    \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     opcode\PYGZus{}wb     \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} NOP operation}
+
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     \PYGZhy{}\PYGZhy{} R\PYGZhy{}Type operation the function is in the IR register }
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= IR\PYGZus{}in(FUN\PYGZus{}SIZE \PYGZhy{} 1 downto 0); \PYGZhy{}\PYGZhy{} R\PYGZhy{}Type operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ADDI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ADDI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SUBI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SUB; \PYGZhy{}\PYGZhy{} SUBI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ANDI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}AND; \PYGZhy{}\PYGZhy{} ANDI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ORI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}OR; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}XORI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}XOR; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SLLI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SLL; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SRLI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SRL; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SNEI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SNE; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SLEI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SLE; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SGEI =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}SGE; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}LW =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SW =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}JMP =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}JAL =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}BEQZ =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}BNEZ =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= RTYPE\PYGZus{}ADD; \PYGZhy{}\PYGZhy{} ORI1 operation}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when others              =\PYGZgt{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     alu\PYGZus{}func\PYGZus{}type \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{});}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} end case;}
+\PYG{+w}{      }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{process}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction type update mostly for the jump and branch instructions}
+\PYG{+w}{  }\PYG{k}{process}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{opcode}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{begin}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{      }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}NOP}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ADDI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}00\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ADDI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SUBI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SUBI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ANDI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ANDI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}ORI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ORI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}XORI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} XORI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SLLI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLLI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SRLI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SRLI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SNEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SNEI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SLEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SLEI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SGEI}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SGEI operation}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}LW}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} LW operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ITYPE\PYGZus{}SW}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} SW operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}JMP}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}11\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} JMP operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}JAL}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}11\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} JAL operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}BEQZ}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} BEQZ operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{elsif}\PYG{+w}{ }\PYG{n}{opcode}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{JTYPE\PYGZus{}BNEZ}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}01\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} BNEZ operation, ALU adds offset to base address}
+\PYG{+w}{      }\PYG{k}{else}
+\PYG{+w}{        }\PYG{n}{inst\PYGZus{}type\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{others}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Default case, reset ALU function type }
+\PYG{+w}{      }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} case opcode is}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when TYPE\PYGZus{}NOP            =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= (others =\PYGZgt{} \PYGZsq{}0\PYGZsq{}); \PYGZhy{}\PYGZhy{} NOP operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when RTYPE               =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}00\PYGZdq{}; \PYGZhy{}\PYGZhy{} R\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ADDI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SUBI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ANDI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}ORI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}XORI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SLLI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SRLI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SNEI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SLEI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SGEI =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}LW =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when ITYPE\PYGZus{}SW =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} I\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}JMP =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}11\PYGZdq{}; \PYGZhy{}\PYGZhy{} J\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}JAL =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}11\PYGZdq{}; \PYGZhy{}\PYGZhy{} J\PYGZhy{}Type operation but also I\PYGZhy{}Type operation for the write back stage}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}BEQZ =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} J\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when JTYPE\PYGZus{}BNEZ =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}01\PYGZdq{}; \PYGZhy{}\PYGZhy{} J\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   when others =\PYGZgt{}}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     inst\PYGZus{}type\PYGZus{}out \PYGZlt{}= \PYGZdq{}00\PYGZdq{}; \PYGZhy{}\PYGZhy{} J\PYGZhy{}Type operation}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} end case;}
+\PYG{+w}{    }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{if}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{process}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Update Control signals for the different stages of the pipeline}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch stage}
+\PYG{+w}{  }\PYG{n}{fetch\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{(}\PYG{l+m+mi}{14}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch Enable Signal}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Decode stage}
+\PYG{+w}{  }\PYG{n}{decode\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{(}\PYG{l+m+mi}{13}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Decode Enable Signal}
+\PYG{+w}{  }\PYG{n}{RF\PYGZus{}EN}\PYG{+w}{         }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}wb}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{or}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{(}\PYG{l+m+mi}{12}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file Enable Signal either from the Write Back stage or Decode stage}
+\PYG{+w}{  }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{+w}{       }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{(}\PYG{l+m+mi}{11}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register 1 Read Enable}
+\PYG{+w}{  }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{+w}{       }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}target}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register 2 Read Enable}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Execute stage}
+\PYG{+w}{  }\PYG{n}{execute\PYGZus{}enable}\PYG{+w}{  }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}ex}\PYG{p}{(}\PYG{l+m+mi}{9}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Execute Enable Signal}
+\PYG{+w}{  }\PYG{n}{source\PYGZus{}select\PYGZus{}1}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}ex}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal 1 for ALU}
+\PYG{+w}{  }\PYG{n}{source\PYGZus{}select\PYGZus{}2}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}ex}\PYG{p}{(}\PYG{l+m+mi}{7}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal 1 for ALU}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage}
+\PYG{+w}{  }\PYG{n}{memory\PYGZus{}enable}\PYG{+w}{   }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{(}\PYG{l+m+mi}{6}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory Enable Signal}
+\PYG{+w}{  }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Enable Signal}
+\PYG{+w}{  }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{         }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Read Enable Signal}
+\PYG{+w}{  }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{         }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM Write Enable Signal}
+\PYG{+w}{  }\PYG{n}{source\PYGZus{}select\PYGZus{}3}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}mem}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source Select Signal for Memory Stage}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Write Back stage}
+\PYG{+w}{  }\PYG{n}{write\PYGZus{}back\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}wb}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Write Back Stage Enable}
+\PYG{+w}{  }\PYG{n}{RF\PYGZus{}we}\PYG{+w}{             }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{cw\PYGZus{}wb}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register Write Enable}
+\PYG{k}{end}\PYG{+w}{ }\PYG{k}{architecture}\PYG{p}{;}
+\end{Verbatim}

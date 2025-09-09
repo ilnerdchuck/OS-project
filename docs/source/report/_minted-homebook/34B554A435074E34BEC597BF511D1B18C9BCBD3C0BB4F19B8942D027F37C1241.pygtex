@@ -1,0 +1,57 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/sh}
+
+\PYG{k}{function}\PYG{+w}{ }briciola\PYG{o}{()}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{69}\PYG{k}{)}
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}    Briciola    \PYGZdq{}}
+\PYG{+w}{    }cat\PYG{+w}{ }./scripts/utils/cat2.txt
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Compilation tool\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Create the hierarchy}
+\PYG{+w}{    }find\PYG{+w}{ }\PYGZhy{}type\PYG{+w}{ }f\PYG{+w}{ }\PYGZhy{}name\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}*.vhd\PYGZdq{}}\PYG{+w}{ }\PYGZhy{}not\PYG{+w}{ }\PYGZhy{}path\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}./work/*\PYGZdq{}}\PYG{+w}{ }\PYGZhy{}not\PYG{+w}{ }\PYGZhy{}path\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}./exclude/*\PYGZdq{}}\PYG{+w}{ }\PYGZhy{}not\PYG{+w}{ }\PYGZhy{}path\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}./simulations/*\PYGZdq{}}\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }tr\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{} \PYGZdq{}}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZbs{}n\PYGZdq{}}\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }./scripts/utils/pupi\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }compile.list
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}?}\PYG{+w}{ }\PYGZhy{}ne\PYG{+w}{ }\PYG{l+m}{0}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Error in creating compile.list\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{fi}
+\PYG{+w}{    }
+\PYG{+w}{    }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Created compile.list file\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Append files in the compile.list file}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} and remove trailing spaces or empty lines}
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }\PYG{n+nv}{IFS}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}}\PYG{+w}{ }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }p\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}p}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{o}{]}
+\PYG{+w}{        }\PYG{k}{do}
+\PYG{+w}{            }\PYG{n+nv}{VHDL\PYGZus{}FILES}\PYG{o}{+=(}\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}p}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }xargs\PYG{k}{)}\PYG{o}{)}
+\PYG{+w}{        }\PYG{k}{done}\PYG{+w}{ }\PYGZlt{}\PYG{+w}{ }compile.list
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Compile the Hierarchy}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} if /eda/scripts/init\PYGZus{}questa\PYGZus{}core\PYGZus{}prime exists, source it}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }/eda/scripts/init\PYGZus{}questa\PYGZus{}core\PYGZus{}prime\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }\PYG{n+nb}{source}\PYG{+w}{ }/eda/scripts/init\PYGZus{}questa\PYGZus{}core\PYGZus{}prime
+\PYG{+w}{    }\PYG{k}{fi}
+
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{  }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }work/\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }work/
+\PYG{+w}{    }\PYG{k}{fi}
+\PYG{+w}{    }
+\PYG{+w}{    }vlib\PYG{+w}{ }work
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }i\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{VHDL\PYGZus{}FILES}\PYG{p}{[@]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{        }\PYG{k}{do}
+\PYG{+w}{            }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Started Compilation of file: }\PYG{n+nv}{\PYGZdl{}i}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{            }vcom\PYG{+w}{ }\PYGZhy{}work\PYG{+w}{ }work\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}i}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}?}\PYG{+w}{ }\PYGZhy{}ne\PYG{+w}{ }\PYG{l+m}{0}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{                }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Compilation of file  }\PYG{n+nv}{\PYGZdl{}i}\PYG{l+s+s2}{    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{                }\PYG{k}{return}
+\PYG{+w}{                }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{            }\PYG{k}{else}
+\PYG{+w}{                }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Compilation of file  }\PYG{n+nv}{\PYGZdl{}i}\PYG{l+s+s2}{    [ OK ]\PYGZdq{}}
+\PYG{+w}{            }\PYG{k}{fi}
+\PYG{+w}{            }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{} Ended Compilation of file: }\PYG{n+nv}{\PYGZdl{}i}\PYG{l+s+s2}{ \PYGZdq{}}
+\PYG{+w}{        }\PYG{k}{done}
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{} Exiting Briciola \PYGZdq{}}
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{} Compilation Ended \PYGZdq{}}
+
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{215}\PYG{k}{)}
+\PYG{o}{\PYGZcb{}}
+\end{Verbatim}

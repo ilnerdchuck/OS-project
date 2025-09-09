@@ -1,0 +1,30 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Available variables from the bash script}
+\PYG{c}{\PYGZsh{} \PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{} : Name of the top level entity to simulate}
+\PYG{c}{\PYGZsh{} \PYGZdl{}\PYGZob{}SIM\PYGZus{}TIME\PYGZcb{} : Simulation Time}
+\PYG{c}{\PYGZsh{} \PYGZdl{}\PYGZob{}SIM\PYGZus{}RES\PYGZcb{} : Simulation resolution}
+\PYG{c}{\PYGZsh{} \PYGZdl{}\PYGZob{}WAVEFORM\PYGZus{}FILE\PYGZcb{} : Output waveform file}
+\PYG{c}{\PYGZsh{} PS: if you need more info from the user given to}
+\PYG{c}{\PYGZsh{} the bash script you obv need to modify the}
+\PYG{c}{\PYGZsh{} bash script to export/eval those variables}
+
+
+\PYG{c}{\PYGZsh{} Load the simulation}
+\PYG{c}{\PYGZsh{} TODO: maybe ask for additional arguments?}
+\PYG{n+nv}{vsim}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}t\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}SIM\PYGZus{}RES\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}voptargs\PYG{err}{=}\PYG{o}{+}acc\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}
+
+\PYG{c}{\PYGZsh{} Open a waveform file to dump the simulation}
+\PYG{n+nv}{vcd}\PYG{+w}{ }file\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WAVEFORM\PYGZus{}FILE\PYGZcb{}}
+\PYG{n+nv}{vcd}\PYG{+w}{ }add\PYG{+w}{ }\PYG{o}{\PYGZhy{}}r\PYG{+w}{ }\PYG{o}{*}
+\PYG{c}{\PYGZsh{} add wave /*}
+
+\PYG{c}{\PYGZsh{} Run the simulation for the specified time}
+\PYG{n+nv}{run}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}SIM\PYGZus{}TIME\PYGZcb{}}
+
+\PYG{c}{\PYGZsh{} wave zoom full}
+\PYG{c}{\PYGZsh{} Save the waveform file}
+\PYG{c}{\PYGZsh{} write wave waveform.ps \PYGZhy{}landscape \PYGZhy{}perpage 6ns}
+\PYG{c}{\PYGZsh{} view structure}
+\PYG{c}{\PYGZsh{} Exit Modelsim}
+\PYG{n+nv}{quit}\PYG{k}{;}
+\end{Verbatim}

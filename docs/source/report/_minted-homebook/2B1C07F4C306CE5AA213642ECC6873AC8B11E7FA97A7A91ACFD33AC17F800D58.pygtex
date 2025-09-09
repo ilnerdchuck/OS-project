@@ -1,0 +1,157 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/bash}
+
+\PYG{k}{function}\PYG{+w}{ }boh\PYG{o}{()}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} UI things}
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{215}\PYG{k}{)}
+
+\PYG{+w}{    }\PYG{n+nv}{VHDL\PYGZus{}FILES}\PYG{o}{=()}
+\PYG{+w}{    }\PYG{n+nv}{WORK\PYGZus{}DIR}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{pwd}\PYG{k}{)}
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}     boh      \PYGZdq{}}
+\PYG{+w}{    }cat\PYG{+w}{ }./scripts/utils/boh.txt
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis tool\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Check and ask if the user wants to run briciola before simulating}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }compile.list\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}warning\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}It seems that there was no previous compilation done by Briciola\PYGZdq{}}
+\PYG{+w}{        }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{            }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to continue? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{            }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{            }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{            }\PYG{k}{esac}
+\PYG{+w}{        }\PYG{k}{done}
+\PYG{+w}{    }\PYG{k}{fi}
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{        }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to run Briciola to compile the files? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{        }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{            }briciola
+\PYG{+w}{            }\PYG{k}{break}
+\PYG{+w}{            }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{k}{esac}
+\PYG{+w}{    }\PYG{k}{done}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} If mode synthesis are needed ask to name and put the output files in}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} a separate folder}
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{        }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to give a name to the synthesis? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{        }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{            }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis name: \PYGZdq{}}\PYG{+w}{ }SYN\PYGZus{}NAME
+\PYG{+w}{            }\PYG{n+nv}{WORK\PYGZus{}DIR}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{l+s+s2}{/synthesis/}\PYG{n+nv}{\PYGZdl{}SYN\PYGZus{}NAME}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }!\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{                }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}
+\PYG{+w}{                }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/timing
+\PYG{+w}{                }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/power
+\PYG{+w}{                }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/area
+
+\PYG{+w}{            }\PYG{k}{else}
+\PYG{+w}{                }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis with the same name present.\PYGZdq{}}
+\PYG{+w}{                }\PYG{k}{while}\PYG{+w}{ }true\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{                    }\PYG{n+nb}{read}\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Do you want to overwrite  it? (y/n)\PYGZdq{}}\PYG{+w}{ }ANSWER
+\PYG{+w}{                    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}ANSWER}\PYG{+w}{ }\PYG{k}{in}
+\PYG{+w}{                    }\PYG{o}{[}Yy\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                        }rm\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/*
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/timing
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/power
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/area
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/clk
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/synthesized\PYGZus{}constraints
+\PYG{+w}{                        }mkdir\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}WORK\PYGZus{}DIR}/structural
+\PYG{+w}{                        }\PYG{k}{break}
+\PYG{+w}{                        }\PYG{p}{;;}
+\PYG{+w}{                    }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}
+\PYG{+w}{                        }e\PYGZus{}warning\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Exiting Boh\PYGZdq{}}
+\PYG{+w}{                        }\PYG{n+nb}{exit}
+\PYG{+w}{                        }\PYG{p}{;;}
+\PYG{+w}{                    }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{                    }\PYG{k}{esac}
+\PYG{+w}{                }\PYG{k}{done}
+\PYG{+w}{            }\PYG{k}{fi}
+\PYG{+w}{            }\PYG{k}{break}
+\PYG{+w}{            }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{o}{[}Nn\PYG{o}{]}*\PYG{o}{)}\PYG{+w}{ }\PYG{k}{break}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }*\PYG{o}{)}\PYG{+w}{ }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Please answer Y or N.\PYGZdq{}}\PYG{+w}{ }\PYG{p}{;;}
+\PYG{+w}{        }\PYG{k}{esac}
+\PYG{+w}{    }\PYG{k}{done}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} TODO: get the available entities or configurations from the library}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} ******************************}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Entity: TB\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Available Configurations:  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   TEST\PYGZus{}BEH\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   TEST\PYGZus{}STR\PYGZus{}ALU             *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Entity: ALU                *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} * Available Configurations:  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   STR\PYGZus{}ALU                  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} *   BEH\PYGZus{}ALU                  *}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} ******************************}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Ask for simulation parameters}
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the name of the top level entity to be Synthetized:\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }TOP\PYGZus{}LEVEL\PYGZus{}ENTITY
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Enter the the name of the architecture/configuration of }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+s2}{ to be Synthetized:\PYGZdq{}}
+\PYG{+w}{    }\PYG{n+nb}{read}\PYG{+w}{ }ENTITY\PYGZus{}CONF
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Design Vision setup}
+\PYG{+w}{    }cp\PYG{+w}{ }/home/repository/ms/setup/.synopsys\PYGZus{}dc.setup\PYG{+w}{ }.
+\PYG{+w}{    }\PYG{n+nb}{source}\PYG{+w}{ }/eda/scripts/init\PYGZus{}design\PYGZus{}vision
+
+\PYG{+w}{    }e\PYGZus{}header\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Starting Synthesis\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Append files in the compile.list file}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} and remove trailing spaces or empty lines}
+\PYG{+w}{    }\PYG{n+nv}{VHDL\PYGZus{}FILES}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}cat\PYG{+w}{ }./compile.list\PYG{k}{)}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} TODO: add custom synthesis file}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Build the tcl file with the user defined variables}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} NOT SAFE WE ARE USING EVAL, but we don´t need to export variables}
+
+\PYG{+w}{    }\PYG{n+nv}{TCL\PYGZus{}FILE}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{eval}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}echo \PYGZbs{}\PYGZdq{}}\PYG{k}{\PYGZdl{}(}\PYGZlt{}./scripts/scripts\PYGZus{}templates/synthesis\PYGZus{}template.tcl\PYG{k}{)}\PYG{l+s+s2}{\PYGZbs{}\PYGZdq{}\PYGZdq{}}\PYG{+w}{ }\PYG{l+m}{2}\PYGZgt{}/dev/null\PYG{k}{)}
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{n+nv}{\PYGZdl{}TCL\PYGZus{}FILE}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }\PYGZgt{}./scripts/tmp.tcl
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Safer but we need to export the variables}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} export TOP\PYGZus{}LEVEL\PYGZus{}ENTITY SIM\PYGZus{}RES SIM\PYGZus{}TIME WAVEFORM\PYGZus{}FILEe}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} TCL\PYGZus{}FILE=\PYGZdl{}(cat ./scripts\PYGZus{}templates/synthesis\PYGZus{}template.tcl | envsubst)}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Run the tcl template}
+\PYG{+w}{    }dc\PYGZus{}shell\PYGZhy{}xg\PYGZhy{}t\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }./scripts/tmp.tcl
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} vsim \PYGZhy{}c \PYGZhy{}do \PYGZdq{}\PYGZdl{}TCL\PYGZus{}FILE\PYGZdq{}}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Check vsim exit status}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{[}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}?}\PYG{+w}{ }\PYGZhy{}ne\PYG{+w}{ }\PYG{l+m}{0}\PYG{+w}{ }\PYG{o}{]}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{        }e\PYGZus{}error\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis of }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+s2}{    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{        }\PYG{n+nb}{exit}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }e\PYGZus{}success\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Synthesis of }\PYG{n+nv}{\PYGZdl{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY}\PYG{l+s+s2}{    [ OK ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{k}{fi}
+\PYG{+w}{    }rm\PYG{+w}{ }./scripts/tmp.tcl
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} If the waveform file is created}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Create also a waveform file for modelsim, so we can use}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} both gtkwave and modelsim to view it}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} if [ \PYGZhy{}e \PYGZdl{}WORK\PYGZus{}DIR/report\PYGZus{}area.txt ]; then}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}success \PYGZdq{}Creation of the report\PYGZus{}area file    [ OK ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} else}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}error \PYGZdq{}Creation of the report\PYGZus{}area file    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} fi}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} if [ \PYGZhy{}e \PYGZdl{}WORK\PYGZus{}DIR/report\PYGZus{}timing.txt ]; then}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}success \PYGZdq{}Creation of the report\PYGZus{}area file    [ OK ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} else}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}error \PYGZdq{}Creation of the report\PYGZus{}area file    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} fi}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} if [ \PYGZhy{}e \PYGZdl{}WORK\PYGZus{}DIR/report\PYGZus{}power.txt ]; then}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}success \PYGZdq{}Creation of the report\PYGZus{}area file    [ OK ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} else}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}     e\PYGZus{}error \PYGZdq{}Creation of the report\PYGZus{}area file    [ FAILED ]\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} fi}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} TODO: we can maybe integrate pushover to tell when the sim/synt is finished}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Revert UI things}
+\PYG{+w}{    }\PYG{n+nv}{orange}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}tput\PYG{+w}{ }setaf\PYG{+w}{ }\PYG{l+m}{215}\PYG{k}{)}
+\PYG{o}{\PYGZcb{}}
+\end{Verbatim}

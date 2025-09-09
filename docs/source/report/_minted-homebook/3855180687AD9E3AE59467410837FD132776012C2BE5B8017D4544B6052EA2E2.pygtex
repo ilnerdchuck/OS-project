@@ -1,0 +1,80 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Available variables from the bash script}
+\PYG{c}{\PYGZsh{}   WORK\PYGZus{}DIR: Directory where the synthesis results will be stored}
+\PYG{c}{\PYGZsh{}     subfolders:}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /timing: timing reports}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /area: area reports}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /power: power reports}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /clk: clock reports}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /synthesized\PYGZus{}constraints: synthesized constraints}
+\PYG{c}{\PYGZsh{}     \PYGZhy{} /structural: structural VHDL files}
+\PYG{c}{\PYGZsh{}   VHDL\PYGZus{}FILES: List of VHDL files to be synthesized}
+\PYG{c}{\PYGZsh{}   TOP\PYGZus{}LEVEL\PYGZus{}ENTITY: Name of the top\PYGZhy{}level entity to be synthesized}
+\PYG{c}{\PYGZsh{}   ENTITY\PYGZus{}CONF: Configuration of the top\PYGZhy{}level entity (e.g., architecture name)}
+\PYG{c}{\PYGZsh{} PS: if you need more info from the user given to}
+\PYG{c}{\PYGZsh{} the bash script you obv need to modify the}
+\PYG{c}{\PYGZsh{} bash script to export/eval those variables}
+
+\PYG{c}{\PYGZsh{} Set the libraries}
+\PYG{k}{set}\PYG{+w}{ }library\PYG{+w}{ }WORK
+\PYG{n+nv}{define\PYGZus{}design\PYGZus{}lib}\PYG{+w}{ }WORK\PYG{+w}{ }\PYG{o}{\PYGZhy{}}path\PYG{+w}{ }work
+\PYG{n+nv}{analyze}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}library\PYG{+w}{ }WORK\PYG{+w}{ }\PYG{o}{\PYGZhy{}}format\PYG{+w}{ }vhdl\PYG{+w}{ }\PYG{k}{\PYGZob{}}\PYG{n+nv}{\PYGZdl{}\PYGZob{}VHDL\PYGZus{}FILES\PYGZcb{}}\PYG{k}{\PYGZcb{}}
+\PYG{n+nv}{elaborate}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}architecture\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}ENTITY\PYGZus{}CONF\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}library\PYG{+w}{ }work
+
+\PYG{c}{\PYGZsh{} Without constraints}
+\PYG{n+nv}{compile}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}map\PYGZus{}effort\PYG{+w}{ }high
+\PYG{c}{\PYGZsh{} compile\PYGZus{}ultra \PYGZhy{}timing\PYGZus{}high\PYGZus{}effort\PYGZus{}script}
+
+\PYG{c}{\PYGZsh{} reporting timing and area after the first synthesis without constraints \PYGZsh{}}
+\PYG{n+nv}{report\PYGZus{}timing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nworst\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}timing\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}timing\PYGZhy{}no\PYGZhy{}opt.txt
+\PYG{n+nv}{report\PYGZus{}area}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}area\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}area\PYGZhy{}no\PYGZhy{}opt.txt
+\PYG{n+nv}{report\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}clk\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}clk\PYGZhy{}no\PYGZhy{}opt.txt
+
+\PYG{n+nv}{write}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hierarchy\PYG{+w}{ }\PYG{o}{\PYGZhy{}}format\PYG{+w}{ }verilog\PYG{+w}{ }\PYG{o}{\PYGZhy{}}output\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}structural\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}structural\PYGZhy{}no\PYGZhy{}opt.v
+
+\PYG{n+nv}{write\PYGZus{}sdc}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}synthesized\PYGZus{}constraints\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}synthesized\PYGZus{}constraints\PYGZhy{}no\PYGZhy{}opt.sdc
+
+\PYG{c}{\PYGZsh{}\PYGZsh{} Only with clock constraint}
+\PYG{n+nv}{create\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}name\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}clk\PYGZdq{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}period\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }clk
+\PYG{n+nv}{compile}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}map\PYGZus{}effort\PYG{+w}{ }high
+\PYG{c}{\PYGZsh{} compile\PYGZus{}ultra \PYGZhy{}timing\PYGZus{}high\PYGZus{}effort\PYGZus{}script}
+
+\PYG{n+nv}{report\PYGZus{}timing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nworst\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}timing\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}timing\PYGZhy{}clkopt.txt
+\PYG{n+nv}{report\PYGZus{}area}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}area\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}area\PYGZhy{}clkopt.txt
+\PYG{n+nv}{report\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}clk\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}clk\PYGZhy{}clkopt.txt
+
+\PYG{n+nv}{write}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hierarchy\PYG{+w}{ }\PYG{o}{\PYGZhy{}}format\PYG{+w}{ }verilog\PYG{+w}{ }\PYG{o}{\PYGZhy{}}output\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}structural\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}structural\PYGZhy{}clkopt.v
+
+\PYG{n+nv}{write\PYGZus{}sdc}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}synthesized\PYGZus{}constraints\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}synthesized\PYGZus{}constraints\PYGZhy{}clkopt.sdc
+
+
+\PYG{c}{\PYGZsh{}\PYGZsh{} With both type of constraints}
+\PYG{n+nv}{create\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}name\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}clk\PYGZdq{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}period\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }clk
+\PYG{n+nv}{set\PYGZus{}max\PYGZus{}delay}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}from\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{all\PYGZus{}inputs}\PYG{k}{]}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}to\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{all\PYGZus{}outputs}\PYG{k}{]}
+\PYG{n+nv}{compile}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}map\PYGZus{}effort\PYG{+w}{ }high
+\PYG{c}{\PYGZsh{} compile\PYGZus{}ultra \PYGZhy{}timing\PYGZus{}high\PYGZus{}effort\PYGZus{}script}
+
+\PYG{n+nv}{report\PYGZus{}timing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nworst\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}timing\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}timing\PYGZhy{}totopt.txt
+\PYG{n+nv}{report\PYGZus{}area}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}area\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}area\PYGZhy{}totopt.txt
+\PYG{n+nv}{report\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}clk\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}clk\PYGZhy{}totopt.txt
+
+\PYG{n+nv}{write}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hierarchy\PYG{+w}{ }\PYG{o}{\PYGZhy{}}format\PYG{+w}{ }verilog\PYG{+w}{ }\PYG{o}{\PYGZhy{}}output\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}structural\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}structural\PYGZhy{}totopt.v
+\PYG{n+nv}{write\PYGZus{}sdc}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}synthesized\PYGZus{}constraints\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}synthesized\PYGZus{}constraints\PYGZhy{}totopt.sdc
+
+
+\PYG{c}{\PYGZsh{}\PYGZsh{} With strict constraints}
+\PYG{n+nv}{create\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}name\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}clk\PYGZdq{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}period\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }clk
+\PYG{n+nv}{set\PYGZus{}max\PYGZus{}delay}\PYG{+w}{ }\PYG{l+m+mf}{0.5}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}from\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{all\PYGZus{}inputs}\PYG{k}{]}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}to\PYG{+w}{ }\PYG{k}{[}\PYG{n+nv}{all\PYGZus{}outputs}\PYG{k}{]}
+\PYG{n+nv}{compile}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}map\PYGZus{}effort\PYG{+w}{ }high
+\PYG{c}{\PYGZsh{} compile\PYGZus{}ultra \PYGZhy{}timing\PYGZus{}high\PYGZus{}effort\PYGZus{}script}
+
+\PYG{n+nv}{report\PYGZus{}timing}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}nworst\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}timing\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}timing\PYGZhy{}strictopt.txt
+\PYG{n+nv}{report\PYGZus{}area}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}area\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}area\PYGZhy{}strictopt.txt
+\PYG{n+nv}{report\PYGZus{}clock}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}clk\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}report\PYGZhy{}clk\PYGZhy{}strictopt.txt
+
+\PYG{n+nv}{write}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}hierarchy\PYG{+w}{ }\PYG{o}{\PYGZhy{}}format\PYG{+w}{ }verilog\PYG{+w}{ }\PYG{o}{\PYGZhy{}}output\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}structural\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}structural\PYGZhy{}strictopt.v
+\PYG{n+nv}{write\PYGZus{}sdc}\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}\PYGZob{}WORK\PYGZus{}DIR\PYGZcb{}}\PYG{o}{/}synthesized\PYGZus{}constraints\PYG{o}{/}\PYG{n+nv}{\PYGZdl{}\PYGZob{}TOP\PYGZus{}LEVEL\PYGZus{}ENTITY\PYGZcb{}}\PYG{o}{\PYGZhy{}}synthesized\PYGZus{}constraints\PYGZhy{}strictopt.sdc
+
+\PYG{c}{\PYGZsh{} Exit}
+\PYG{n+nb}{exit}
+\end{Verbatim}

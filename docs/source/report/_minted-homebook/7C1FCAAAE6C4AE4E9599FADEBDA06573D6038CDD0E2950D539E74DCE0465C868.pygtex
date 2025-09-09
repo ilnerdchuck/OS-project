@@ -1,0 +1,384 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{library}\PYG{+w}{ }\PYG{n+nn}{ieee}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.std\PYGZus{}logic\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.numeric\PYGZus{}std.}\PYG{k}{all}\PYG{p}{;}
+\PYG{k}{use}\PYG{+w}{ }\PYG{n+nn}{ieee.math\PYGZus{}real.}\PYG{k}{all}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Entity Declaration}
+\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{datapath}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{    }\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{11}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code size in bits}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{    }\PYG{n}{fetch\PYGZus{}enable}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch stage enable signal}
+\PYG{+w}{    }\PYG{n}{decode\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Decode stage enable signal}
+\PYG{+w}{    }\PYG{n}{execute\PYGZus{}enable}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Execute stage enable signal}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage enable signal}
+\PYG{+w}{    }\PYG{n}{write\PYGZus{}back\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Write Back stage enable signal}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Decode stage signals}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}en}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file enable signal}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand 1}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 1 register}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand 2}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 2 register}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write signals}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}we}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write enable}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Execute stage signals}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 1 select signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 2 select signal}
+\PYG{+w}{    }\PYG{n}{ALU\PYGZus{}op}\PYG{+w}{          }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code input}
+
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage signals}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{         }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM read enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{         }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM write enable signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}3\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source select signal for memory stage (MEM/ALU) \PYGZhy{}\PYGZgt{} Could be replaced by DRAM\PYGZus{}enable}
+
+\PYG{+w}{    }\PYG{n}{inst\PYGZus{}type}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction type (R\PYGZhy{}type, I\PYGZhy{}type, J\PYGZhy{}type)}
+\PYG{+w}{    }\PYG{n}{opcode}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Opcode of the instruction}
+
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction register (for the CU)}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{k}{end}\PYG{+w}{ }\PYG{k}{entity}\PYG{+w}{ }\PYG{n+nc}{datapath}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Architecture Declaration}
+\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{rtl}\PYG{+w}{ }\PYG{k}{of}\PYG{+w}{ }\PYG{n+nc}{datapath}\PYG{+w}{ }\PYG{k}{is}
+
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{fetch\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{      }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{      }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{      }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{      }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter enable signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{      }\PYG{n}{next\PYGZus{}PC\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Program Counter}
+\PYG{+w}{      }\PYG{n}{IR\PYGZus{}out}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Instruction Register}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump/Branch signals}
+\PYG{+w}{      }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{      }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address input}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{fetch\PYGZus{}stage}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{decode\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of instruction in bits}
+\PYG{+w}{      }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{      }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{      }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{      }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{      }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output registers enable signal}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{      }\PYG{n}{RF\PYGZus{}en}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file enable signal}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand 1}
+\PYG{+w}{      }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 1 register}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand 2}
+\PYG{+w}{      }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 2 register}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write signals}
+\PYG{+w}{      }\PYG{n}{RF\PYGZus{}we}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write enable}
+\PYG{+w}{      }\PYG{n}{inst\PYGZus{}type}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction type (R\PYGZhy{}type, I\PYGZhy{}type, J\PYGZhy{}type)}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{      }\PYG{n}{IR\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction register}
+\PYG{+w}{      }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter}
+
+\PYG{+w}{      }\PYG{n}{PC\PYGZus{}out}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate value for source 1}
+\PYG{+w}{      }\PYG{n}{A}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 1 operand}
+\PYG{+w}{      }\PYG{n}{B}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 2 operand}
+\PYG{+w}{      }\PYG{n}{IMM\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate value for source 1}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address and data (Write Back stage)}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}addr\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register (used in Write Back stage)}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}data\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file data for the destination register (used in Write Back stage)}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read addresses for source registers (Used for Forwarding)}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register bypass (not used in decode stage)}
+\PYG{+w}{      }\PYG{n}{R\PYGZus{}source\PYGZus{}1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register 1 source address for forwarding}
+\PYG{+w}{      }\PYG{n}{R\PYGZus{}source\PYGZus{}2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register 2 source address for forwarding}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Signals to handle jump instructions}
+\PYG{+w}{      }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{      }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address output}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{decode\PYGZus{}stage}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{execute\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{      }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{      }\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{11}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size of ALU operation code in bits}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{      }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{      }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{      }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU enable signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation signals}
+\PYG{+w}{      }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{          }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code input}
+\PYG{+w}{      }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 1 select signal}
+\PYG{+w}{      }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 2 select signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{      }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} PC value input (IMM\PYGZus{}1)}
+\PYG{+w}{      }\PYG{n}{A}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand A input}
+\PYG{+w}{      }\PYG{n}{B}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand B input}
+\PYG{+w}{      }\PYG{n}{IMM\PYGZus{}in}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate 2 value input}
+
+\PYG{+w}{      }\PYG{n}{alu\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result output}
+
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data output (for memory operations)}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input (Bypass)}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register output (Bypass)}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding signals}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 00: no forwarding, 01: forward from MEM stage, 11: forward from WB stage}
+\PYG{+w}{      }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source A operand}
+\PYG{+w}{      }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source B operand}
+
+\PYG{+w}{      }\PYG{n}{RS\PYGZus{}wb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Data Forwarded from Write Back stage (WB stage)}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{execute\PYGZus{}stage}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{      }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DLX Processor signals}
+\PYG{+w}{      }\PYG{n}{clk}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Clock signal}
+\PYG{+w}{      }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reset signal}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{      }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} stage enable }
+\PYG{+w}{      }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM enable signal }
+\PYG{+w}{      }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM read enable signal}
+\PYG{+w}{      }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM write enable signal}
+\PYG{+w}{      }\PYG{n}{source\PYGZus{}select}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source select signal MEM/ALU}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{      }\PYG{n}{alu\PYGZus{}result}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result input}
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}data\PYGZus{}in}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data input (from execute stage)}
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage output \PYGZhy{}\PYGZgt{} to Write Back stage}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file signals}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input}
+\PYG{+w}{      }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file address input (WB stage)}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{forwarding\PYGZus{}unit}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{    }\PYG{k}{generic}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{32}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Size operands in bits}
+\PYG{+w}{      }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{integer}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Number of registers in bits (log\PYGZus{}2(RF\PYGZus{}SIZE))}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{port}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Control unit signals}
+\PYG{+w}{      }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stage enable signal}
+
+\PYG{+w}{      }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Input/Output signals}
+\PYG{+w}{      }\PYG{n}{EX\PYGZus{}MEM\PYGZus{}RD}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Destination register from EX stage}
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}WB\PYGZus{}RD}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Destination register from MEM stage}
+\PYG{+w}{      }\PYG{n}{EX\PYGZus{}MEM\PYGZus{}RegW}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register write enable from MEM stage}
+\PYG{+w}{      }\PYG{n}{MEM\PYGZus{}WB\PYGZus{}RegW}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register write enable from WB stage}
+\PYG{+w}{      }\PYG{n}{ID\PYGZus{}RS\PYGZus{}1}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source register 1 from EX stage}
+\PYG{+w}{      }\PYG{n}{ID\PYGZus{}RS\PYGZus{}2}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source register 2 from EX stage}
+\PYG{+w}{      }\PYG{n}{opcode}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Opcode of the instruction}
+\PYG{+w}{      }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding control for source A}
+\PYG{+w}{      }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding control for source B}
+\PYG{+w}{      }\PYG{n}{stall}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k}{out}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stall signal to control data hazards}
+\PYG{+w}{    }\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{end}\PYG{+w}{ }\PYG{k}{component}\PYG{+w}{ }\PYG{n+nc}{forwarding\PYGZus{}unit}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Signals for the fetch stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}FD}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter output Fetch \PYGZhy{}\PYGZgt{} Decode stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}DE}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter output Decode \PYGZhy{}\PYGZgt{} Execute stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{IR}\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction Register output}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Signals for jumps}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{   }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address input}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Signals for the decode stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{A}\PYG{+w}{           }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 1 operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{B}\PYG{+w}{           }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 2 operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{IMM\PYGZus{}out}\PYG{+w}{     }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate value for source 1 output}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}DE}\PYG{+w}{       }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input Decode \PYGZhy{}\PYGZgt{} Execute stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}addr\PYGZus{}WBD}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input Write Back \PYGZhy{}\PYGZgt{} Decode (used in Write Back stage)}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}data\PYGZus{}WBD}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register Write Back \PYGZhy{}\PYGZgt{} Decode (used in Write Back stage)}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}1}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register Decode \PYGZhy{}\PYGZgt{} Execute (for forwarding)}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}2}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register Decode \PYGZhy{}\PYGZgt{} Execute (for forwarding)}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Signals for the execute stage}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}out}\PYG{+w}{      }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result output}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data output (data for memory operations)}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}EM}\PYG{+w}{        }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input Decode \PYGZhy{}\PYGZgt{} Execute stage}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding signals}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source A operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic\PYGZus{}vector}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source B operand}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{stall}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stall signal to control data hazards}
+
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{f\PYGZus{}en}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} True Fetch stage enable signal}
+\PYG{+w}{  }\PYG{k}{signal}\PYG{+w}{ }\PYG{n}{d\PYGZus{}en}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{std\PYGZus{}logic}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} True Decode stage enable signal}
+
+\PYG{k}{begin}
+\PYG{+w}{  }\PYG{n}{f\PYGZus{}en}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{fetch\PYGZus{}enable}\PYG{+w}{ }\PYG{k}{and}\PYG{+w}{ }\PYG{n}{stall}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch stage enable signal disabled if stall is needed }
+\PYG{+w}{  }\PYG{n}{d\PYGZus{}en}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{decode\PYGZus{}enable}\PYG{+w}{ }\PYG{k}{and}\PYG{+w}{ }\PYG{n}{stall}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Fetch stage enable signal disabled if stall is needed }
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the fetch stage}
+\PYG{+w}{  }\PYG{n}{fetch\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{fetch\PYGZus{}stage}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{I\PYGZus{}SIZE}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{          }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{clk}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{f\PYGZus{}en}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{next\PYGZus{}PC\PYGZus{}out}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}FD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Program Counter}
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}out}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{IR}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output Instruction Register}
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}en}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address input}
+\PYG{+w}{  }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the decode stage}
+\PYG{+w}{  }\PYG{n}{decode\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{decode\PYGZus{}stage}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{I\PYGZus{}SIZE}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{I\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{NUM\PYGZus{}REG}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{          }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{clk}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{d\PYGZus{}en}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}en}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}en}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file enable signal}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}re\PYGZus{}1}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 1 register}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}re\PYGZus{}2}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file read enable for source 2 register}
+\PYG{+w}{    }\PYG{n}{RF\PYGZus{}we}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}we}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write enable}
+\PYG{+w}{    }\PYG{n}{inst\PYGZus{}type}\PYG{+w}{    }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{inst\PYGZus{}type}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction type (R\PYGZhy{}type, I\PYGZhy{}type, J\PYGZhy{}type)}
+\PYG{+w}{    }\PYG{n}{IR\PYGZus{}in}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{IR}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instruction register input}
+\PYG{+w}{    }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}FD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Program Counter input}
+
+\PYG{+w}{    }\PYG{n}{PC\PYGZus{}out}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}DE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate value for source 1 output}
+\PYG{+w}{    }\PYG{n}{A}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{A}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 1 operand}
+\PYG{+w}{    }\PYG{n}{B}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{B}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Output for source 2 operand}
+\PYG{+w}{    }\PYG{n}{IMM\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{IMM\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate value for source 1 output}
+
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}addr\PYGZus{}in}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}addr\PYGZus{}WBD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input (used in Write Back stage)}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}data\PYGZus{}in}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}data\PYGZus{}WBD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file data for the destination register write (used in Write Back stage)}
+
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}DE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register bypass (not used in decode stage)}
+\PYG{+w}{    }\PYG{n}{R\PYGZus{}source\PYGZus{}1}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}1}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register bypass (not used in decode stage)}
+\PYG{+w}{    }\PYG{n}{R\PYGZus{}source\PYGZus{}2}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}2}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register bypass (not used in decode stage)}
+
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}en}\PYG{+w}{   }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}en}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump enable signal}
+\PYG{+w}{    }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{jmp\PYGZus{}addr}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Jump address output}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the execute stage}
+\PYG{+w}{  }\PYG{n}{execute\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{execute\PYGZus{}stage}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{NUM\PYGZus{}REG}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{FUN\PYGZus{}SIZE}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{FUN\PYGZus{}SIZE}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{          }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{clk}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{        }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{execute\PYGZus{}enable}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU enable signal}
+
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}op}\PYG{+w}{          }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{ALU\PYGZus{}op}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU operation code input}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{source\PYGZus{}1\PYGZus{}select}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 1 select signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{source\PYGZus{}2\PYGZus{}select}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source 2 select signal}
+
+\PYG{+w}{    }\PYG{n}{PC\PYGZus{}in}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{PC\PYGZus{}DE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate 1 value input}
+\PYG{+w}{    }\PYG{n}{A}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{A}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand A input}
+\PYG{+w}{    }\PYG{n}{B}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{B}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Operand B input}
+\PYG{+w}{    }\PYG{n}{IMM\PYGZus{}in}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{IMM\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Immediate 2 value input}
+
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}out}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result output}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data output (data for memory operations)}
+
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}DE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}EM}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register output (connect directly to decode stage)}
+
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}A}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source A operand (not used in this example)}
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}B}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarded value for source B operand (not used in this example)}
+
+\PYG{+w}{    }\PYG{n}{RS\PYGZus{}wb}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}data\PYGZus{}WBD}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Data Forwarded from Write Back stage (WB stage)}
+\PYG{+w}{  }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the write memory and write back file stage}
+\PYG{+w}{  }\PYG{n}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{write\PYGZus{}mem\PYGZus{}rf\PYGZus{}stage}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{NUM\PYGZus{}REG}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{clk}\PYG{+w}{           }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{clk}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{reset}\PYG{+w}{         }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{reset}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{memory\PYGZus{}enable}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} stage enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}enable}\PYG{+w}{   }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}enable}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}RE}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}RE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM read enable signal}
+\PYG{+w}{    }\PYG{n}{DRAM\PYGZus{}WE}\PYG{+w}{       }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DRAM\PYGZus{}WE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} DRAM write enable signal}
+\PYG{+w}{    }\PYG{n}{source\PYGZus{}select}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{source\PYGZus{}3\PYGZus{}select}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source select signal MEM/ALU}
+
+\PYG{+w}{    }\PYG{n}{alu\PYGZus{}result}\PYG{+w}{    }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{alu\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ALU result input}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}data\PYGZus{}in}\PYG{+w}{   }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{MEM\PYGZus{}data\PYGZus{}out}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory data input (from execute stage)}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}stage\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}data\PYGZus{}WBD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Memory stage output}
+
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}in}\PYG{+w}{  }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}EM}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file write address for destination register input}
+\PYG{+w}{    }\PYG{n}{RD\PYGZus{}out}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}addr\PYGZus{}WBD}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register file address input (WB stage)}
+\PYG{+w}{  }\PYG{p}{);}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Instantiate the forwarding unit}
+\PYG{+w}{  }\PYG{n}{forwarding\PYGZus{}unit\PYGZus{}inst}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{forwarding\PYGZus{}unit}
+\PYG{+w}{  }\PYG{k}{generic}\PYG{+w}{ }\PYG{k}{map}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{OPERAND\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{NUM\PYGZus{}REG}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{NUM\PYGZus{}REG}
+\PYG{+w}{  }\PYG{p}{)}
+\PYG{+w}{  }\PYG{k}{port}\PYG{+w}{ }\PYG{k}{map}
+\PYG{+w}{  }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{stage\PYGZus{}enable}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{execute\PYGZus{}enable}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stage enable signal}
+
+\PYG{+w}{    }\PYG{n}{EX\PYGZus{}MEM\PYGZus{}RD}\PYG{+w}{   }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}DE}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Destination register from EX stage}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}WB\PYGZus{}RD}\PYG{+w}{   }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RD\PYGZus{}addr\PYGZus{}WBD}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Destination register from MEM stage}
+\PYG{+w}{    }\PYG{n}{EX\PYGZus{}MEM\PYGZus{}RegW}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}we}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register write enable from MEM stage}
+\PYG{+w}{    }\PYG{n}{MEM\PYGZus{}WB\PYGZus{}RegW}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RF\PYGZus{}we}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Register write enable from WB stage}
+\PYG{+w}{    }\PYG{n}{ID\PYGZus{}RS\PYGZus{}1}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}1}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source register 1 from EX stage}
+\PYG{+w}{    }\PYG{n}{ID\PYGZus{}RS\PYGZus{}2}\PYG{+w}{     }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{R\PYGZus{}source\PYGZus{}2}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Source register 2 from EX stage}
+\PYG{+w}{    }\PYG{n}{opcode}\PYG{+w}{      }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{opcode}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Opcode of the instruction}
+
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}A}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}A}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding control for source A (not used in this example)}
+\PYG{+w}{    }\PYG{n}{fwd\PYGZus{}B}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{fwd\PYGZus{}B}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Forwarding control for source B (not used in this example)}
+\PYG{+w}{    }\PYG{n}{stall}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{stall}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Stall signal to control data hazards (not used in this example)}
+\PYG{+w}{  }\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{n}{IR\PYGZus{}out}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{IR}\PYG{+w}{ }\PYG{k}{when}\PYG{+w}{ }\PYG{n}{reset}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{+w}{ }\PYG{k}{else}
+\PYG{+w}{    }\PYG{l+m+mh}{X\PYGZdq{}54000000\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Connect the instruction register output to the datapath output}
+\PYG{k}{end}\PYG{+w}{ }\PYG{k}{architecture}\PYG{+w}{ }\PYG{n+nc}{rtl}\PYG{p}{;}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}==============================================================================}
+\end{Verbatim}
