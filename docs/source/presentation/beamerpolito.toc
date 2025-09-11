@@ -1,4 +1,5 @@
-\beamer@sectionintoc {1}{QEMU Structure}{3}{0}{1}
-\beamer@sectionintoc {2}{QEMU Implementation}{5}{0}{2}
-\beamer@sectionintoc {3}{FreeRTOS Porting}{9}{0}{3}
-\beamer@sectionintoc {4}{Summary}{12}{0}{4}
+\beamer@sectionintoc {1}{Project Goals}{3}{0}{1}
+\beamer@sectionintoc {2}{QEMU Structure}{5}{0}{2}
+\beamer@sectionintoc {3}{QEMU Implementation}{8}{0}{3}
+\beamer@sectionintoc {4}{FreeRTOS Porting}{13}{0}{4}
+\beamer@sectionintoc {5}{Summary}{19}{0}{5}
