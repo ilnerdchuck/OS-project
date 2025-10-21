@@ -1,0 +1,50 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}ifndef HW\PYGZus{}S32K3x8\PYGZus{}USART}
+\PYG{c+cp}{\PYGZsh{}define HW\PYGZus{}S32K3x8\PYGZus{}USART}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/sysbus.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}chardev/char\PYGZhy{}fe.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}SR   0x00}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}DR   0x04}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}BRR  0x08}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1  0x0C}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR2  0x10}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR3  0x14}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}GTPR 0x18}
+
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}SR\PYGZus{}RESET (USART\PYGZus{}SR\PYGZus{}TXE | USART\PYGZus{}SR\PYGZus{}TC)}
+
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}SR\PYGZus{}TXE  (1 \PYGZlt{}\PYGZlt{} 7)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}SR\PYGZus{}TC   (1 \PYGZlt{}\PYGZlt{} 6)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}SR\PYGZus{}RXNE (1 \PYGZlt{}\PYGZlt{} 5)}
+
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}UE     (1 \PYGZlt{}\PYGZlt{} 13)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}TXEIE  (1 \PYGZlt{}\PYGZlt{} 7)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}TCEIE  (1 \PYGZlt{}\PYGZlt{} 6)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}RXNEIE (1 \PYGZlt{}\PYGZlt{} 5)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}TE     (1 \PYGZlt{}\PYGZlt{} 3)}
+\PYG{c+cp}{\PYGZsh{}define USART\PYGZus{}CR1\PYGZus{}RE     (1 \PYGZlt{}\PYGZlt{} 2)}
+
+\PYG{c+cp}{\PYGZsh{}define TYPE\PYGZus{}S32K3x8\PYGZus{}UART \PYGZdq{}S32K3x8\PYGZus{}UART\PYGZdq{}}
+\PYG{n}{OBJECT\PYGZus{}DECLARE\PYGZus{}SIMPLE\PYGZus{}TYPE}\PYG{p}{(}\PYG{n}{S32K3x8UartState}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}UART}\PYG{p}{)}
+
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3x8UartState}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{n}{parent\PYGZus{}obj}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{mmio}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}sr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}dr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}brr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}cr1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}cr2}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}cr3}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}gtpr}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{CharBackend}\PYG{+w}{ }\PYG{n}{chr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{qemu\PYGZus{}irq}\PYG{+w}{ }\PYG{n}{irq}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\PYG{c+cp}{\PYGZsh{}endif }\PYG{c+cm}{/* HW\PYGZus{}STM32F2XX\PYGZus{}USART\PYGZus{}H */}
+\end{Verbatim}

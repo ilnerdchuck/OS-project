@@ -1,0 +1,51 @@
+#ifndef HW_STM32F2XX_SPI_H
+#define HW_STM32F2XX_SPI_H
+
+#include "hw/ssi/ssi.h"
+#include "hw/sysbus.h"
+#include "qom/object.h"
+
+// TODO: finish setting al lthe register form the datasheet
+#define S32_SPI_CR1 0x00
+#define S32_SPI_CR2 0x04
+#define S32_SPI_SR 0x08
+#define S32_SPI_DR 0x0C
+#define S32_SPI_CRCPR 0x10
+#define S32_SPI_RXCRCR 0x14
+#define S32_SPI_TXCRCR 0x18
+#define S32_SPI_I2SCFGR 0x1C
+#define S32_SPI_I2SPR 0x20
+
+#define S32_SPI_CR1_SPE (1 << 6)
+#define S32_SPI_CR1_MSTR (1 << 2)
+
+#define S32_SPI_SR_RXNE 1
+
+#define TYPE_S32K3x8_SPI "S32K3x8_SPI"
+OBJECT_DECLARE_SIMPLE_TYPE(S32K3x8SPIState, S32K3x8_SPI)
+
+struct S32K3x8SPIState {
+  /* <private> */
+  SysBusDevice parent_obj;
+
+  /* <public> */
+  MemoryRegion mmio;
+
+  uint32_t spi_cr1;
+  uint32_t spi_cr2;
+  uint32_t spi_sr;
+  uint32_t spi_dr;
+  uint32_t spi_crcpr;
+  uint32_t spi_rxcrcr;
+  uint32_t spi_txcrcr;
+  uint32_t spi_i2scfgr;
+  uint32_t spi_i2spr;
+
+  // For testing purposes
+  uint32_t test_var;
+
+  qemu_irq irq;
+  SSIBus *ssi;
+};
+
+#endif

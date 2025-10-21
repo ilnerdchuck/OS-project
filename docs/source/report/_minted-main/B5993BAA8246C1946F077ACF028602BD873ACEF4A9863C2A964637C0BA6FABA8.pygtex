@@ -1,0 +1,143 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} The directory that contains FreeRTOS source code}
+\PYG{n+nl}{FREERTOS\PYGZus{}ROOT}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{o}{/}\PYG{n}{home}\PYG{o}{/}\PYG{n}{chuck}\PYG{o}{/}\PYG{n}{repos}\PYG{o}{/}\PYG{n}{FreeRTOS}\PYG{o}{/}\PYG{n}{FreeRTOS}\PYG{o}{/}
+
+\PYG{c+cp}{\PYGZsh{} Demo code}
+\PYG{n+nl}{DEMO\PYGZus{}PROJECT}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}
+
+\PYG{c+cp}{\PYGZsh{} FreeRTOS kernel}
+\PYG{n+nl}{KERNEL\PYGZus{}DIR}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{FREERTOS\PYGZus{}ROOT}\PYG{p}{)}\PYG{o}{/}\PYG{n}{Source}
+\PYG{n+nl}{KERNEL\PYGZus{}PORT\PYGZus{}DIR}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{portable}\PYG{o}{/}\PYG{n}{GCC}\PYG{o}{/}\PYG{n}{ARM\PYGZus{}CM3}
+
+\PYG{c+cp}{\PYGZsh{} Where to store all the generated files (objects, elf and map)}
+\PYG{n+nl}{OUTPUT\PYGZus{}DIR}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}\PYG{o}{/}\PYG{n}{build}
+
+\PYG{n+nl}{DEMO\PYGZus{}NAME}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{demo}
+\PYG{n+nl}{ELF}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}NAME}\PYG{p}{).}\PYG{n}{elf}
+\PYG{n+nl}{MAP}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}NAME}\PYG{p}{).}\PYG{n}{map}
+
+\PYG{c+cp}{\PYGZsh{} NXP toolchain}
+\PYG{n+nl}{CC}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{p}{..}\PYG{o}{/}\PYG{n}{gcc}\PYG{l+m+mf}{\PYGZhy{}10.2.0}\PYG{o}{\PYGZhy{}}\PYG{n}{Earmv7GCC}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{/}\PYG{n}{x86\PYGZus{}64}\PYG{o}{\PYGZhy{}}\PYG{n}{linux}\PYG{o}{/}\PYG{n}{bin}\PYG{o}{/}\PYG{n}{arm}\PYG{o}{\PYGZhy{}}\PYG{n}{none}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{\PYGZhy{}}\PYG{n}{gcc}
+\PYG{n+nl}{LD}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{p}{..}\PYG{o}{/}\PYG{n}{gcc}\PYG{l+m+mf}{\PYGZhy{}10.2.0}\PYG{o}{\PYGZhy{}}\PYG{n}{Earmv7GCC}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{/}\PYG{n}{x86\PYGZus{}64}\PYG{o}{\PYGZhy{}}\PYG{n}{linux}\PYG{o}{/}\PYG{n}{bin}\PYG{o}{/}\PYG{n}{arm}\PYG{o}{\PYGZhy{}}\PYG{n}{none}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{\PYGZhy{}}\PYG{n}{gcc}
+\PYG{n+nl}{SIZE}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{p}{..}\PYG{o}{/}\PYG{n}{gcc}\PYG{l+m+mf}{\PYGZhy{}10.2.0}\PYG{o}{\PYGZhy{}}\PYG{n}{Earmv7GCC}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{/}\PYG{n}{x86\PYGZus{}64}\PYG{o}{\PYGZhy{}}\PYG{n}{linux}\PYG{o}{/}\PYG{n}{bin}\PYG{o}{/}\PYG{n}{arm}\PYG{o}{\PYGZhy{}}\PYG{n}{none}\PYG{o}{\PYGZhy{}}\PYG{n}{eabi}\PYG{o}{\PYGZhy{}}\PYG{n}{size}
+
+\PYG{c+cp}{\PYGZsh{} Target embedded board and CPU}
+\PYG{n+nl}{MACHINE}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3X8EVB}\PYG{+w}{ }
+\PYG{n+nl}{CPU}\PYG{+w}{ }\PYG{p}{:}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{cortex}\PYG{o}{\PYGZhy{}}\PYG{n}{m7}
+
+\PYG{c+cp}{\PYGZsh{} Use \PYGZhy{}s to connect to gdb port 1234 and \PYGZhy{}S to wait before executing}
+\PYG{n}{QEMU\PYGZus{}FLAGS\PYGZus{}DBG}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{S}\PYG{+w}{ }
+
+\PYG{n}{INCLUDE\PYGZus{}DIRS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{I\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{include}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{I\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}PORT\PYGZus{}DIR}\PYG{p}{)}
+\PYG{n}{INCLUDE\PYGZus{}DIRS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{I\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}PROJECT}\PYG{p}{)}
+
+\PYG{n}{VPATH}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}PORT\PYGZus{}DIR}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{portable}\PYG{o}{/}\PYG{n}{MemMang}
+\PYG{n}{VPATH}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}PROJECT}\PYG{p}{)}
+
+\PYG{c+cp}{\PYGZsh{} Include paths. See INCLUDE\PYGZus{}DIRS}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{INCLUDE\PYGZus{}DIRS}\PYG{p}{)}
+
+\PYG{c+cp}{\PYGZsh{} Don\PYGZsq{}t include standard libraries}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{ffreestanding}
+
+\PYG{c+cp}{\PYGZsh{} Target ARM cortex M3 processor}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{mcpu}\PYG{o}{=}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{CPU}\PYG{p}{)}
+\PYG{c+cp}{\PYGZsh{} Use the thumb 16 bits instruction set. Required for cortex\PYGZhy{}M}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{mthumb}
+
+\PYG{c+cp}{\PYGZsh{} Print all the most common warnings}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Wall}
+
+\PYG{c+cp}{\PYGZsh{} Print extra warnings, not included in \PYGZhy{}Wall}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Wextra}
+
+\PYG{c+cp}{\PYGZsh{} Print warnings about variable shadowing (var name = outer scope var name)}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Wshadow}
+
+\PYG{c+cp}{\PYGZsh{} Include debug information (\PYGZhy{}g) with maximum level of detail (3)}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{g3}
+
+\PYG{c+cp}{\PYGZsh{} Optimize (\PYGZhy{}O) the size (s) of the generated executable }
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Os}
+
+\PYG{c+cp}{\PYGZsh{} Place each function in a dedicated section (see \PYGZhy{}gc\PYGZhy{}sections in LDFLAGS)}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{ffunction}\PYG{o}{\PYGZhy{}}\PYG{n}{sections}
+
+\PYG{c+cp}{\PYGZsh{} Place each variable in a dedicated section (see \PYGZhy{}gc\PYGZhy{}sections in LDFLAGS)}
+\PYG{n}{CFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{fdata}\PYG{o}{\PYGZhy{}}\PYG{n}{sections}
+
+\PYG{c+cp}{\PYGZsh{} Specify the linker script}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{T}\PYG{+w}{ }\PYG{p}{.}\PYG{o}{/}\PYG{n}{S32K3}\PYG{p}{.}\PYG{n}{ld}
+
+\PYG{c+cp}{\PYGZsh{} Don\PYGZsq{}t use the standard start\PYGZhy{}up files}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{nostartfiles}
+
+\PYG{c+cp}{\PYGZsh{} Optimize compilation to reduce memory}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{specs}\PYG{o}{=}\PYG{n}{nano}\PYG{p}{.}\PYG{n}{specs}
+
+\PYG{c+cp}{\PYGZsh{} Optimize compilation targeting a system without any operating system}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{specs}\PYG{o}{=}\PYG{n}{nosys}\PYG{p}{.}\PYG{n}{specs}
+
+\PYG{c+cp}{\PYGZsh{} Generate map file with memory layout. Pass option to the linker (\PYGZhy{}Xlinker)}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Xlinker}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Map}\PYG{o}{=}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{MAP}\PYG{p}{)}
+
+\PYG{c+cp}{\PYGZsh{} Remove unused sections. Used with \PYGZhy{}ffunction\PYGZhy{}sections and \PYGZhy{}fdata\PYGZhy{}sections}
+\PYG{c+cp}{\PYGZsh{} optimized memory. Pass option to the linker (\PYGZhy{}Xlinker)}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{Xlinker}\PYG{+w}{ }\PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{n}{gc}\PYG{o}{\PYGZhy{}}\PYG{n}{sections}
+
+\PYG{c+cp}{\PYGZsh{} Link specifically for cortex M3 and thumb instruction set}
+\PYG{n}{LDFLAGS}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{mcpu}\PYG{o}{=}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{CPU}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{mthumb}
+
+\PYG{c+cp}{\PYGZsh{} Kernel files}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{list}\PYG{p}{.}\PYG{n}{c}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{tasks}\PYG{p}{.}\PYG{n}{c}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{queue}\PYG{p}{.}\PYG{n}{c}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{portable}\PYG{o}{/}\PYG{n}{MemMang}\PYG{o}{/}\PYG{n}{heap\PYGZus{}4}\PYG{p}{.}\PYG{n}{c}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{KERNEL\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/}\PYG{n}{portable}\PYG{o}{/}\PYG{n}{GCC}\PYG{o}{/}\PYG{n}{ARM\PYGZus{}CM3}\PYG{o}{/}\PYG{n}{port}\PYG{p}{.}\PYG{n}{c}
+
+\PYG{c+cp}{\PYGZsh{} Demo files}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}PROJECT}\PYG{p}{)}\PYG{o}{/}\PYG{n}{main}\PYG{p}{.}\PYG{n}{c}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{DEMO\PYGZus{}PROJECT}\PYG{p}{)}\PYG{o}{/}\PYG{n}{peripherals}\PYG{p}{.}\PYG{n}{c}
+
+\PYG{c+cp}{\PYGZsh{} Start\PYGZhy{}up code}
+\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{p}{.}\PYG{o}{/}\PYG{n}{startup}\PYG{p}{.}\PYG{n}{c}
+
+\PYG{c+cp}{\PYGZsh{} Create list of object files with the same names of the sources}
+\PYG{n}{OBJS}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{SOURCE\PYGZus{}FILES}\PYG{o}{:\PYGZpc{}}\PYG{p}{.}\PYG{n}{c}\PYG{o}{=\PYGZpc{}}\PYG{p}{.}\PYG{n}{o}\PYG{p}{)}
+
+\PYG{c+cp}{\PYGZsh{} Remove path from object filename}
+\PYG{n}{OBJS\PYGZus{}NOPATH}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{notdir}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OBJS}\PYG{p}{))}
+
+\PYG{c+cp}{\PYGZsh{} Prepend output dir to object filenames}
+\PYG{n}{OBJS\PYGZus{}OUTPUT}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OBJS\PYGZus{}NOPATH}\PYG{o}{:\PYGZpc{}}\PYG{p}{.}\PYG{n}{o}\PYG{o}{=}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/\PYGZpc{}}\PYG{p}{.}\PYG{n}{o}\PYG{p}{)}
+
+\PYG{n+nl}{all}\PYG{p}{:}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{ELF}\PYG{p}{)}
+
+\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{ELF}\PYG{p}{)}\PYG{o}{:}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OBJS\PYGZus{}OUTPUT}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{.}\PYG{o}{/}\PYG{n}{S32K3}\PYG{p}{.}\PYG{n}{ld}\PYG{+w}{ }\PYG{n}{Makefile}
+\PYG{+w}{	}\PYG{n}{echo}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n\PYGZbs{}n}\PYG{l+s}{\PYGZhy{}\PYGZhy{}\PYGZhy{} Final linking \PYGZhy{}\PYGZhy{}\PYGZhy{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}
+\PYG{+w}{	}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{LD}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{LDFLAGS}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OBJS\PYGZus{}OUTPUT}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{o}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{ELF}\PYG{p}{)}
+\PYG{+w}{	}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{SIZE}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{ELF}\PYG{p}{)}
+
+\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{/\PYGZpc{}}\PYG{p}{.}\PYG{n}{o}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{p}{.}\PYG{n}{c}\PYG{+w}{  }\PYG{n}{Makefile}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}
+\PYG{+w}{	}\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{CC}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{CFLAGS}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{o}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{err}{@}
+
+\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{o}{:}
+\PYG{+w}{	}\PYG{n}{mkdir}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{p}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}
+
+\PYG{n+nl}{cleanobj}\PYG{p}{:}
+\PYG{+w}{	}\PYG{n}{rm}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{f}\PYG{+w}{ }\PYG{n}{\PYGZdl{}}\PYG{p}{(}\PYG{n}{OUTPUT\PYGZus{}DIR}\PYG{p}{)}\PYG{c+cm}{/*.o}
+
+\PYG{c+cm}{clean:}
+\PYG{c+cm}{	rm \PYGZhy{}rf \PYGZdl{}(ELF) \PYGZdl{}(MAP) \PYGZdl{}(OUTPUT\PYGZus{}DIR)/*.o \PYGZdl{}(OUTPUT\PYGZus{}DIR)}
+
+\PYG{c+cm}{qemu\PYGZus{}start:}
+\PYG{c+cm}{	../qemu/build/qemu\PYGZhy{}system\PYGZhy{}arm \PYGZhy{}machine \PYGZdl{}(MACHINE) \PYGZhy{}cpu \PYGZdl{}(CPU) \PYGZhy{}kernel \PYGZbs{}}
+\PYG{c+cm}{		\PYGZdl{}(ELF) \PYGZhy{}monitor none \PYGZhy{}nographic \PYGZhy{}serial stdio \PYGZhy{}d strace \PYGZhy{}d trace:\PYGZdq{}memory\PYGZus{}region\PYGZus{}ops\PYGZus{}*\PYGZdq{} \PYGZhy{}D ./log.txt }
+
+\PYG{c+cm}{qemu\PYGZus{}debug:}
+\PYG{c+cm}{	../qemu/build/qemu\PYGZhy{}system\PYGZhy{}arm \PYGZhy{}machine \PYGZdl{}(MACHINE) \PYGZhy{}cpu \PYGZdl{}(CPU) \PYGZhy{}kernel \PYGZbs{}}
+\PYG{c+cm}{	\PYGZdl{}(ELF) \PYGZhy{}monitor none \PYGZhy{}nographic \PYGZhy{}serial stdio \PYGZdl{}(QEMU\PYGZus{}FLAGS\PYGZus{}DBG) \PYGZhy{}m 128M \PYGZhy{}append \PYGZdq{}root=/dev/sda console=ttyS0\PYGZdq{} \PYGZhy{}d trace:\PYGZdq{}memory\PYGZus{}region\PYGZus{}ops\PYGZus{}read\PYGZdq{} \PYGZhy{}D ./log.txt}
+
+\PYG{c+cm}{gdb\PYGZus{}start:}
+\PYG{c+cm}{	gdb \PYGZdl{}(ELF) \PYGZhy{}ex \PYGZdq{}target remote :1234\PYGZdq{} }
+\end{Verbatim}

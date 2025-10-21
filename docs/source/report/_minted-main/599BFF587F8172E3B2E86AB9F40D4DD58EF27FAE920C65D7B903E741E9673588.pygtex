@@ -1,0 +1,23 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}init}\PYG{p}{(}\PYG{n}{Object}\PYG{+w}{  }\PYG{o}{*}\PYG{n}{obj}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8State}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}MCU}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{//Peripheral initialization}
+
+\PYG{+w}{    }\PYG{c+c1}{//UART}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{       }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}uart[*]\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],}
+\PYG{+w}{                                }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}UART}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{//SPI}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}spi[*]\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}SPI}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{//cpu initializer}
+\PYG{+w}{    }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{s}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}armv7m\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cpu}\PYG{p}{,}\PYG{n}{TYPE\PYGZus{}ARMV7M}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{//Clock initializer}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sysclk}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}init\PYGZus{}clock\PYGZus{}in}\PYG{p}{(}\PYG{n}{DEVICE}\PYG{p}{(}\PYG{n}{s}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}sysclk\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

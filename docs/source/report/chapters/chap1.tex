@@ -1,127 +1,128 @@
 \chapter{Introduction}
 
 \section{Project Objectives}
-The primary objectives of the DLX project are as follows:
+
+The goal of this project is to create a simulation environment for the NXP S32K3X8EVB board using QEMU. This environment will allow developers to test and develop embedded software applications without the need for physical hardware, thereby reducing costs and increasing accessibility. The specific objectives of the project include:
 \begin{itemize}
-    \item To design and implement a functional DLX microprocessor using VHDL.
-    \item To understand the principles of RISC architecture and pipeline processing.
-    \item To validate the design through simulation.
-    \item Synthesize the processor.
-    \item Use a standard cell layout for Physical Design.
-    \item Document the design process, challenges faced, and lessons learned.
+    \item Setting up QEMU to emulate the NXP S32K3X8EVB board.
+    \item Configuring necessary peripherals and interfaces, such as UART and SPI, to ensure accurate simulation of the board's functionality.
+    \item Porting FreeRTOS to the simulated environment to enable real-time operating system capabilities.
+    \item Testing the simulation environment with sample applications to validate the implementation.
+    \item Documenting the implementation process, challenges encountered, and solutions devised to overcome them.
 \end{itemize}
 
-\section{Tools used}
-The project utilizes several tools and technologies to facilitate the design, simulation, and testing of the DLX microprocessor:
+In particular the pheripherals that will be implemented are:
 \begin{itemize}
-    \item \textbf{VHDL (VHSIC Hardware Description Language)}: The primary language used for describing and designing the microprocessor components like the control unit, Datapath, and functional units.
-    \item \textbf{ModelSim/QuestaSim}: A simulation tool used to test and validate the VHDL code.
-    \item \textbf{Design Compiler}: A synthesis tool used to convert the VHDL code into a gate-level netlist, optimizing the design on given constraints.
-    \item \textbf{Innovus}: A tool used for physical design starting from a synthesized netlist and constraints.
-    \item \textbf{Docker}: A containerization platform used to create a consistent development environment, ensuring that all team members can work with the same tools and configurations.
-    \item \textbf{Marley \& Co.}: A set of tools developed by the team to facilitate and automatize the design and testing of the DLX microprocessor:
-    \begin{itemize}
-        \item \textbf{Marley}: Main script that helps set up the user environment and manage the other scripts.
-        \item \textbf{Pupi}: program that generates the compilation list based on the dependencies between the VHDL files. 
-        \item \textbf{Briciola}: script that compiles the VHDL files with Modelsim or QuestaSim, generating the necessary libraries and simulation files.
-        \item \textbf{Scorzetta}: script that runs the simulation of a given testbench.
-        \item \textbf{Boh}: script that runs the synthesis of an entity, generating the synthesized netlist and constraints. 
-        \item \textbf{Cassiopeia}: script that runs the physical design of the synthesized netlist, generating the final layout and design files.
-    \end{itemize}
+    \item UART (Universal Asynchronous Receiver/Transmitter)
+    \item SPI (Serial Peripheral Interface)
 \end{itemize}
 
-\section{The DLX Microprocessor}
-The DLX microprocessor is a simplified RISC (Reduced Instruction Set Computer) Harvard architecture designed to facilitate the understanding of microprocessor design principles. It serves as an educational tool, allowing to explore the fundamental concepts of computer architecture, instruction execution, and VHDL coding practices. The DLX architecture is characterized by its five-stage pipeline, which includes: Fetch, Decode, Execute, Memory Access, and Write Back stages. This design enables efficient instruction processing and enhances overall throughput.
+\section{Tools and Technologies}
 
-\subsection{DLX Architecture}
-As DLX architecture is based on a simplified RISC design, which emphasizes a small set of instructions and a streamlined execution process. The DLX microprocessor employs a five-stage pipeline architecture, which allows for In-Order instruction execution. The stages are:
+\subsection{NXP S32K3X8EVB Board}
+
+The NXP S32K3X8EVB board is a development platform designed for automotive and industrial applications. It is based on the S32K3 series of microcontrollers, which feature an ARM Cortex-M7 core. The board includes various peripherals, such as UART, SPI, I2C, ADC, and GPIOs, allowing developers to interface with external devices and sensors. The S32K3X8EVB board is widely used in the automotive industry for applications such as motor control, body electronics, and sensor fusion.
+
+\subsection{QEMU}
+
+QEMU (Quick Emulator) is an open-source machine emulator and virtualizer that allows users to run operating systems and applications for one machine on a different machine. It supports a wide range of architectures, including ARM, x86, MIPS, and PowerPC, making it a versatile tool for simulating various hardware platforms.
+QEMU operates in two primary modes: full system emulation and user-mode emulation. In full system emulation, QEMU emulates an entire hardware platform, including the CPU, memory, and peripherals, allowing users to run complete operating systems. In user-mode emulation, QEMU can run applications compiled for one architecture on another architecture by translating system calls and library functions.
+QEMU's flexibility and extensibility make it an ideal choice for simulating embedded systems. It provides a rich set of features, including support for various peripherals, networking capabilities, and the ability to create custom device models. Additionally, QEMU's open-source nature allows developers to modify and extend its functionality to suit their specific needs.
+
+\subsection{FreeRTOS}
+FreeRTOS is an open-source real-time operating system (RTOS) designed for embedded systems. It provides a lightweight and efficient kernel that enables multitasking, inter-task communication, and resource management. FreeRTOS is widely used in various applications, including automotive, industrial, and consumer electronics, due to its simplicity, portability, and scalability.
+It offers a rich set of features, such as task scheduling, semaphores, queues, and timers, allowing developers to create complex real-time applications with ease. FreeRTOS is also highly configurable, enabling users to tailor the kernel to their specific requirements by selecting only the necessary components.
+
+\subsection{Development Environment}
+The development environment for this project includes a combination of software tools and libraries to facilitate the implementation and testing of the simulation environment. Key components of the development environment include:
 \begin{itemize}
-        \item Fetch (IF): Retrieve the instruction from the Instruction Memory given the current Program Counter (PC).
-        \item Decode (ID): Decode the instruction to fetch the necessary operands.
-        \item Execute (EX): Perform the operation specified by the instruction.
-        \item Memory Access (MEM): Access the Data Memory if required by the instruction.
-        \item Write Back (WB): Write the result back to the register file if needed.
+    \item \textbf{QEMU}: The primary tool for emulating the NXP S32K3X8EVB board. The vesion used in this project is QEMU 9.0.0.
+    \item \textbf{NXP Toolchain}: A collection of compilers and tools for building embedded applications, including the ARM GCC compiler for compiling code for the ARM Cortex-M7 architecture provided by NXP.
+    \item \textbf{FreeRTOS Source Code}: The source code for FreeRTOS, which will be ported to the simulated environment.
+    \item \textbf{Debugging Tools}: Tools such as GDB (GNU Debugger) for debugging and testing the simulation environment.
+    \item \textbf{Version Control System}: Git is used for managing the source code and tracking changes throughout the development process.
 \end{itemize}
 
-Each stage of the pipeline, and it's implementation, will be discussed in detail in the following sections. The DLX architecture also includes a register file with 32 general-purpose registers, each 32 bits wide, and, being based on a Harvard Architecture, a dedicated instruction memory (IRAM) and data memory (DRAM) for storing instructions and data, respectively.
-
-\subsection{Instruction Set}
-The DLX instruction set is designed to be simple and efficient, adhering to the principles of RISC architecture. It includes instructions for arithmetic operations, logical operations, data movement, and control flow. The instruction set is divided into several categories:
-\begin{itemize}
-    \item \textbf{Arithmetic Instructions}: These instructions perform basic arithmetic operations such as addition, subtraction, multiplication, and division.
-    \item \textbf{Logical Instructions}: These instructions perform bitwise operations such as AND, OR, NOT, and XOR.
-    \item \textbf{Data Movement Instructions}: These instructions are used to move data between registers and memory, including load and store operations.
-    \item \textbf{Control Flow Instructions}: These instructions alter the flow of execution, including branches and jumps.
-\end{itemize}
-
-The RISC nature of the DLX instruction set allows for a reduced number of instructions, which simplifies the design and implementation of the microprocessor. Each instruction is encoded in a fixed-length format, typically 32 bits, which facilitates efficient decoding and execution. They are divided into three main formats: 
-
-% fast bite field 
-% \mybytefield{32}{{28;part1};{4;part2}}
-
-\begin{figure}[H]
-    \centering
-    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
-        \bitheader{0,15,16,20,21,25,26,31} \\
-        \bitbox{6}{OPCODE}\bitbox{5}{RS1}\bitbox{5}{RS2}\bitbox{16}{IMMEDIATE}
-    \end{bytefield}
-    \caption{I-Type Instruction Format}
-    \label{fig:i_type}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
-        \bitheader{0,10,11,15,16,20,21,25,26,31} \\
-        \bitbox{6}{OPCODE}\bitbox{5}{RS1}\bitbox{5}{RS2}\bitbox{5}{RD}\bitbox{11}{IMMEDIATE}
-    \end{bytefield}
-    \caption{R-Type Instruction Format}
-    \label{fig:r_type}
-\end{figure}
+\section{Project Structure}
+The project is organized into several key components, each responsible for a specific aspect of the simulation environment. The main components include:
 
 
-\begin{figure}[H]
-    \centering
-    \begin{bytefield}[endianness=big,bitwidth=1em]{32}
-        \bitheader{0,25,26,31} \\
-        \bitbox{6}{OPCODE}\bitbox{26}{IMMEDIATE}
-    \end{bytefield}
-    \caption{J-Type Instruction Format}
-    \label{fig:j_type}
-\end{figure}
-
-\begin{itemize}
-    \item \textbf{R-type (Register)}: These instructions operate on registers and include operations like addition, subtraction, and logical operations. They typically have three register operands.
-    \item \textbf{I-type (Immediate)}: These instructions include an immediate value as one of the operands, allowing for operations that involve constants. They are used for operations like loading immediate values into registers or performing arithmetic with an immediate value.
-    \item \textbf{J-type (Jump)}: These instructions are used for control flow, allowing the program to jump to a specific address in memory. They are essential for implementing loops and conditional statements.
-    \item \textbf{Branch Instructions}: These instructions alter the flow of execution based on conditions, such as equality or inequality checks. They are used to implement loops and conditional statements.
-    \item \textbf{Load/Store Instructions}: These instructions are used to transfer data between registers and memory. Load instructions read data from memory into a register, while store instructions write data from a register to memory.
-\end{itemize}
-
-\subsection{DLX Base Version}
-
-The base version of the DLX microprocessor is designed to implement the core functionality of the DLX architecture. It includes the essential components required for instruction execution, such as the control unit, Datapath, and functional units. The base version serves as a foundation for further enhancements and optimizations, allowing for a clear understanding of the microprocessor's operation.
-
-\subsubsection{Base Instruction Set}
-The base version of the DLX microprocessor supports a limited set of instructions, focusing on the fundamental operations required for basic computation. The instruction set includes:
-\begin{itemize}
-    \item \textbf{Arithmetic Instructions: R-type}: ADD, SUB, SLL, SRL, SNE, SLE, SGE
-    \item \textbf{Arithmetic Instructions: I-type}: ADDi, SUBi, SLLi, SRLi, SNEi, SLEi, SGEi
-    \item \textbf{Logical Instructions: R-Type}: AND, OR, NOT, XOR
-    \item \textbf{Logical Instructions: I-Type}: ANDi, ORi, NOTi, XORi
-    \item \textbf{Memory Instructions: R-Type}: LOAD (LW), STORE (SW)
-    \item \textbf{Control Flow Instructions}: JUMP, JAL, BNEZ, BEQZ
-\end{itemize}
-
-
-These instructions are sufficient to perform basic arithmetic and logical operations, as well as control flow operations, allowing for the execution of simple programs.
-
-\section{DLX Pro Features}
-We implemented some features starting from the base version of DLX processor to enhance its functionality and performance. These features include:
-\begin{itemize}
-    \item \textbf{Forwarding Unit}: This unit is designed to handle data hazards by forwarding the results of previous instructions to subsequent instructions that require them, thus reducing the need for stalls in the pipeline.
-    \item \textbf{Branch Prediction}: The DLX microprocessor incorporates a simple static branch prediction mechanism to improve the performance of control flow instructions. This feature helps to minimize pipeline stalls caused by branch instructions.
-\end{itemize}
-
-
+\begin{forest}
+    for tree={
+        font=\ttfamily,
+        grow'=0,
+        child anchor=west,
+        parent anchor=south,
+        anchor=west,
+        calign=first,
+        inner xsep=7pt,
+        edge path={
+          \noexpand\path [draw, \forestoption{edge}]
+          (!u.south west) +(7.5pt,0) |- (.child anchor) pic {folder} \forestoption{edge label};
+        },
+        % style file node 
+        file/.style={edge path={\noexpand\path [draw, \forestoption{edge}]
+          (!u.south west) +(7.5pt,0) |- (.child anchor) \forestoption{edge label};},
+          inner xsep=2pt,font=\small\ttfamily
+                     },
+        before typesetting nodes={
+          if n=1
+            {insert before={[,phantom]}}
+            {}
+        },
+        fit=band,
+        before computing xy={l=15pt},
+      }  
+  [group10
+    [qemu
+      [hw
+        [arm
+            [S32K3X8EVB.c - Board implementation file, file]
+            [S32K3X8EVB\_MCU.c - MCU implementation file, file]
+        ]
+        [char
+            [S32K3X8EVB\_UART.c - UART implementation file, file]
+        ]
+        [ssi
+            [S32K3X8EVB\_SPI.c - SPI implementation file, file]
+        ]
+      ]
+      [include
+        [arm
+            [S32K3X8EVB.h - Board header file, file]
+            [S32K3X8EVB\_MCU.h - MCU header file, file]
+        ]
+        [char
+            [S32K3X8EVB\_UART.h - UART header file, file]
+        ]
+        [ssi
+            [S32K3X8EVB\_SPI.h - SPI header file, file]
+        ]
+      ]
+    ]
+    [FreeRTOS\_App - FreeRTOS application
+      [main.c - Main application file, file]
+      [FreeRTOSConfig.h - FreeRTOS configuration file, file]
+      [pheripherals.c - Function for the pheripherals, file]
+      [pheripherals.h - Header file for the pheripherals, file]
+      [Makefile - Build file, file]
+    ]
+    [gcc-10.2.0-Earmv7GCC-eabi - NXP toolchain
+    ]
+    [material
+      [S32K3.pdf - MCU reference manual, file]
+      [S32K3X8EVB-Q289HWUM.pdf - Board user manual, file]
+      [S32K3xx\_memory\_map.xls - Memory and Pheripheral map, file]
+    ]
+    [Docs
+      [Source
+        [report - Source files for the report]
+        [presentation - Source files for the presentation]
+        [Group10\_Presentation.pdf, file]
+        [Group10\_Report.pdf, file]
+      ]
+    ]
+    [qemu\_old - QEMU version 9.0.42 (not complaint to our implementation)]
+  ]
+\end{forest}
 

@@ -1,0 +1,253 @@
+\section{QEMU Implementation}
+The implementation of the board has been divided into several parts for better organization and modularity: 
+\begin{itemize}
+    \item Board and MCU
+    \item UART
+    \item SPI
+\end{itemize}
+
+\subsection{Board and MCU}
+The board is implemented in the file \texttt{S32K3x8.c} located in the directory \texttt{qemu/hw/arm/}. The file contains the definition of the board. 
+The MCU is defined in the file \texttt{S32K3x8\_MCU.c} located in the directory \texttt{qemu/hw/arm/}. The file contains the definition of the MCU, including its registers, peripherals and memory mapping.  
+\begin{figure}
+    \begin{minted}{c}
+struct S32K3x8State{
+    SysBusDevice parent_obj;
+    
+    //CPU Type
+    ARMv7MState cpu;
+    
+    //Board clock 
+    Clock *sysclk;
+
+    // Memory Setions 
+    uint32_t sram0_size;    //SRAM size
+    uint32_t flash0_size;   //Flash memory size
+    
+    //Memory declaration
+    MemoryRegion sram0;
+    MemoryRegion flash0;
+    MemoryRegion flash_alias;
+    MemoryRegion *board_memory;
+    
+    MemoryRegion container;
+    
+    //Peripherals 
+    // UART
+    S32K3x8UartState uart[NXP_NUM_UARTS];
+    
+    // SPI
+    S32K3x8SPIState spi[NXP_NUM_SPI];
+};
+    \end{minted}
+    \caption{MCU Object Structure}
+    \label{fig:mcu_structure}
+\end{figure}
+
+\begin{figure}
+    \begin{minted}{c}
+struct S32K3X8EVBMachineState {
+    /* Parent machine state. */
+    MachineState parent;
+    
+    S32K3x8State S32K3X8;
+};
+    \end{minted}
+    \caption{Board Object Structure}
+    \label{fig:board_structure}
+\end{figure}
+
+This separation is done to increase modularity in future implementations. The board file can be reused for other MCUs in the S32K3x8 family by simply changing the MCU definition file.
+We can see that the structure of the board is rather simple as it only contains the MCU object. The MCU object, on the other hand, is more complex as it contains the CPU, memory regions and peripherals.
+
+The actual implementation of the board is done in the function \texttt{S32K3X8EVB\_init} located in the file \texttt{S32K3x8.c}. The function is responsible for initializing the board: connecting the clock to the MCU and initializing the MCU. The function is called when the board is created in QEMU.
+The MCU implementation is done in the function \texttt{S32K3x8\_init} located in the file \texttt{S32K3x8\_MCU.c}. The function is responsible for initializing the MCU: setting up the memory regions, initializing the peripherals and connecting them to the memory regions. The function is called when the MCU is created in QEMU.
+
+\subsection{UART}
+
+The UART peripheral is implemented in the file \texttt{S32K3x8\_UART.c} located in the directory \texttt{qemu/hw/arm/}. The file contains the definition of the UART peripheral, including its registers and memory mapping. The implementation is based on the reference manual of the S32K3x8 MCU.
+The UART peripheral is defined in the structure \texttt{S32K3x8UartState} which contains the registers of the UART peripheral and a pointer to the memory region where the peripheral is mapped. The structure is defined as follows:
+\begin{figure}
+    \begin{minted}{c}
+struct S32K3x8UartState {
+    SysBusDevice parent_obj;
+
+    MemoryRegion mmio;
+
+    uint32_t usart_sr;
+    uint32_t usart_dr;
+    uint32_t usart_brr;
+    uint32_t usart_cr1;
+    uint32_t usart_cr2;
+    uint32_t usart_cr3;
+    uint32_t usart_gtpr;
+
+    CharBackend chr;
+    qemu_irq irq;
+};
+    \end{minted}
+    \caption{Board Object Structure}
+    \label{fig:UART_structure}
+\end{figure}
+
+The actual functions of the peripheral are implemented in the file \texttt{S32K3x8\_UART.c}. The functions are responsible for reading and writing to the registers of the UART peripheral, as well as handling interrupts and data transmission. The functions are called when the CPU accesses the memory region where the peripheral is mapped.
+
+The pheripheral is initialized in the function \texttt{S32K3x8Uart\_init}. The function is responsible for initializing the UART peripheral: setting up the memory region, initializing the registers and connecting the peripheral to the memory region. 
+
+When the CPU accesses the memory region where the peripheral is mapped, the functions \texttt{S32K3x8Uart\_read} and \texttt{S32K3x8Uart\_write} are called. The functions are responsible for reading and writing to the registers of the UART peripheral. The functions are implemented using a switch case statement to determine which register is being accessed and perform the appropriate action.
+
+The peripheral is connected to a character device using the QEMU CharBackend API. This allows the UART peripheral to send and receive data through a terminal or a file. The connection is established in the function \texttt{S32K3x8Uart\_init} using the function \texttt{qemu\_chr\_open}. It is initialized and realized in the MCU init and realize functions respectively at the correct addresses.
+
+\begin{figure}
+    \begin{minted}{c}
+static void S32K3x8_init(Object  *obj){
+    S32K3x8State *s = S32K3x8_MCU(obj);
+    //Peripheral initialization
+    
+    //UART
+    int i =0;
+    for ( i = 0; i < NXP_NUM_UARTS; i++) {
+       object_initialize_child(obj, "uart[*]", &s->uart[i],
+                                TYPE_S32K3x8_UART);
+    }
+    
+    //cpu initializer
+    object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
+    //Clock initializer
+    s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
+}
+    \end{minted}
+    \caption{MCU UART init}
+    \label{fig:UART_init}
+\end{figure}
+
+\begin{figure}
+    \begin{minted}{c}
+static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
+
+...
+
+    SysBusDevice *busdev;
+    /* Attach all UARTs and USART controllers */
+    int i = 0;
+    for (i = 0; i < NXP_NUM_UARTS; i++) {
+
+        dev = DEVICE(&(s->uart[i]));
+        //declare the UART new device type
+        qdev_prop_set_chr(dev, "chardev", serial_hd(i));
+        if (!sysbus_realize(SYS_BUS_DEVICE(&s->uart[i]), errp)) {
+            return;
+        }
+        busdev = SYS_BUS_DEVICE(dev);
+        // Map the UART peripheral to memory
+        sysbus_mmio_map(busdev, 0, usart_addr[i]);
+        // initialize the IRQ table of the CPU with the correct interrupt handler
+        sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, usart_irq[i]));
+    }
+...
+
+}
+    \end{minted}
+    \caption{MCU UART relize}
+    \label{fig:UART_relize}
+\end{figure}
+
+All 16 UART peripherals have been implemented. The memory addresses and interrupt numbers are defined within the MCU file. The addresses and interrupt numbers are based on the reference manual of the S32K3x8 MCU as seen in Chapter \ref{subsec:key_addresses}. 
+
+\subsection{SPI}
+The SPI peripheral is implemented in the file \texttt{S32K3x8\_SPI.c} located in the directory \texttt{qemu/hw/arm/}. The file contains the definition of the SPI peripheral, including its registers and memory mapping. The implementation is based on the reference manual of the S32K3x8 MCU.
+The SPI peripheral is defined in the structure \texttt{S32K3x8SPIState} which contains the registers of the SPI peripheral and a pointer to the memory region where the peripheral is mapped. The structure is defined as follows:
+\begin{figure}
+    \begin{minted}{c}
+struct S32K3x8SPIState {
+  /* <private> */
+  SysBusDevice parent_obj;
+
+  /* <public> */
+  MemoryRegion mmio;
+
+  uint32_t spi_cr1;
+  uint32_t spi_cr2;
+  uint32_t spi_sr;
+  uint32_t spi_dr;
+  uint32_t spi_crcpr;
+  uint32_t spi_rxcrcr;
+  uint32_t spi_txcrcr;
+  uint32_t spi_i2scfgr;
+  uint32_t spi_i2spr;
+
+  // For testing purposes
+  uint32_t test_var;
+
+  qemu_irq irq;
+  SSIBus *ssi;
+};
+    \end{minted}
+    \caption{SPI Object Structure}
+    \label{fig:SPI_structure}
+\end{figure}
+
+The actual functions of the peripheral are implemented in the file \texttt{S32K3x8\_SPI.c}. The functions are responsible for reading and writing to the registers of the SPI peripheral, as well as handling interrupts and data transmission. The functions are called when the CPU accesses the memory region where the peripheral is mapped. 
+
+The peripheral is initialized in the function \texttt{S32K3x8SPI\_init}. The function is responsible for initializing the SPI peripheral: setting up the memory region, initializing the registers and connecting the peripheral to the memory region. 
+
+The SPI peripheral is connected to an SSIBus using the QEMU SSIBus API. This allows the SPI peripheral to communicate with other SPI devices connected to the bus. The connection is established in the function \texttt{S32K3x8SPI\_init} using the function \texttt{ssi\_bus\_new}. It is initialized and realized in the MCU init and realize functions respectively at the correct addresses.
+When the CPU accesses the memory region where the peripheral is mapped, the functions \texttt{S32K3x8SPI\_read} and \texttt{S32K3x8SPI\_write} are called. The functions are responsible for reading and writing to the registers of the SPI peripheral. The functions are implemented using a switch case statement to determine which register is being accessed and perform the appropriate action.
+
+Fot testing purposes, a variable named \texttt{test\_var} has been added to the SPI structure. The variable is used to test the read and write functions of the SPI peripheral and ww will expand in Chapter \ref{sec:testing_conclusion}.
+
+As for the connection on the MCU it is done as the same as the UART peripheral, as shown in Figure \ref{fig:UART_init} and Figure \ref{fig:UART_relize}, but for the SPI peripheral instead.
+
+\begin{figure}
+    \begin{minted}{c}
+static void S32K3x8_init(Object  *obj){
+    S32K3x8State *s = S32K3x8_MCU(obj);
+    //Peripheral initialization
+    
+    //UART
+    int i =0;
+    for ( i = 0; i < NXP_NUM_UARTS; i++) {
+       object_initialize_child(obj, "uart[*]", &s->uart[i],
+                                TYPE_S32K3x8_UART);
+    }
+
+    //SPI
+    for (i = 0; i < NXP_NUM_SPI; i++) {
+        object_initialize_child(obj, "spi[*]", &s->spi[i], TYPE_S32K3x8_SPI);
+    }
+
+    //cpu initializer
+    object_initialize_child(OBJECT(s), "armv7m", &s->cpu,TYPE_ARMV7M);
+    //Clock initializer
+    s->sysclk = qdev_init_clock_in(DEVICE(s), "sysclk", NULL, NULL,0);
+}
+    \end{minted}
+    \caption{MCU SPI init}
+    \label{fig:SPI_init}
+\end{figure}
+
+\begin{figure}
+    \begin{minted}{c}
+static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
+
+...
+
+    for (i = 0; i < NXP_NUM_SPI; i++) {
+            dev = DEVICE(&(s->spi[i]));
+            if (!sysbus_realize(SYS_BUS_DEVICE(&s->spi[i]), errp)) {
+                return;
+            }
+            busdev = SYS_BUS_DEVICE(dev);
+            // Map the UART peripheral to memory
+            sysbus_mmio_map(busdev, 0, spi_addr[i]);
+            // initialize the IRQ table of the CPU with the correct interrupt handler
+            sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, spi_irq[i]));
+    }
+
+}
+    \end{minted}
+    \caption{MCU SPI relize}
+    \label{fig:SPI_relize}
+\end{figure}
+
+All 6 SPI peripherals have been implemented. The memory addresses and interrupt numbers are defined within the MCU file. The addresses and interrupt numbers are based on the reference manual of the S32K3x8 MCU as seen in Chapter \ref{subsec:key_addresses}.

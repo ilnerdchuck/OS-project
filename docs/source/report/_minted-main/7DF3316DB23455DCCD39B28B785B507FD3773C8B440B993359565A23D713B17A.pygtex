@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{        }\PYGZdl{}\PYG{+w}{ }../configure\PYG{+w}{ }\PYGZhy{}\PYGZhy{}target\PYGZhy{}list\PYG{o}{=}arm\PYGZhy{}softmmu
+\end{Verbatim}

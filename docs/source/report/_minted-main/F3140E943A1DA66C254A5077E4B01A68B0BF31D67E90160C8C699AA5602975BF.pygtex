@@ -1,0 +1,53 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}ifndef HW\PYGZus{}STM32F2XX\PYGZus{}SPI\PYGZus{}H}
+\PYG{c+cp}{\PYGZsh{}define HW\PYGZus{}STM32F2XX\PYGZus{}SPI\PYGZus{}H}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/ssi/ssi.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/sysbus.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+
+\PYG{c+c1}{// TODO: finish setting al lthe register form the datasheet}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}CR1 0x00}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}CR2 0x04}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}SR 0x08}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}DR 0x0C}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}CRCPR 0x10}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}RXCRCR 0x14}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}TXCRCR 0x18}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}I2SCFGR 0x1C}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}I2SPR 0x20}
+
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}CR1\PYGZus{}SPE (1 \PYGZlt{}\PYGZlt{} 6)}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}CR1\PYGZus{}MSTR (1 \PYGZlt{}\PYGZlt{} 2)}
+
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}SR\PYGZus{}RXNE 1}
+
+\PYG{c+cp}{\PYGZsh{}define TYPE\PYGZus{}S32K3x8\PYGZus{}SPI \PYGZdq{}S32K3x8\PYGZus{}SPI\PYGZdq{}}
+\PYG{n}{OBJECT\PYGZus{}DECLARE\PYGZus{}SIMPLE\PYGZus{}TYPE}\PYG{p}{(}\PYG{n}{S32K3x8SPIState}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}SPI}\PYG{p}{)}
+
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3x8SPIState}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{c+cm}{/* \PYGZlt{}private\PYGZgt{} */}
+\PYG{+w}{  }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{n}{parent\PYGZus{}obj}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+cm}{/* \PYGZlt{}public\PYGZgt{} */}
+\PYG{+w}{  }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{mmio}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}cr1}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}cr2}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}sr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}dr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}crcpr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}rxcrcr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}txcrcr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}i2spr}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{// For testing purposes}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{test\PYGZus{}var}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{n}{qemu\PYGZus{}irq}\PYG{+w}{ }\PYG{n}{irq}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{SSIBus}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{ssi}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{c+cp}{\PYGZsh{}endif}
+\end{Verbatim}

@@ -1,0 +1,66 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}pragma once}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}glib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/atomic.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}glibconfig.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/sysbus.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/armv7m.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/char/S32K\PYGZus{}uart.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/typedefs.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3X8EVB.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/or\PYGZhy{}irq.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/armv7m.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}include/hw/ssi/S32K3x8\PYGZus{}spi.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+
+\PYG{c+c1}{// Board clock frequency}
+\PYG{c+cp}{\PYGZsh{}define HCLK\PYGZus{}FRQ 240000000}
+
+\PYG{c+c1}{// UART}
+\PYG{c+cp}{\PYGZsh{}define NXP\PYGZus{}NUM\PYGZus{}UARTS 16  }
+\PYG{c+c1}{// SPI }
+\PYG{c+cp}{\PYGZsh{}define NXP\PYGZus{}NUM\PYGZus{}SPI 6  }
+
+
+\PYG{c+cp}{\PYGZsh{}define TYPE\PYGZus{}S32K3x8\PYGZus{}MCU \PYGZdq{}S32K3x8\PYGZus{}MCU\PYGZdq{}}
+\PYG{n}{OBJECT\PYGZus{}DECLARE\PYGZus{}SIMPLE\PYGZus{}TYPE}\PYG{p}{(}\PYG{n}{S32K3x8State}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}MCU}\PYG{p}{)}
+
+
+\PYG{c+c1}{// S32K3x8 Board class}
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3x8State}\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{n}{parent\PYGZus{}obj}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{//CPU Type}
+\PYG{+w}{    }\PYG{n}{ARMv7MState}\PYG{+w}{ }\PYG{n}{cpu}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{//Board clock }
+\PYG{+w}{    }\PYG{n}{Clock}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{sysclk}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{// Memory Setions }
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{sram0\PYGZus{}size}\PYG{p}{;}\PYG{+w}{    }\PYG{c+c1}{//SRAM size}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{flash0\PYGZus{}size}\PYG{p}{;}\PYG{+w}{   }\PYG{c+c1}{//Flash memory size}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{//Memory declaration}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{sram0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{flash0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{flash\PYGZus{}alias}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{board\PYGZus{}memory}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// We could also initialize and realize}
+\PYG{+w}{    }\PYG{c+c1}{// this container to not use dirrectly map all }
+\PYG{+w}{    }\PYG{c+c1}{// the peripherals or memory regions directly in the }
+\PYG{+w}{    }\PYG{c+c1}{// QEMU memory}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{container}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{//Peripherals }
+\PYG{+w}{    }\PYG{c+c1}{// UART}
+\PYG{+w}{    }\PYG{n}{S32K3x8UartState}\PYG{+w}{ }\PYG{n}{uart}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{];}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// SPI}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{n}{spi}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{];}
+\PYG{p}{\PYGZcb{};}
+
+\end{Verbatim}

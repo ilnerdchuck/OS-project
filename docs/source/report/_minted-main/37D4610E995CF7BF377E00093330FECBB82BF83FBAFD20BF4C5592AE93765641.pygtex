@@ -1,0 +1,286 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdint.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}glib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}include/hw/arm/S32K3X8EVB.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/char/S32K\PYGZus{}uart.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3x8\PYGZus{}MCU.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3X8EVB.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}include/hw/ssi/S32K3x8\PYGZus{}spi.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/sysbus.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/module.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/boot.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}exec/address\PYGZhy{}spaces.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}properties.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/typedefs.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}sysemu/sysemu.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}exec/address\PYGZhy{}spaces.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}sysemu/sysemu.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/misc/unimp.h\PYGZdq{}}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}Peripherals\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{//UARTs }
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}addr}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40328000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 0 }
+\PYG{+w}{                            }\PYG{l+m+mh}{0x4032C000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 1 }
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40330000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 2}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40334000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 3}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40338000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 4}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x4033C000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 5}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40340000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 6}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40344000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 7}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x4048C000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 8}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40490000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 9}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40494000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 10}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x40498000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 11}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x4049C000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 12}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x404A0000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 13}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x404A4000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 14}
+\PYG{+w}{                            }\PYG{l+m+mh}{0x404A8000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 15}
+\PYG{+w}{                            }\PYG{p}{\PYGZcb{};}
+\PYG{c+c1}{// IRQ }
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}irq}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{   }\PYG{l+m+mi}{141}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 0 }
+\PYG{+w}{                                                }\PYG{l+m+mi}{142}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 1 }
+\PYG{+w}{                                                }\PYG{l+m+mi}{143}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 2}
+\PYG{+w}{                                                }\PYG{l+m+mi}{144}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 3}
+\PYG{+w}{                                                }\PYG{l+m+mi}{145}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 4}
+\PYG{+w}{                                                }\PYG{l+m+mi}{146}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 5}
+\PYG{+w}{                                                }\PYG{l+m+mi}{147}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 6}
+\PYG{+w}{                                                }\PYG{l+m+mi}{148}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 7}
+\PYG{+w}{                                                }\PYG{l+m+mi}{149}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 8}
+\PYG{+w}{                                                }\PYG{l+m+mi}{150}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 9}
+\PYG{+w}{                                                }\PYG{l+m+mi}{151}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 10}
+\PYG{+w}{                                                }\PYG{l+m+mi}{152}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 11}
+\PYG{+w}{                                                }\PYG{l+m+mi}{153}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 12}
+\PYG{+w}{                                                }\PYG{l+m+mi}{154}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 13}
+\PYG{+w}{                                                }\PYG{l+m+mi}{155}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//Uart 14}
+\PYG{+w}{                                                }\PYG{l+m+mi}{156}\PYG{+w}{  }\PYG{c+c1}{//Uart 15}
+\PYG{+w}{                                            }\PYG{p}{\PYGZcb{};}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END UARTs \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} SPIs \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}addr}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }
+\PYG{+w}{    }\PYG{l+m+mh}{0x40358000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 0 }
+\PYG{+w}{    }\PYG{l+m+mh}{0x4035C000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 1}
+\PYG{+w}{    }\PYG{l+m+mh}{0x40360000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 2}
+\PYG{+w}{    }\PYG{l+m+mh}{0x40364000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 3}
+\PYG{+w}{    }\PYG{l+m+mh}{0x404BC000}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 4}
+\PYG{+w}{    }\PYG{l+m+mh}{0x404C0000}\PYG{+w}{  }\PYG{c+c1}{//SPI 5 }
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}irq}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{l+m+mi}{35}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 0}
+\PYG{+w}{    }\PYG{l+m+mi}{36}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 1}
+\PYG{+w}{    }\PYG{l+m+mi}{37}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 2}
+\PYG{+w}{    }\PYG{l+m+mi}{38}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 3}
+\PYG{+w}{    }\PYG{l+m+mi}{39}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{//SPI 4}
+\PYG{+w}{    }\PYG{l+m+mi}{40}\PYG{+w}{  }\PYG{c+c1}{//SPI 5}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END SPIs \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} MCU initialization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}init}\PYG{p}{(}\PYG{n}{Object}\PYG{+w}{  }\PYG{o}{*}\PYG{n}{obj}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8State}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}MCU}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{//Peripheral initialization}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{//UART}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{       }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}uart[*]\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],}
+\PYG{+w}{                                }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}UART}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{//SPI}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}spi[*]\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}SPI}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{//cpu initializer}
+\PYG{+w}{    }\PYG{n}{object\PYGZus{}initialize\PYGZus{}child}\PYG{p}{(}\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{s}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}armv7m\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cpu}\PYG{p}{,}\PYG{n}{TYPE\PYGZus{}ARMV7M}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{//Clock initializer}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sysclk}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}init\PYGZus{}clock\PYGZus{}in}\PYG{p}{(}\PYG{n}{DEVICE}\PYG{p}{(}\PYG{n}{s}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}sysclk\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} MCU initialization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} MCU realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}realize}\PYG{p}{(}\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev\PYGZus{}mcu}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Error}\PYG{+w}{ }\PYG{o}{**}\PYG{n}{errp}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8State}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}MCU}\PYG{p}{(}\PYG{n}{dev\PYGZus{}mcu}\PYG{p}{);}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// Memory}
+\PYG{+w}{    }\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{armv7m}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{system\PYGZus{}memory}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{get\PYGZus{}system\PYGZus{}memory}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{Error}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{err}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+cm}{/*if (!s\PYGZhy{}\PYGZgt{}board\PYGZus{}memory) \PYGZob{}*/}
+\PYG{+w}{    }\PYG{c+cm}{/*    error\PYGZus{}setg(errp, \PYGZdq{}memory property was not set\PYGZdq{});*/}
+\PYG{+w}{    }\PYG{c+cm}{/*    return;*/}
+\PYG{+w}{    }\PYG{c+cm}{/*\PYGZcb{}*/}
+
+\PYG{+w}{    }\PYG{c+cm}{/*if (!clock\PYGZus{}has\PYGZus{}source(s\PYGZhy{}\PYGZgt{}sysclk)) \PYGZob{}*/}
+\PYG{+w}{    }\PYG{c+cm}{/*    error\PYGZus{}setg(errp, \PYGZdq{}sysclk clock must not be wired up by the board code\PYGZdq{});*/}
+\PYG{+w}{    }\PYG{c+cm}{/*    return;*/}
+\PYG{+w}{    }\PYG{c+cm}{/*\PYGZcb{}*/}
+
+\PYG{+w}{    }\PYG{c+c1}{//Memory Initializer}
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} FLASH \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} }
+
+\PYG{+w}{    }\PYG{c+c1}{// Init memory addresses}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}init\PYGZus{}rom}\PYG{p}{(}
+\PYG{+w}{                            }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{flash0}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{dev\PYGZus{}mcu}\PYG{p}{),}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{l+s}{\PYGZdq{}S32K3.flash\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{                            }\PYG{n}{S32K3x8\PYGZus{}FLASH0\PYGZus{}SIZE}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{o}{\PYGZam{}}\PYG{n}{err}
+\PYG{+w}{                          }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{error\PYGZus{}propagate}\PYG{p}{(}\PYG{n}{errp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{err}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}init\PYGZus{}alias}\PYG{p}{(}\PYG{+w}{   }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{flash\PYGZus{}alias}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{dev\PYGZus{}mcu}\PYG{p}{),}
+\PYG{+w}{                                }\PYG{l+s}{\PYGZdq{}S32K3.flash.alias\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{flash0}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}
+\PYG{+w}{                                }\PYG{n}{S32K3x8\PYGZus{}FLASH0\PYGZus{}SIZE}
+\PYG{+w}{                             }\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END FLASH \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} RAM \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}add\PYGZus{}subregion}\PYG{p}{(}
+\PYG{+w}{                                }\PYG{n}{system\PYGZus{}memory}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{n}{S32K3x8\PYGZus{}FLASH0\PYGZus{}BASE}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{flash0}
+\PYG{+w}{                                }\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}add\PYGZus{}subregion}\PYG{p}{(}
+\PYG{+w}{                                }\PYG{n}{system\PYGZus{}memory}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{flash\PYGZus{}alias}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}init\PYGZus{}ram}\PYG{p}{(}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sram0}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{n+nb}{NULL}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{l+s}{\PYGZdq{}S32K3.sram\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                            }\PYG{n}{S32K3x8\PYGZus{}SRAM0\PYGZus{}SIZE}\PYG{p}{,}
+\PYG{+w}{                            }\PYG{o}{\PYGZam{}}\PYG{n}{err}
+\PYG{+w}{                          }\PYG{p}{);}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{error\PYGZus{}propagate}\PYG{p}{(}\PYG{n}{errp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{err}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}add\PYGZus{}subregion}\PYG{p}{(}
+\PYG{+w}{                                }\PYG{n}{system\PYGZus{}memory}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{n}{S32K3x8\PYGZus{}SRAM0\PYGZus{}BASE}\PYG{p}{,}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sram0}
+\PYG{+w}{                                }\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END RAM \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// Attach the parent clock to the MCU}
+\PYG{+w}{    }\PYG{n}{clock\PYGZus{}set\PYGZus{}hz}\PYG{p}{(}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sysclk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{HCLK\PYGZus{}FRQ}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{c+c1}{// CPU class realization}
+\PYG{+w}{    }\PYG{n}{armv7m}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cpu}\PYG{p}{);}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// ARM\PYGZhy{}M7 interrupt setup}
+\PYG{+w}{    }\PYG{n}{qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}uint32}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}num\PYGZhy{}irq\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{256}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+cm}{/*qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}uint8(armv7m, \PYGZdq{}num\PYGZhy{}prio\PYGZhy{}bits\PYGZdq{}, 4);*/}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// CPU description (Useful for QEMU info tree)}
+\PYG{+w}{    }\PYG{n}{qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}string}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}cpu\PYGZhy{}type\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{ARM\PYGZus{}CPU\PYGZus{}TYPE\PYGZus{}NAME}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}cortex\PYGZhy{}m7\PYGZdq{}}\PYG{p}{));}
+\PYG{+w}{    }\PYG{c+cm}{/*qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}bit(armv7m, \PYGZdq{}enable\PYGZhy{}bitband\PYGZdq{}, true);*/}
+
+\PYG{+w}{    }\PYG{c+c1}{// Attach the clock to the CPU}
+\PYG{+w}{    }\PYG{n}{qdev\PYGZus{}connect\PYGZus{}clock\PYGZus{}in}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}cpuclk\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{sysclk}\PYG{p}{);}\PYGZbs{}
+
+\PYG{+w}{    }\PYG{c+c1}{// Attach the memory regions to the CPU}
+\PYG{+w}{    }\PYG{n}{object\PYGZus{}property\PYGZus{}set\PYGZus{}link}\PYG{p}{(}
+\PYG{+w}{                                }\PYG{n}{OBJECT}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cpu}\PYG{p}{),}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{l+s}{\PYGZdq{}memory\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{                                }\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{system\PYGZus{}memory}\PYG{p}{),}\PYG{+w}{ }
+\PYG{+w}{                                }\PYG{o}{\PYGZam{}}\PYG{n}{error\PYGZus{}abort}
+\PYG{+w}{                            }\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{sysbus\PYGZus{}realize}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cpu}\PYG{p}{),}\PYG{n}{errp}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{       }\PYG{k}{return}\PYG{p}{;}\PYG{+w}{ }
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} UARTs Realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{+w}{    }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{busdev}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+cm}{/* Attach all UARTs and USART controllers */}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+
+\PYG{+w}{        }\PYG{n}{dev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{p}{(}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{        }\PYG{c+c1}{//declare the UART new device type}
+\PYG{+w}{        }\PYG{n}{qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}chr}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}chardev\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{serial\PYGZus{}hd}\PYG{p}{(}\PYG{n}{i}\PYG{p}{));}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{sysbus\PYGZus{}realize}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]),}\PYG{+w}{ }\PYG{n}{errp}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n}{busdev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{);}
+\PYG{+w}{        }\PYG{c+c1}{// Map the UART peripheral to memory}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}mmio\PYGZus{}map}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}addr}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+\PYG{+w}{        }\PYG{c+c1}{// initialize the IRQ table of the CPU with the correct interrupt handler}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}connect\PYGZus{}irq}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}get\PYGZus{}gpio\PYGZus{}in}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}irq}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END UARTs Realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} SPIs Realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{dev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{p}{(}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{sysbus\PYGZus{}realize}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]),}\PYG{+w}{ }\PYG{n}{errp}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n}{busdev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{);}
+\PYG{+w}{        }\PYG{c+c1}{// Map the UART peripheral to memory}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}mmio\PYGZus{}map}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}addr}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+\PYG{+w}{        }\PYG{c+c1}{// initialize the IRQ table of the CPU with the correct interrupt handler}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}connect\PYGZus{}irq}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}get\PYGZus{}gpio\PYGZus{}in}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}irq}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END SPIs Realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{//\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} END MCU realization \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{// \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{} MCU properties \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{n}{Property}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}properties}\PYG{p}{[]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{DEFINE\PYGZus{}PROP\PYGZus{}LINK}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}memory\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8State}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{board\PYGZus{}memory}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}MEMORY\PYGZus{}REGION}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{DEFINE\PYGZus{}PROP\PYGZus{}UINT32}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}sram0\PYGZhy{}size\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8State}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{sram0\PYGZus{}size}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}SRAM0\PYGZus{}SIZE}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{DEFINE\PYGZus{}PROP\PYGZus{}UINT32}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}flash0\PYGZhy{}size\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8State}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{flash0\PYGZus{}size}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}FLASH0\PYGZus{}SIZE}\PYG{p}{),}
+\PYG{+w}{    }\PYG{n}{DEFINE\PYGZus{}PROP\PYGZus{}END\PYGZus{}OF\PYGZus{}LIST}\PYG{p}{(),}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{c+c1}{// BOARD INIT}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}class\PYGZus{}init}\PYG{p}{(}\PYG{n}{ObjectClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{klass}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{data}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{DeviceClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dc}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE\PYGZus{}CLASS}\PYG{p}{(}\PYG{n}{klass}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{dc}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{realize}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}realize}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{device\PYGZus{}class\PYGZus{}set\PYGZus{}props}\PYG{p}{(}\PYG{n}{dc}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}properties}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{n}{TypeInfo}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}info}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{name}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}MCU}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{parent}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{instance\PYGZus{}size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{S32K3x8State}\PYG{p}{),}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{instance\PYGZus{}init}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}init}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{class\PYGZus{}init}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}class\PYGZus{}init}\PYG{p}{,}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}types}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{type\PYGZus{}register\PYGZus{}static}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{S32K3x8\PYGZus{}info}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{type\PYGZus{}init}\PYG{p}{(}\PYG{n}{S32K3x8\PYGZus{}types}\PYG{p}{);}
+\end{Verbatim}

@@ -52,7 +52,7 @@ sudo apt install build-essential zlib1g-dev libglib2.0-dev \
 This is useful if you want only to compile the arm boards/cpus
 
 ```
-    ./configure --target-list=arm-softmmu
+    ../configure --target-list=arm-softmmu
 ```
 
 - Build the new QEMU executable

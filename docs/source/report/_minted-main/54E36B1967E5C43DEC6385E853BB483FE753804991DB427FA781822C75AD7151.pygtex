@@ -1,0 +1,200 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/log.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/module.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/ssi/S32K3x8\PYGZus{}spi.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}migration/vmstate.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}ifndef S32\PYGZus{}SPI\PYGZus{}ERR\PYGZus{}DEBUG}
+\PYG{c+cp}{\PYGZsh{}define S32\PYGZus{}SPI\PYGZus{}ERR\PYGZus{}DEBUG 0}
+\PYG{c+cp}{\PYGZsh{}endif}
+
+\PYG{c+cp}{\PYGZsh{}define DB\PYGZus{}PRINT\PYGZus{}L(lvl, fmt, args...) do \PYGZob{} \PYGZbs{}}
+\PYG{c+cp}{    if (S32\PYGZus{}SPI\PYGZus{}ERR\PYGZus{}DEBUG \PYGZgt{}= lvl) \PYGZob{} \PYGZbs{}}
+\PYG{c+cp}{        qemu\PYGZus{}log(\PYGZdq{}\PYGZpc{}s: \PYGZdq{} fmt, \PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}, \PYGZsh{}\PYGZsh{} args); \PYGZbs{}}
+\PYG{c+cp}{    \PYGZcb{} \PYGZbs{}}
+\PYG{c+cp}{\PYGZcb{} while (0)}
+
+\PYG{c+cp}{\PYGZsh{}define DB\PYGZus{}PRINT(fmt, args...) DB\PYGZus{}PRINT\PYGZus{}L(1, fmt, \PYGZsh{}\PYGZsh{} args)}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}reset}\PYG{p}{(}\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}SPI}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr1}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000000}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr2}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000000}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}sr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x0000000A}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x0000000C}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}crcpr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000007}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}rxcrcr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000000}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}txcrcr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000000}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000000}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2spr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00000002}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{// Function to handle SPI data transfer}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}transfer}\PYG{p}{(}\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{DB\PYGZus{}PRINT}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Data to send: 0x\PYGZpc{}x}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ssi\PYGZus{}transfer}\PYG{p}{(}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ssi}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{// Clear the RXNE flag and set it again to indicate that new data is available}
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}sr}\PYG{+w}{ }\PYG{o}{|=}\PYG{+w}{ }\PYG{n}{S32\PYGZus{}SPI\PYGZus{}SR\PYGZus{}RXNE}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{DB\PYGZus{}PRINT}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Data received: 0x\PYGZpc{}x}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{// Memory\PYGZhy{}mapped I/O read}
+\PYG{c+c1}{// When reading from the data register, perform a transfer}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{uint64\PYGZus{}t}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}read}\PYG{p}{(}\PYG{k+kt}{void}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{opaque}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{hwaddr}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{,}
+\PYG{+w}{                                     }\PYG{k+kt}{unsigned}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{opaque}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{DB\PYGZus{}PRINT}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Address: 0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{addr}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CR1}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CR2}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}UNIMP}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: Interrupts and DMA are not implemented}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{                      }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr2}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}SR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}sr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}DR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}transfer}\PYG{p}{(}\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}sr}\PYG{+w}{ }\PYG{o}{\PYGZam{}=}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{n}{S32\PYGZus{}SPI\PYGZus{}SR\PYGZus{}RXNE}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{// s\PYGZhy{}\PYGZgt{}spi\PYGZus{}dr |= 0xFFFFFF66;}
+\PYG{+w}{        }\PYG{c+c1}{// For testing purposes, increment the value read each time}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{test\PYGZus{}var}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mh}{0x01}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CRCPR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}crcpr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}RXCRCR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}rxcrcr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}TXCRCR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}txcrcr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}I2SCFGR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}I2SPR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2spr}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{default}\PYG{o}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}GUEST\PYGZus{}ERROR}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: Bad offset 0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{                      }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{// Memory\PYGZhy{}mapped I/O write}
+\PYG{c+c1}{// Writing to the data register initiates a transfer}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}write}\PYG{p}{(}\PYG{k+kt}{void}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{opaque}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{hwaddr}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{,}
+\PYG{+w}{                                }\PYG{k+kt}{uint64\PYGZus{}t}\PYG{+w}{ }\PYG{n}{val64}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{opaque}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{value}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{val64}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{DB\PYGZus{}PRINT}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Address: 0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}, Value: 0x\PYGZpc{}x}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{addr}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CR1}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr1}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CR2}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}UNIMP}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: \PYGZdq{}}\PYG{+w}{ }\PYGZbs{}
+\PYG{+w}{                      }\PYG{l+s}{\PYGZdq{}Interrupts and DMA are not implemented}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}cr2}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}SR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}DR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}dr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{test\PYGZus{}var}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Reset test\PYGZus{}var on write}
+\PYG{+w}{        }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}transfer}\PYG{p}{(}\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}CRCPR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}crcpr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}RXCRCR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}GUEST\PYGZus{}ERROR}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: Read only register: \PYGZdq{}}\PYG{+w}{ }\PYGZbs{}
+\PYG{+w}{                      }\PYG{l+s}{\PYGZdq{}0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}TXCRCR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}GUEST\PYGZus{}ERROR}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: Read only register: \PYGZdq{}}\PYG{+w}{ }\PYGZbs{}
+\PYG{+w}{                      }\PYG{l+s}{\PYGZdq{}0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}I2SCFGR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{S32\PYGZus{}SPI\PYGZus{}I2SPR}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{spi\PYGZus{}i2spr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{default}\PYG{o}{:}
+\PYG{+w}{        }\PYG{n}{qemu\PYGZus{}log\PYGZus{}mask}\PYG{p}{(}\PYG{n}{LOG\PYGZus{}GUEST\PYGZus{}ERROR}\PYG{p}{,}
+\PYG{+w}{                      }\PYG{l+s}{\PYGZdq{}\PYGZpc{}s: Bad offset 0x\PYGZpc{}\PYGZdq{}}\PYG{+w}{ }\PYG{n}{HWADDR\PYGZus{}PRIx}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}func\PYGZus{}\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{addr}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{n}{MemoryRegionOps}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}ops}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{read}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}read}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{write}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}write}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{endianness}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE\PYGZus{}NATIVE\PYGZus{}ENDIAN}\PYG{p}{,}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{n}{VMStateDescription}\PYG{+w}{ }\PYG{n}{vmstate\PYGZus{}S32Kx8\PYGZus{}spi}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{name}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}SPI}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{version\PYGZus{}id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{minimum\PYGZus{}version\PYGZus{}id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{fields}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{const}\PYG{+w}{ }\PYG{n}{VMStateField}\PYG{p}{[])}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}cr1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}cr2}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}sr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}dr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}crcpr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}rxcrcr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}txcrcr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}UINT32}\PYG{p}{(}\PYG{n}{spi\PYGZus{}i2spr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{        }\PYG{n}{VMSTATE\PYGZus{}END\PYGZus{}OF\PYGZus{}LIST}\PYG{p}{()}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}init}\PYG{p}{(}\PYG{n}{Object}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{obj}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{s}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}SPI}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{memory\PYGZus{}region\PYGZus{}init\PYGZus{}io}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{mmio}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{obj}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}ops}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{,}
+\PYG{+w}{                          }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}SPI}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mh}{0x400}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{sysbus\PYGZus{}init\PYGZus{}mmio}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{),}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{mmio}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{sysbus\PYGZus{}init\PYGZus{}irq}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{obj}\PYG{p}{),}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{irq}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ssi}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ssi\PYGZus{}create\PYGZus{}bus}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}ssi\PYGZdq{}}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}class\PYGZus{}init}\PYG{p}{(}\PYG{n}{ObjectClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{klass}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{data}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{DeviceClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dc}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE\PYGZus{}CLASS}\PYG{p}{(}\PYG{n}{klass}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{device\PYGZus{}class\PYGZus{}set\PYGZus{}legacy\PYGZus{}reset}\PYG{p}{(}\PYG{n}{dc}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}reset}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{dc}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{vmsd}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{vmstate\PYGZus{}S32Kx8\PYGZus{}spi}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{n}{TypeInfo}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}info}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{name}\PYG{+w}{          }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}SPI}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{parent}\PYG{+w}{        }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{instance\PYGZus{}size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{S32K3x8SPIState}\PYG{p}{),}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{instance\PYGZus{}init}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}init}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{class\PYGZus{}init}\PYG{+w}{    }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}class\PYGZus{}init}\PYG{p}{,}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32Kx8\PYGZus{}spi\PYGZus{}register\PYGZus{}types}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{type\PYGZus{}register\PYGZus{}static}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}info}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{type\PYGZus{}init}\PYG{p}{(}\PYG{n}{S32Kx8\PYGZus{}spi\PYGZus{}register\PYGZus{}types}\PYG{p}{)}
+\end{Verbatim}

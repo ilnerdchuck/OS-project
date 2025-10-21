@@ -2,5 +2,7 @@
     "cmake.ignoreCMakeListsMissing": true,
     "files.associations": {
         "s32k3x8_spi.h": "c"
-    }
+    },
+    "editor.cursorStyle": "line",
+    "editor.cursorWidth": 4
 }
