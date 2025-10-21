@@ -1,0 +1,99 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * FreeRTOS V202212.00}
+\PYG{c+cm}{ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * Permission is hereby granted, free of charge, to any person obtaining a copy of}
+\PYG{c+cm}{ * this software and associated documentation files (the \PYGZdq{}Software\PYGZdq{}), to deal in}
+\PYG{c+cm}{ * the Software without restriction, including without limitation the rights to}
+\PYG{c+cm}{ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of}
+\PYG{c+cm}{ * the Software, and to permit persons to whom the Software is furnished to do so,}
+\PYG{c+cm}{ * subject to the following conditions:}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * The above copyright notice and this permission notice shall be included in all}
+\PYG{c+cm}{ * copies or substantial portions of the Software.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * THE SOFTWARE IS PROVIDED \PYGZdq{}AS IS\PYGZdq{}, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR}
+\PYG{c+cm}{ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS}
+\PYG{c+cm}{ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR}
+\PYG{c+cm}{ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER}
+\PYG{c+cm}{ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN}
+\PYG{c+cm}{ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * https://www.FreeRTOS.org}
+\PYG{c+cm}{ * https://github.com/FreeRTOS}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ */}
+
+\PYG{n}{MEMORY}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{FLASH}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{xr}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ORIGIN}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00400000}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{LENGTH}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{2048}\PYG{n}{K}\PYG{+w}{ }\PYG{c+cm}{/* to 0x00003FFF = 0x007FFFFF*/}
+\PYG{+w}{    }\PYG{n}{RAM}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{rw}\PYG{p}{)}\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ORIGIN}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x20400000}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{LENGTH}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{256}\PYG{n}{K}\PYG{+w}{ }\PYG{c+cm}{/* to 0x21FFFFFF = 0xFFFFFF */}
+\PYG{p}{\PYGZcb{}}
+\PYG{n}{ENTRY}\PYG{p}{(}\PYG{n}{Reset\PYGZus{}Handler}\PYG{p}{)}
+
+\PYG{n}{\PYGZus{}Min\PYGZus{}Heap\PYGZus{}Size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x8}\PYG{+w}{ }\PYG{p}{;}\PYG{+w}{        }\PYG{c+cm}{/* Not used as building heap\PYGZus{}4.c */}
+\PYG{n}{\PYGZus{}Min\PYGZus{}Stack\PYGZus{}Size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x400}\PYG{+w}{ }\PYG{p}{;}\PYG{+w}{       }\PYG{c+cm}{/* Required amount of stack.  Used by main(), then re\PYGZhy{}used as the interrupt stack after the kernel starts. */}
+\PYG{n}{\PYGZus{}estack}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ORIGIN}\PYG{p}{(}\PYG{n}{RAM}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{LENGTH}\PYG{p}{(}\PYG{n}{RAM}\PYG{p}{);}
+
+
+\PYG{n}{SECTIONS}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{isr\PYGZus{}vector}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}\PYGZus{}vector\PYGZus{}table}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{n}{KEEP}\PYG{p}{(}\PYG{o}{*}\PYG{p}{(.}\PYG{n}{isr\PYGZus{}vector}\PYG{p}{))}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ALIGN}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{FLASH}
+
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{text}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(.}\PYG{n}{text}\PYG{p}{)}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(.}\PYG{n}{rodata}\PYG{o}{*}\PYG{p}{)}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(.}\PYG{n}{constdata}\PYG{o}{*}\PYG{p}{)}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}etext}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}sidata}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{FLASH}
+
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ALIGN}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}sdata}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(}\PYG{n}{vtable}\PYG{p}{)}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(.}\PYG{n}{data}\PYG{p}{)}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}edata}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RAM}
+
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{bss}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ALIGN}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}bss}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}sbss}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{o}{*}\PYG{p}{(.}\PYG{n}{bss}\PYG{p}{)}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}ebss}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{RAM}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{heap}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ALIGN}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{PROVIDE}\PYG{+w}{ }\PYG{p}{(}\PYG{+w}{ }\PYG{n}{end}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}\PYG{+w}{ }\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{PROVIDE}\PYG{+w}{ }\PYG{p}{(}\PYG{+w}{ }\PYG{n}{\PYGZus{}end}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}\PYG{+w}{ }\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}heap\PYGZus{}bottom}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{\PYGZus{}Min\PYGZus{}Heap\PYGZus{}Size}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}heap\PYGZus{}top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.;}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{\PYGZus{}Min\PYGZus{}Stack\PYGZus{}Size}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{.}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ALIGN}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{);}
+\PYG{+w}{   }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{n}{RAM}
+\PYG{+w}{   }
+\PYG{+w}{   }\PYG{c+cm}{/* Set stack top to end of RAM, and stack limit move down by}
+\PYG{c+cm}{    * size of stack\PYGZus{}dummy section */}
+\PYG{+w}{   }\PYG{n}{\PYGZus{}\PYGZus{}StackTop}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ORIGIN}\PYG{p}{(}\PYG{n}{RAM}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{LENGTH}\PYG{p}{(}\PYG{n}{RAM}\PYG{p}{);}
+\PYG{+w}{   }\PYG{n}{\PYGZus{}\PYGZus{}StackLimit}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}StackTop}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{\PYGZus{}Min\PYGZus{}Stack\PYGZus{}Size}\PYG{p}{;}
+\PYG{+w}{   }\PYG{n}{PROVIDE}\PYG{p}{(}\PYG{n}{\PYGZus{}\PYGZus{}stack}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{\PYGZus{}\PYGZus{}StackTop}\PYG{p}{);}
+\PYG{+w}{     }
+\PYG{+w}{  }\PYG{c+cm}{/* Check if data + heap + stack exceeds RAM limit */}
+\PYG{+w}{  }\PYG{n}{ASSERT}\PYG{p}{(}\PYG{n}{\PYGZus{}\PYGZus{}StackLimit}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{n}{\PYGZus{}heap\PYGZus{}top}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}region RAM overflowed with stack\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{  }
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

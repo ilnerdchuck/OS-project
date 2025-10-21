@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3X8EVBMachineState}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+cm}{/* Parent machine state. */}
+\PYG{+w}{    }\PYG{n}{MachineState}\PYG{+w}{ }\PYG{n}{parent}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{S32K3x8State}\PYG{+w}{ }\PYG{n}{S32K3X8}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

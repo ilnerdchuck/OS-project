@@ -1,0 +1,40 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}pragma once}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}properties.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/boards.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/boot.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}sysemu/sysemu.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}exec/address\PYGZhy{}spaces.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3X8EVB.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3x8\PYGZus{}MCU.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/boards.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}properties.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/error\PYGZhy{}report.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/boot.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}define S32K3x8\PYGZus{}FLASH0\PYGZus{}BASE 0x00400000}
+\PYG{c+cp}{\PYGZsh{}define S32K3x8\PYGZus{}FLASH0\PYGZus{}SIZE 2048*1024}
+
+\PYG{c+c1}{//SRAM}
+\PYG{c+cp}{\PYGZsh{}define S32K3x8\PYGZus{}SRAM0\PYGZus{}BASE 0x20400000}
+\PYG{c+cp}{\PYGZsh{}define S32K3x8\PYGZus{}SRAM0\PYGZus{}SIZE 256*1024}
+
+\PYG{c+cp}{\PYGZsh{}define TYPE\PYGZus{}S32K3X8EVB\PYGZus{}MACHINE MACHINE\PYGZus{}TYPE\PYGZus{}NAME(\PYGZdq{}S32K3X8EVB\PYGZdq{})}
+\PYG{n}{OBJECT\PYGZus{}DECLARE\PYGZus{}SIMPLE\PYGZus{}TYPE}\PYG{p}{(}\PYG{n}{S32K3X8EVBMachineState}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3X8EVB\PYGZus{}MACHINE}\PYG{p}{)}
+
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3X8EVBMachineState}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+cm}{/* Parent machine state. */}
+\PYG{+w}{    }\PYG{n}{MachineState}\PYG{+w}{ }\PYG{n}{parent}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{S32K3x8State}\PYG{+w}{ }\PYG{n}{S32K3X8}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

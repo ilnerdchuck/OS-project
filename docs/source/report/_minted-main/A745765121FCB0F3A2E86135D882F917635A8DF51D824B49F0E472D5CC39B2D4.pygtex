@@ -1,0 +1,75 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}properties.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/boards.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/boot.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}sysemu/sysemu.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}exec/address\PYGZhy{}spaces.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qom/object.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3X8EVB.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/S32K3x8\PYGZus{}MCU.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/osdep.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qapi/error.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/boards.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}properties.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/qdev\PYGZhy{}clock.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}qemu/error\PYGZhy{}report.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}hw/arm/boot.h\PYGZdq{}}
+
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3X8EVB\PYGZus{}init}\PYG{p}{(}\PYG{n}{MachineState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{machine}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{Clock}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{sysclk}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+c1}{// Clock instantiation }
+\PYG{+w}{    }\PYG{c+cm}{/* This clock doesn\PYGZsq{}t need migration because it is fixed\PYGZhy{}frequency */}
+\PYG{+w}{    }\PYG{n}{sysclk}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{clock\PYGZus{}new}\PYG{p}{(}\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{machine}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}SYSCLK\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{clock\PYGZus{}set\PYGZus{}hz}\PYG{p}{(}\PYG{n}{sysclk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{HCLK\PYGZus{}FRQ}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{c+c1}{// MCU initalization and realization}
+\PYG{+w}{    }\PYG{n}{dev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}new}\PYG{p}{(}\PYG{n}{TYPE\PYGZus{}S32K3x8\PYGZus{}MCU}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{object\PYGZus{}property\PYGZus{}add\PYGZus{}child}\PYG{p}{(}\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{machine}\PYG{p}{),}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}soc\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{OBJECT}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{));}
+\PYG{+w}{    }\PYG{c+c1}{// Clock connection to the MCU}
+\PYG{+w}{    }\PYG{n}{qdev\PYGZus{}connect\PYGZus{}clock\PYGZus{}in}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}sysclk\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{sysclk}\PYG{p}{);}
+\PYG{+w}{    }\PYG{c+c1}{// Attach the MCU to the \PYGZdq{}Bus\PYGZdq{}}
+\PYG{+w}{    }\PYG{n}{sysbus\PYGZus{}realize\PYGZus{}and\PYGZus{}unref}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{),}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{error\PYGZus{}fatal}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{armv7m\PYGZus{}load\PYGZus{}kernel}\PYG{p}{(}\PYG{n}{ARM\PYGZus{}CPU}\PYG{p}{(}\PYG{n}{first\PYGZus{}cpu}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{machine}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{kernel\PYGZus{}filename}\PYG{p}{,}
+\PYG{+w}{                       }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{S32K3x8\PYGZus{}FLASH0\PYGZus{}SIZE}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }
+
+
+\PYG{c+c1}{// QEMU machine class initalization     }
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3X8EVB\PYGZus{}machine\PYGZus{}class\PYGZus{}init}\PYG{p}{(}\PYG{n}{ObjectClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{oc}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{data}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{MachineClass}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{mc}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{MACHINE\PYGZus{}CLASS}\PYG{p}{(}\PYG{n}{oc}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{n}{mc}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{desc}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}NXP S32K3X8EVB\PYGZhy{}Q289 (Cortex\PYGZhy{}M7)\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{mc}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{init}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3X8EVB\PYGZus{}init}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{mc}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{max\PYGZus{}cpus}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{  The following structure describes the machine class type:}
+\PYG{c+cm}{    \PYGZhy{} It sets the machine name (\PYGZdq{}S32K3X8EVB\PYGZdq{}).}
+\PYG{c+cm}{    \PYGZhy{} It sets the parent class type (a QEMU machine).}
+\PYG{c+cm}{    \PYGZhy{} It sets the instance size.}
+\PYG{c+cm}{    \PYGZhy{} It sets the class initialization callback.}
+\PYG{c+cm}{*/}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{n}{TypeInfo}\PYG{+w}{ }\PYG{n}{S32K3X8EVB\PYGZus{}info}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{name}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}S32K3X8EVB\PYGZus{}MACHINE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{parent}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{TYPE\PYGZus{}MACHINE}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{instance\PYGZus{}size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{S32K3X8EVBMachineState}\PYG{p}{),}
+\PYG{+w}{    }\PYG{p}{.}\PYG{n}{class\PYGZus{}init}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{S32K3X8EVB\PYGZus{}machine\PYGZus{}class\PYGZus{}init}\PYG{p}{,}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{c+c1}{// QEMU registration of the board }
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3X8EVB\PYGZus{}machine\PYGZus{}init}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{type\PYGZus{}register\PYGZus{}static}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{S32K3X8EVB\PYGZus{}info}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{type\PYGZus{}init}\PYG{p}{(}\PYG{n}{S32K3X8EVB\PYGZus{}machine\PYGZus{}init}\PYG{p}{);}
+
+\end{Verbatim}

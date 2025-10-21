@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{        }\PYGZdl{}\PYG{+w}{ }./qemu/build/qemu\PYGZhy{}system\PYGZhy{}arm\PYG{+w}{ }\PYGZhy{}machine\PYG{+w}{ }S32K3X8EVB\PYG{+w}{ }\PYGZhy{}monitor\PYG{+w}{ }stdio\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }128M\PYG{+w}{ }\PYGZhy{}nographic
+\end{Verbatim}

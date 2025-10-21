@@ -1,5 +1,45 @@
 %%% Appendix A
-\chapter{QEMU Code}\label{DLX_VHDL_Code}
+\chapter{QEMU Code}\label{QEMU_code}
 
-\section{Control unit}\label{CU_code}
-	% \inputminted[breaklines]{vhdl}{appendices/files/a.a-CU_HW.vhd}
+\section{S32K3X8EVB}\label{S32k3X8EVB}
+	\subsection{Header File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3X8EVB.h}
+	\subsubsection{Source File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3X8EVB.c}
+
+\section{S32K3X8EVB - MCU}\label{S32k3X8EVB_MCU}
+	\subsection{Header File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3x8_MCU.h}
+	\subsubsection{Source File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3x8_MCU.c}
+
+\section{S32K3X8EVB - UART}\label{S32k3X8EVB_UART}
+	\subsection{Header File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K_uart.h}
+	\subsubsection{Source File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3x8_uart.c}
+
+\section{S32K3X8EVB - SPI}\label{S32k3X8EVB_SPI}
+	\subsection{Header File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3x8_spi.h}
+	\subsubsection{Source File}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3x8_spi.c}
+
+\chapter{FreeRTOS Code}\label{FreeRTOS_code}
+
+\section{Linker Script}\label{FreeRTOS_linker_script}
+	\inputminted[breaklines]{c}{./appendices/files/S32K3.ld}
+	
+\section{Peripheral Drivers}\label{FreeRTOS_peripheral_drivers}
+	\subsection{Header File}
+	\inputminted[breaklines]{c}{./appendices/files/peripherals.h}
+	\subsubsection{Source File}
+	\inputminted[breaklines]{c}{./appendices/files/peripherals.c}
+
+\section{FreeRTOS Main}\label{FreeRTOS_test_tasks}
+	\inputminted[breaklines]{c}{./appendices/files/main.c}
+\section{FreeRTOSConfig}\label{FreeRTOS_config}
+	\inputminted[breaklines]{c}{./appendices/files/FreeRTOSConfig.h}
+
+\section{Makefile}\label{Makefile}
+	\inputminted[breaklines]{c}{./appendices/files/Makefile}

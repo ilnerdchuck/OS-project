@@ -1,0 +1,30 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3x8State}\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{n}{parent\PYGZus{}obj}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{//CPU Type}
+\PYG{+w}{    }\PYG{n}{ARMv7MState}\PYG{+w}{ }\PYG{n}{cpu}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{//Board clock}
+\PYG{+w}{    }\PYG{n}{Clock}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{sysclk}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{// Memory Setions}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{sram0\PYGZus{}size}\PYG{p}{;}\PYG{+w}{    }\PYG{c+c1}{//SRAM size}
+\PYG{+w}{    }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{flash0\PYGZus{}size}\PYG{p}{;}\PYG{+w}{   }\PYG{c+c1}{//Flash memory size}
+
+\PYG{+w}{    }\PYG{c+c1}{//Memory declaration}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{sram0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{flash0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{flash\PYGZus{}alias}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{board\PYGZus{}memory}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{container}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{//Peripherals}
+\PYG{+w}{    }\PYG{c+c1}{// UART}
+\PYG{+w}{    }\PYG{n}{S32K3x8UartState}\PYG{+w}{ }\PYG{n}{uart}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{];}
+
+\PYG{+w}{    }\PYG{c+c1}{// SPI}
+\PYG{+w}{    }\PYG{n}{S32K3x8SPIState}\PYG{+w}{ }\PYG{n}{spi}\PYG{p}{[}\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}SPI}\PYG{p}{];}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

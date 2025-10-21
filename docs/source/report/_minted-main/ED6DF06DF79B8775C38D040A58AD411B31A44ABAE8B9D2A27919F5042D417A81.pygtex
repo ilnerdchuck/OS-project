@@ -1,0 +1,136 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * FreeRTOS V202212.00}
+\PYG{c+cm}{ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * Permission is hereby granted, free of charge, to any person obtaining a copy of}
+\PYG{c+cm}{ * this software and associated documentation files (the \PYGZdq{}Software\PYGZdq{}), to deal in}
+\PYG{c+cm}{ * the Software without restriction, including without limitation the rights to}
+\PYG{c+cm}{ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of}
+\PYG{c+cm}{ * the Software, and to permit persons to whom the Software is furnished to do so,}
+\PYG{c+cm}{ * subject to the following conditions:}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * The above copyright notice and this permission notice shall be included in all}
+\PYG{c+cm}{ * copies or substantial portions of the Software.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * THE SOFTWARE IS PROVIDED \PYGZdq{}AS IS\PYGZdq{}, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR}
+\PYG{c+cm}{ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS}
+\PYG{c+cm}{ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR}
+\PYG{c+cm}{ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER}
+\PYG{c+cm}{ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN}
+\PYG{c+cm}{ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ * https://www.FreeRTOS.org}
+\PYG{c+cm}{ * https://github.com/FreeRTOS}
+\PYG{c+cm}{ *}
+\PYG{c+cm}{ */}
+
+\PYG{c+cp}{\PYGZsh{}ifndef FREERTOS\PYGZus{}CONFIG\PYGZus{}H}
+\PYG{c+cp}{\PYGZsh{}define FREERTOS\PYGZus{}CONFIG\PYGZus{}H}
+
+\PYG{c+cm}{/*\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+cm}{* Application specific definitions.}
+\PYG{c+cm}{*}
+\PYG{c+cm}{* These definitions should be adjusted for your particular hardware and}
+\PYG{c+cm}{* application requirements.}
+\PYG{c+cm}{*}
+\PYG{c+cm}{* THESE PARAMETERS ARE DESCRIBED WITHIN THE \PYGZsq{}CONFIGURATION\PYGZsq{} SECTION OF THE}
+\PYG{c+cm}{* FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.}
+\PYG{c+cm}{*}
+\PYG{c+cm}{* See http://www.freertos.org/a00110.html}
+\PYG{c+cm}{*\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}*/}
+
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}TRACE\PYGZus{}FACILITY                 0}
+\PYG{c+cp}{\PYGZsh{}define configGENERATE\PYGZus{}RUN\PYGZus{}TIME\PYGZus{}STATS            0}
+
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}PREEMPTION                     1}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}IDLE\PYGZus{}HOOK                      0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}TICK\PYGZus{}HOOK                      0}
+\PYG{c+cp}{\PYGZsh{}define configCPU\PYGZus{}CLOCK\PYGZus{}HZ                       ( ( unsigned long ) 24000000 )}
+\PYG{c+cp}{\PYGZsh{}define configTICK\PYGZus{}RATE\PYGZus{}HZ                       ( ( TickType\PYGZus{}t ) 1000 )}
+\PYG{c+cp}{\PYGZsh{}define configMINIMAL\PYGZus{}STACK\PYGZus{}SIZE                 ( ( unsigned short ) 80 )}
+\PYG{c+cp}{\PYGZsh{}define configTOTAL\PYGZus{}HEAP\PYGZus{}SIZE                    ( ( size\PYGZus{}t ) ( 60 * 1024 ) )}
+\PYG{c+cp}{\PYGZsh{}define configMAX\PYGZus{}TASK\PYGZus{}NAME\PYGZus{}LEN                  ( 12 )}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}TRACE\PYGZus{}FACILITY                 0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}16\PYGZus{}BIT\PYGZus{}TICKS                   0}
+\PYG{c+cp}{\PYGZsh{}define configIDLE\PYGZus{}SHOULD\PYGZus{}YIELD                  0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}CO\PYGZus{}ROUTINES                    0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}MUTEXES                        1}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}RECURSIVE\PYGZus{}MUTEXES              1}
+\PYG{c+cp}{\PYGZsh{}define configCHECK\PYGZus{}FOR\PYGZus{}STACK\PYGZus{}OVERFLOW           0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}MALLOC\PYGZus{}FAILED\PYGZus{}HOOK             0}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}QUEUE\PYGZus{}SETS                     1}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}COUNTING\PYGZus{}SEMAPHORES            1}
+
+\PYG{c+cp}{\PYGZsh{}define configMAX\PYGZus{}PRIORITIES                     ( 9UL )}
+\PYG{c+cp}{\PYGZsh{}define configMAX\PYGZus{}CO\PYGZus{}ROUTINE\PYGZus{}PRIORITIES          ( 2 )}
+\PYG{c+cp}{\PYGZsh{}define configQUEUE\PYGZus{}REGISTRY\PYGZus{}SIZE                10}
+\PYG{c+cp}{\PYGZsh{}define configSUPPORT\PYGZus{}STATIC\PYGZus{}ALLOCATION          0}
+
+\PYG{c+cm}{/* Timer related defines. */}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}TIMERS                         0}
+\PYG{c+cp}{\PYGZsh{}define configTIMER\PYGZus{}TASK\PYGZus{}PRIORITY                ( configMAX\PYGZus{}PRIORITIES \PYGZhy{} 4 )}
+\PYG{c+cp}{\PYGZsh{}define configTIMER\PYGZus{}QUEUE\PYGZus{}LENGTH                 20}
+\PYG{c+cp}{\PYGZsh{}define configTIMER\PYGZus{}TASK\PYGZus{}STACK\PYGZus{}DEPTH             ( configMINIMAL\PYGZus{}STACK\PYGZus{}SIZE * 2 )}
+
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}TASK\PYGZus{}NOTIFICATIONS             1}
+\PYG{c+cp}{\PYGZsh{}define configTASK\PYGZus{}NOTIFICATION\PYGZus{}ARRAY\PYGZus{}ENTRIES    3}
+
+\PYG{c+cm}{/* Set the following definitions to 1 to include the API function, or zero}
+\PYG{c+cm}{ * to exclude the API function. */}
+
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskPrioritySet                  1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}uxTaskPriorityGet                 1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskDelete                       1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskCleanUpResources             0}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskSuspend                      1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskDelayUntil                   1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}vTaskDelay                        1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}uxTaskGetStackHighWaterMark       1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTaskGetSchedulerState            1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTimerGetTimerDaemonTaskHandle    1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTaskGetIdleTaskHandle            1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xSemaphoreGetMutexHolder          1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}eTaskGetState                     1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTimerPendFunctionCall            1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTaskAbortDelay                   1}
+\PYG{c+cp}{\PYGZsh{}define INCLUDE\PYGZus{}xTaskGetHandle                    1}
+
+\PYG{c+cm}{/* This demo makes use of one or more example stats formatting functions. These}
+\PYG{c+cm}{ * format the raw data provided by the uxTaskGetSystemState() function in to human}
+\PYG{c+cm}{ * readable ASCII form.  See the notes in the implementation of vTaskList() within}
+\PYG{c+cm}{ * FreeRTOS/Source/tasks.c for limitations. */}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}STATS\PYGZus{}FORMATTING\PYGZus{}FUNCTIONS      0}
+
+\PYG{c+cp}{\PYGZsh{}define configKERNEL\PYGZus{}INTERRUPT\PYGZus{}PRIORITY           ( 255 )        }\PYG{c+cm}{/* All eight bits as QEMU doesn\PYGZsq{}t model the priority bits. */}
+
+\PYG{c+cp}{\PYGZsh{}ifndef \PYGZus{}\PYGZus{}IASMARM\PYGZus{}\PYGZus{} }\PYG{c+cm}{/* Prevent C code being included in IAR asm files. */}
+\PYG{+w}{	}\PYG{c+cp}{\PYGZsh{}define configASSERT( x ) if( ( x ) == 0 ) while(1);}
+\PYG{c+cp}{\PYGZsh{}endif}
+
+
+\PYG{c+cm}{/* !!!! configMAX\PYGZus{}SYSCALL\PYGZus{}INTERRUPT\PYGZus{}PRIORITY must not be set to zero !!!!}
+\PYG{c+cm}{ * See http://www.FreeRTOS.org/RTOS\PYGZhy{}Cortex\PYGZhy{}M3\PYGZhy{}M4.html. */}
+\PYG{c+cp}{\PYGZsh{}define configMAX\PYGZus{}SYSCALL\PYGZus{}INTERRUPT\PYGZus{}PRIORITY             ( 4 )}
+
+\PYG{c+cm}{/* Use the Cortex\PYGZhy{}M3 optimised task selection rather than the generic C code}
+\PYG{c+cm}{ * version. */}
+\PYG{c+cp}{\PYGZsh{}define configUSE\PYGZus{}PORT\PYGZus{}OPTIMISED\PYGZus{}TASK\PYGZus{}SELECTION          1}
+
+\PYG{c+cm}{/* The Win32 target is capable of running all the tests tasks at the same}
+\PYG{c+cm}{ * time. */}
+\PYG{c+cp}{\PYGZsh{}define configRUN\PYGZus{}ADDITIONAL\PYGZus{}TESTS                       1}
+
+\PYG{c+cm}{/* The test that checks the trigger level on stream buffers requires an}
+\PYG{c+cm}{ * allowable margin of error on slower processors (slower than the Win32}
+\PYG{c+cm}{ * machine on which the test is developed). */}
+\PYG{c+cp}{\PYGZsh{}define configSTREAM\PYGZus{}BUFFER\PYGZus{}TRIGGER\PYGZus{}LEVEL\PYGZus{}TEST\PYGZus{}MARGIN    4}
+
+\PYG{c+cp}{\PYGZsh{}define intqHIGHER\PYGZus{}PRIORITY      ( configMAX\PYGZus{}PRIORITIES \PYGZhy{} 5 )}
+\PYG{c+cp}{\PYGZsh{}define bktPRIMARY\PYGZus{}PRIORITY      ( configMAX\PYGZus{}PRIORITIES \PYGZhy{} 3 )}
+\PYG{c+cp}{\PYGZsh{}define bktSECONDARY\PYGZus{}PRIORITY    ( configMAX\PYGZus{}PRIORITIES \PYGZhy{} 4 )}
+
+\PYG{c+cp}{\PYGZsh{}define configENABLE\PYGZus{}BACKWARD\PYGZus{}COMPATIBILITY 0}
+
+\PYG{c+cp}{\PYGZsh{}endif }\PYG{c+cm}{/* FREERTOS\PYGZus{}CONFIG\PYGZus{}H */}
+\end{Verbatim}

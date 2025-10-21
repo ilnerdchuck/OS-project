@@ -1,0 +1,41 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}ifndef \PYGZus{}\PYGZus{}PRINTF\PYGZus{}\PYGZus{}}
+\PYG{c+cp}{\PYGZsh{}define \PYGZus{}\PYGZus{}PRINTF\PYGZus{}\PYGZus{}}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZdq{}FreeRTOS.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdint.h\PYGZgt{}}
+
+\PYG{c+c1}{//UART}
+\PYG{c+cp}{\PYGZsh{}define UART0\PYGZus{}ADDRESS (0x40328000UL)}
+\PYG{c+cp}{\PYGZsh{}define UART0\PYGZus{}DATA UART0\PYGZus{}ADDRESS + 4UL}
+\PYG{c+cp}{\PYGZsh{}define UART0\PYGZus{}STATE UART0\PYGZus{}ADDRESS + 0UL}
+\PYG{c+cp}{\PYGZsh{}define UART0\PYGZus{}CTRL UART0\PYGZus{}ADDRESS + 0xCUL}
+\PYG{c+cp}{\PYGZsh{}define UART0\PYGZus{}BAUDDIV UART0\PYGZus{}ADDRESS + 8UL}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{UART\PYGZus{}init}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{);}
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{uart\PYGZus{}printf}\PYG{p}{(}\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{char}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{fmt}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{...);}
+
+
+\PYG{c+c1}{// SPI}
+\PYG{c+c1}{// LPSPI0 base pointer }
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}BASE (0x40358000UL)}
+
+\PYG{c+c1}{// \PYGZsh{}define LPSPI0\PYGZus{}CTRL (*(((volatile uint32\PYGZus{}t *)(LPSPI0\PYGZus{}BASE + 0x0UL))))}
+
+\PYG{c+c1}{// LPSPI0 registers }
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}CTRL (LPSPI0\PYGZus{}BASE + 0x0UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}CTRL2 (LPSPI0\PYGZus{}BASE + 0x04UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}SR (LPSPI0\PYGZus{}BASE + 0x08UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}DR (LPSPI0\PYGZus{}BASE + 0xCUL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}CRCPR (LPSPI0\PYGZus{}BASE + 0x10UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}RXCRCR (LPSPI0\PYGZus{}BASE + 0x14UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}TXCRCR (LPSPI0\PYGZus{}BASE + 0x18UL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}I2SCFGR (LPSPI0\PYGZus{}BASE + 0x1CUL)}
+\PYG{c+cp}{\PYGZsh{}define LPSPI0\PYGZus{}I2SPR (LPSPI0\PYGZus{}BASE + 0x20UL)}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{SPI\PYGZus{}init}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{);}
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{SPI\PYGZus{}status}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{);}
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{SPI\PYGZus{}write}\PYG{p}{(}\PYG{k+kt}{uint8\PYGZus{}t}\PYG{p}{);}
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{SPI\PYGZus{}get}\PYG{p}{(}\PYG{k+kt}{uint8\PYGZus{}t}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{);}
+\PYG{c+cp}{\PYGZsh{}endif}
+\end{Verbatim}

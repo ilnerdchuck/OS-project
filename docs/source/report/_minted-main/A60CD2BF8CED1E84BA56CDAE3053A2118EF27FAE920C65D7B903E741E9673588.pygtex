@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{S32K3x8\PYGZus{}realize}\PYG{p}{(}\PYG{n}{DeviceState}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{dev\PYGZus{}mcu}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Error}\PYG{+w}{ }\PYG{o}{**}\PYG{n}{errp}\PYG{p}{)\PYGZob{}}
+
+\PYG{p}{...}
+
+\PYG{+w}{    }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{busdev}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+cm}{/* Attach all UARTs and USART controllers */}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{NXP\PYGZus{}NUM\PYGZus{}UARTS}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+
+\PYG{+w}{        }\PYG{n}{dev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{p}{(}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{        }\PYG{c+c1}{//declare the UART new device type}
+\PYG{+w}{        }\PYG{n}{qdev\PYGZus{}prop\PYGZus{}set\PYGZus{}chr}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}chardev\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{serial\PYGZus{}hd}\PYG{p}{(}\PYG{n}{i}\PYG{p}{));}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{!}\PYG{n}{sysbus\PYGZus{}realize}\PYG{p}{(}\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{uart}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]),}\PYG{+w}{ }\PYG{n}{errp}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n}{busdev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{SYS\PYGZus{}BUS\PYGZus{}DEVICE}\PYG{p}{(}\PYG{n}{dev}\PYG{p}{);}
+\PYG{+w}{        }\PYG{c+c1}{// Map the UART peripheral to memory}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}mmio\PYGZus{}map}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}addr}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+\PYG{+w}{        }\PYG{c+c1}{// initialize the IRQ table of the CPU with the correct interrupt handler}
+\PYG{+w}{        }\PYG{n}{sysbus\PYGZus{}connect\PYGZus{}irq}\PYG{p}{(}\PYG{n}{busdev}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{qdev\PYGZus{}get\PYGZus{}gpio\PYGZus{}in}\PYG{p}{(}\PYG{n}{armv7m}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{usart\PYGZus{}irq}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]));}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{...}
+
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

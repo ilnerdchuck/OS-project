@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.3)  8 SEP 2025 18:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2025.9.3)  15 SEP 2025 11:44
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1048,7 +1048,154 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@prehook=\toks50
 \inpenc@posthook=\toks51
 )
-\c@bitfieldsize=\count378
+(/usr/share/texlive/texmf-dist/tex/latex/forest/forest.sty
+Package: forest 2017/07/14 v2.1.5 Drawing (linguistic) trees
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.callouts.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.callouts.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodepartlowerbox=\box95
+\pgfnodeparttwobox=\box96
+\pgfnodepartthreebox=\box97
+\pgfnodepartfourbox=\box98
+\pgfnodeparttwentybox=\box99
+\pgfnodepartnineteenbox=\box100
+\pgfnodeparteighteenbox=\box101
+\pgfnodepartseventeenbox=\box102
+\pgfnodepartsixteenbox=\box103
+\pgfnodepartfifteenbox=\box104
+\pgfnodepartfourteenbox=\box105
+\pgfnodepartthirteenbox=\box106
+\pgfnodeparttwelvebox=\box107
+\pgfnodepartelevenbox=\box108
+\pgfnodeparttenbox=\box109
+\pgfnodepartninebox=\box110
+\pgfnodeparteightbox=\box111
+\pgfnodepartsevenbox=\box112
+\pgfnodepartsixbox=\box113
+\pgfnodepartfivebox=\box114
+)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryintersection
+s.code.tex
+\pgf@intersect@solutions=\count378
+) (/usr/share/texlive/texmf-dist/tex/latex/pgfopts/pgfopts.sty
+Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
+\pgfopts@list@add@a@toks=\toks52
+\pgfopts@list@add@b@toks=\toks53
+)
+(/usr/share/texlive/texmf-dist/tex/latex/elocalloc/elocalloc.sty
+Package: elocalloc 2016/12/15 v0.03 local allocation for LaTeX 2015+ (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+(/usr/share/texlive/texmf-dist/tex/latex/inlinedef/inlinedef.sty
+Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
+\ID@toks=\toks54
+\ID@count=\count379
+)
+\ID@usercommands=\toks55
+\safeloop@depth=\count380
+\safeRKloop@depth=\count381
+\forest@temp@dimen=\dimen366
+\forest@temp@count=\count382
+\forest@n=\count383
+\forest@temp@global@count=\count384
+\forest@temp@toks=\toks56
+\forest@temparray@M=\count385
+\forest@temparray@N=\count386
+\forest@global@temparray@M=\count387
+\forest@global@temparray@N=\count388
+\forest@isnum@count=\count389
+\forest@isdim@nonintpart=\count390
+\forest@isdim@dimen=\dimen367
+\forest@sort@m=\count391
+\forest@sort@k=\count392
+\forest@sort@p=\count393
+\bracket@content=\toks57
+\bracket@afterthought=\toks58
+\forest@node@maxid=\count394
+\forest@process@left@M=\count395
+\forest@process@left@N=\count396
+\forest@process@right@M=\count397
+\forest@process@right@N=\count398
+\forest@process@saved@M=\count399
+\forest@process@saved@N=\count400
+\forest@process@result@M=\count401
+\forest@process@result@N=\count402
+\forest@process@n=\count403
+\forest@nodewalk@branch@toks=\toks59
+\forest@nodewalk@shortsteps@resolution=\toks60
+\forest@do@dynamics=\toks61
+\forest@box=\box115
+\forest@xg=\dimen368
+\forest@yg=\dimen369
+\forest@xs=\dimen370
+\forest@ys=\dimen371
+\forest@pi@toks=\toks62
+\forest@segment@toks=\toks63
+\forest@PIi@toks=\toks64
+\forest@PIii@toks=\toks65
+\forest@copy@in=\read7
+\forest@copy@out=\write6
+\forest@externalize@max@outer@n=\count404
+\forest@externalize@inner@n=\count405
+)
+(/usr/share/texlive/texmf-dist/tex/latex/forest/forest-lib-edges.sty
+Package: forest-lib-edges 2016/12/05 v0.1.1
+)
+\c@bitfieldsize=\count406
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
 zlibrarypositioning.code.tex
@@ -1060,22 +1207,22 @@ zlibrarydecorations.pathreplacing.code.tex
 zlibrarydecorations.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduledecorations.cod
 e.tex
-\pgfdecoratedcompleteddistance=\dimen366
-\pgfdecoratedremainingdistance=\dimen367
-\pgfdecoratedinputsegmentcompleteddistance=\dimen368
-\pgfdecoratedinputsegmentremainingdistance=\dimen369
-\pgf@decorate@distancetomove=\dimen370
-\pgf@decorate@repeatstate=\count379
-\pgfdecorationsegmentamplitude=\dimen371
-\pgfdecorationsegmentlength=\dimen372
+\pgfdecoratedcompleteddistance=\dimen372
+\pgfdecoratedremainingdistance=\dimen373
+\pgfdecoratedinputsegmentcompleteddistance=\dimen374
+\pgfdecoratedinputsegmentremainingdistance=\dimen375
+\pgf@decorate@distancetomove=\dimen376
+\pgf@decorate@repeatstate=\count407
+\pgfdecorationsegmentamplitude=\dimen377
+\pgfdecorationsegmentlength=\dimen378
 )
-\tikz@lib@dec@box=\box95
+\tikz@lib@dec@box=\box116
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrary
 decorations.pathreplacing.code.tex))
-\c@instsize=\count380
-\@indexfile=\write6
-\openout6 = `main.idx'.
+\c@instsize=\count408
+\@indexfile=\write7
+\openout7 = `main.idx'.
 
 
 Writing index file main.idx
@@ -1090,42 +1237,42 @@ LaTeX Warning: Unused global option(s):
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 171.
-LaTeX Font Info:    ... okay on input line 171.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
  (/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 )
-\c@lstlisting=\count381
+\c@lstlisting=\count409
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count382
-\scratchdimen=\dimen373
-\scratchbox=\box96
-\nofMPsegments=\count383
-\nofMParguments=\count384
-\everyMPshowfont=\toks52
-\MPscratchCnt=\count385
-\MPscratchDim=\dimen374
-\MPnumerator=\count386
-\makeMPintoPDFobject=\count387
-\everyMPtoPDFconversion=\toks53
+\scratchcounter=\count410
+\scratchdimen=\dimen379
+\scratchbox=\box117
+\nofMPsegments=\count411
+\nofMParguments=\count412
+\everyMPshowfont=\toks66
+\MPscratchCnt=\count413
+\MPscratchDim=\dimen380
+\MPnumerator=\count414
+\makeMPintoPDFobject=\count415
+\everyMPtoPDFconversion=\toks67
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -1139,11 +1286,11 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 171.
+Package hyperref Info: Link coloring OFF on input line 198.
 
 (./main.out) (./main.out)
-\@outlinefile=\write7
-\openout7 = `main.out'.
+\@outlinefile=\write8
+\openout8 = `main.out'.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/translations/translations-basic-dictio
@@ -1152,11 +1299,11 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 171.
-<./polito_logo.jpg, id=19, 1272.755pt x 900.36375pt>
+or `english'. on input line 198.
+<./polito_logo.jpg, id=107, 1272.755pt x 900.36375pt>
 File: ./polito_logo.jpg Graphic file (type jpg)
 <use ./polito_logo.jpg>
-Package pdftex.def Info: ./polito_logo.jpg  used on input line 177.
+Package pdftex.def Info: ./polito_logo.jpg  used on input line 204.
 (pdftex.def)             Requested size: 264.61331pt x 187.18607pt.
  [1
 
@@ -1168,54 +1315,284 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.233 \tableofcontents
+l.260 \tableofcontents
                        [1
 
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] (./m
-ain.toc
-LaTeX Font Info:    Trying to load font information for U+msa on input line 4.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 4.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-))
-\tf@toc=\write8
-\openout8 = `main.toc'.
+ain.toc)
+\tf@toc=\write9
+\openout9 = `main.toc'.
 
  [2
 
-]
-(./appendices/appendix1.tex
+] (./chapters/chap1.tex
+Chapter 1.
+[1
+
+
+]) (./chapters/chap2.tex [2]
+Overfull \vbox (35.44559pt too high) has occurred while \output is active []
+
+
+[3]
+<chapters/figures/Board.png, id=143, 816.04875pt x 608.2725pt>
+File: chapters/figures/Board.png Graphic file (type png)
+<use chapters/figures/Board.png>
+Package pdftex.def Info: chapters/figures/Board.png  used on input line 9.
+(pdftex.def)             Requested size: 308.71104pt x 230.10643pt.
+ [4 <./chapters/figures/Board.png (PNG copy)>] [5]) (./chapters/chap3.tex
+\openout4 = `main.pyg'.
+
+
+(./_minted-main/default.pygstyle)
+(./_minted-main/644EAF736525F29AFD7C67D20287D9BB8EF27FAE920C65D7B903E741E967358
+8.pygtex
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 3.
+)
+\openout4 = `main.pyg'.
+
+
+(./_minted-main/9D5D439DD2929ACA07F98BA21A120B088EF27FAE920C65D7B903E741E967358
+8.pygtex) [6]) (./chapters/chap4.tex
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/2DC63E7B148CCA9C04A11394BC052D328EF27FAE920C65D7B903E741E967358
+8.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/F62084A7A6BC356B30F76E3275E8E95D8EF27FAE920C65D7B903E741E967358
+8.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/6ADE12AB0A5E11A1DBB0F471A18C0EA88EF27FAE920C65D7B903E741E967358
+8.pygtex)
+Overfull \hbox (6.39932pt too wide) in paragraph at lines 68--92
+\OT1/cmr/m/n/10 The UART pe-riph-eral is im-ple-mented in the file \OT1/cmtt/m/
+n/10 S32K3x8[]UART.c \OT1/cmr/m/n/10 lo-cated in the di-rec-tory \OT1/cmtt/m/n/
+10 qemu/hw/arm/\OT1/cmr/m/n/10 .
+ []
+
+[7] [8]
+Overfull \hbox (41.1777pt too wide) in paragraph at lines 97--98
+[]\OT1/cmr/m/n/10 When the CPU ac-cesses the mem-ory re-gion where the pe-riph-
+eral is mapped, the func-tions \OT1/cmtt/m/n/10 S32K3x8Uart[]read
+ []
+
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/E6315D25F161E69273A8C3CBD8F15A648EF27FAE920C65D7B903E741E967358
+8.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/A60CD2BF8CED1E84BA56CDAE3053A2118EF27FAE920C65D7B903E741E967358
+8.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/08890D9597DD236C7CB2CBE49BB1838E8EF27FAE920C65D7B903E741E967358
+8.pygtex) [9] [10]
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/599BFF587F8172E3B2E86AB9F40D4DD58EF27FAE920C65D7B903E741E967358
+8.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/5744A5C5D8CDF61DCABA7D3E7B4D54C98EF27FAE920C65D7B903E741E967358
+8.pygtex)) (./chapters/chap5.tex [11] [12]
+
+LaTeX Warning: Reference `FreeRTOS_linker_script' on page 13 undefined on input
+ line 7.
+
+
+LaTeX Warning: Reference `FreeRTOS_config' on page 13 undefined on input line 1
+0.
+
+
+LaTeX Warning: Reference `FreeRTOS_peripheral_drivers' on page 13 undefined on 
+input line 14.
+
+
+LaTeX Warning: Reference `FreeRTOS_test_tasks' on page 13 undefined on input li
+ne 18.
+
+) (./chapters/chap6.tex
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/C11268B46DCB321DCDE3CCEF0286B33ED3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/EA3E3D2601BFC9AECD3B991F9B7C735CD3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/7DF3316DB23455DCCD39B28B785B507FD3773C8B440B993359565A23D713B17
+A.pygtex [13])
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/A9D8B3214967A34F06B799ACD531B388D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/F7772D137A8DABBE5929B73A79527B71D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/3EF38A4C77F8E8695308604DFD96BB30D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/0BAEE45E7DB68101CA57A0E5E26A3C9DD3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/C5B9138A25C30F8E8BC8F0764EB572EDD3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/35DF94BFC110872D66928443ED656F17D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/5558BAE4392E34C9E31085F00094CBECD3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+
+(./_minted-main/D16DA835637A2E7D87FBA5F8CA872472D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout3 = `main.pyg'.
+
+runsystem(pygmentize -l 'bash' -f latex -P commandprefix=PYG -F tokenmerge -P s
+tripnl='False' -o _minted-main/31015183456F87E85F2C351FC90D9994D3773C8B440B9933
+59565A23D713B17A.pygtex main.pyg)...executed.
+
+
+(./_minted-main/31015183456F87E85F2C351FC90D9994D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout4 = `main.pyg'.
+
+runsystem(pygmentize -l 'bash' -f latex -P commandprefix=PYG -F tokenmerge -P s
+tripnl='False' -o _minted-main/369EB2EB59B87D0FABD4E5CD63A96530D3773C8B440B9933
+59565A23D713B17A.pygtex main.pyg)...executed.
+
+
+(./_minted-main/369EB2EB59B87D0FABD4E5CD63A96530D3773C8B440B993359565A23D713B17
+A.pygtex)
+\openout4 = `main.pyg'.
+
+runsystem(pygmentize -l 'bash' -f latex -P commandprefix=PYG -F tokenmerge -P s
+tripnl='False' -o _minted-main/355B5B838F8451FC5BB43E8F029AECEED3773C8B440B9933
+59565A23D713B17A.pygtex main.pyg)...executed.
+
+
+(./_minted-main/355B5B838F8451FC5BB43E8F029AECEED3773C8B440B993359565A23D713B17
+A.pygtex)) [14] (./appendices/appendix1.tex [15]
 Appendix A.
-) [1
+
+(./_minted-main/DD06C697839F8CF70AD41EBE0A7CE54EF5034E3EC29E97EB099B41D96116C5E
+E.pygtex [16
+
+])
+(./_minted-main/A745765121FCB0F3A2E86135D882F917635A8DF51D824B49F0E472D5CC39B2D
+4.pygtex [17])
+(./_minted-main/8F5D15601935ED6720BA38D251E132AFF7EAECB1C9823AC2F75533BE37118BE
+8.pygtex [18] [19])
+(./_minted-main/37D4610E995CF7BF377E00093330FECBB82BF83FBAFD20BF4C5592AE9376564
+1.pygtex [20] [21]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 130
+.
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 130
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [22] [23] [24])
+(./_minted-main/9E2028D95D6A193212BD636387804D95BBD7EE63B8B3D1ECBB8A8D9A270C0EF
+1.pygtex [25] [26])
+(./_minted-main/E2E2CF09722117FADEE44CE7017706A91F48250B4F138591867B73080247442
+2.pygtex [27] [28] [29] [30])
+(./_minted-main/F3140E943A1DA66C254A5077E4B01A68B0BF31D67E90160C8C699AA5602975B
+F.pygtex [31])
+(./_minted-main/54E36B1967E5C43DEC6385E853BB483FE753804991DB427FA781822C75AD715
+1.pygtex [32] [33] [34] [35] [36]) [37]
+Appendix B.
+
+(./_minted-main/74FE86EEA7BCD3CA54784921087F5F32FCB1AFAF9C8B568948EE8B3952E986B
+F.pygtex [38
+
+] [39])
+(./_minted-main/0B438603DDCB326C7980352FE96D566130B50FB59D3E0D4EB06367C06A4399A
+8.pygtex [40])
+(./_minted-main/63AE019C7B0EA64E51B13617F4A5D2E5B604EA5C10AA5F9710C4F8E96E290BC
+0.pygtex [41] [42])
+(./_minted-main/762F2D46EC13A55BC4A837FFB1F0AC965DDFAFDFB9D42661B8BBAAEFEF8CA9F
+7.pygtex [43] [44])
+(./_minted-main/ED6DF06DF79B8775C38D040A58AD411B31A44ABAE8B9D2A27919F5042D417A8
+1.pygtex [45] [46] [47])
+(./_minted-main/B5993BAA8246C1946F077ACF028602BD873ACEF4A9863C2A964637C0BA6FABA
+8.pygtex [48] [49] [50])) [51] (./main.aux)
+
+LaTeX Warning: There were undefined references.
 
 
-] (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 1EDCF1237FFEF7D68A406DF760904AAD;294.
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 0BE8C57AE058B03B90BC77735006E195;3568
+(rerunfilecheck)             After:  0A833069EC65720177A0E55486E6C677;5883.
+runsystem(rm main.pyg)...executed.
+
  ) 
 Here is how much of TeX's memory you used:
- 49402 strings out of 476041
- 1166113 string characters out of 5793175
- 1857388 words of memory out of 6000000
- 69259 multiletter control sequences out of 15000+600000
- 517355 words of font info for 51 fonts, out of 8000000 for 9000
+ 63783 strings out of 476041
+ 1553308 string characters out of 5793175
+ 2129155 words of memory out of 6000000
+ 83308 multiletter control sequences out of 15000+600000
+ 517578 words of font info for 52 fonts, out of 8000000 for 9000
  1137 hyphenation exceptions out of 8191
- 84i,5n,89p,490b,974s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 142i,11n,144p,1580b,4532s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on main.pdf (4 pages, 155770 bytes).
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfr
+m1000.pfb>
+Output written on main.pdf (54 pages, 915458 bytes).
 PDF statistics:
- 78 PDF objects out of 1000 (max. 8388607)
- 58 compressed objects within 1 object stream
- 8 named destinations out of 1000 (max. 500000)
- 42 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 480 PDF objects out of 1000 (max. 8388607)
+ 395 compressed objects within 4 object streams
+ 125 named destinations out of 1000 (max. 500000)
+ 229 words of extra memory for PDF output out of 10000 (max. 10000000)
 

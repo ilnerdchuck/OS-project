@@ -1,0 +1,18 @@
+\section{FreeRTOS Porting}
+
+In this chapter, we detail the steps taken to port FreeRTOS to our NXP board. This includes setting up the development environment, configuring the FreeRTOS kernel, and implementing necessary peripheral drivers.
+
+\subsection{FreeRTOS Linker Script}
+
+The linker script is a crucial component in embedded systems development, as it defines how the program's memory is organized. For our NXP board, we created a custom linker script to allocate memory for the FreeRTOS kernel, application code, and data sections. Appendix \ref{FreeRTOS_linker_script} provides the complete linker script used in our project.
+
+\subsection{FreeRTOS Configuration}
+The FreeRTOS configuration file, typically named \texttt{FreeRTOSConfig.h}, contains various settings that control the behavior of the FreeRTOS kernel. We modified this file to suit the requirements of our application, including task priorities, stack sizes. Appendix \ref{FreeRTOS_config} contains the complete configuration file used in our project.
+
+\subsection{Peripheral Drivers}
+
+To interface with the hardware peripherals on the NXP board, we developed custom drivers for UART and SPI communication. These drivers handle the initialization, configuration, and data transfer processes for their respective peripherals. Appendix \ref{FreeRTOS_peripheral_drivers} contains the complete source code for the peripheral drivers.
+
+\subsection{Test Tasks}
+
+To validate the functionality of the FreeRTOS port and the peripheral drivers, we created several test tasks. These tasks perform simple operations such as sending and receiving data over UART and SPI. The main application code that sets up and runs these test tasks is provided in Appendix \ref{FreeRTOS_test_tasks}.

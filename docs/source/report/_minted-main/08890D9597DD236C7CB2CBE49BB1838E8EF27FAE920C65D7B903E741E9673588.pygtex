@@ -1,0 +1,25 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{S32K3x8SPIState}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{c+cm}{/* \PYGZlt{}private\PYGZgt{} */}
+\PYG{+w}{  }\PYG{n}{SysBusDevice}\PYG{+w}{ }\PYG{n}{parent\PYGZus{}obj}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+cm}{/* \PYGZlt{}public\PYGZgt{} */}
+\PYG{+w}{  }\PYG{n}{MemoryRegion}\PYG{+w}{ }\PYG{n}{mmio}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}cr1}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}cr2}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}sr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}dr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}crcpr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}rxcrcr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}txcrcr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}i2scfgr}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{spi\PYGZus{}i2spr}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{// For testing purposes}
+\PYG{+w}{  }\PYG{k+kt}{uint32\PYGZus{}t}\PYG{+w}{ }\PYG{n}{test\PYGZus{}var}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{n}{qemu\PYGZus{}irq}\PYG{+w}{ }\PYG{n}{irq}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{SSIBus}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{ssi}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}
