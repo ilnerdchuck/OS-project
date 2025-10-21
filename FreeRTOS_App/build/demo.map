@@ -364,7 +364,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x14f ./build/queue.o
  .debug_macro   0x0000000000000000       0x80 ./build/queue.o
  .debug_line    0x0000000000000000     0x1eaa ./build/queue.o
- .debug_str     0x0000000000000000    0x123ea ./build/queue.o
+ .debug_str     0x0000000000000000    0x123e5 ./build/queue.o
  .comment       0x0000000000000000       0x53 ./build/queue.o
  .debug_frame   0x0000000000000000      0x400 ./build/queue.o
  .ARM.attributes
@@ -1322,21 +1322,21 @@ LOAD linker stubs
  .debug_line    0x0000000000004ca8      0x565 ./build/peripherals.o
  .debug_line    0x000000000000520d      0x280 ./build/startup.o
 
-.debug_str      0x0000000000000000    0x16304
- .debug_str     0x0000000000000000     0xf86b ./build/list.o
-                                       0xfa6d (size before relaxing)
- .debug_str     0x000000000000f86b     0x373a ./build/tasks.o
-                                      0x131a2 (size before relaxing)
- .debug_str     0x0000000000012fa5      0x75b ./build/heap_4.o
-                                      0x1157b (size before relaxing)
- .debug_str     0x0000000000013700      0x807 ./build/port.o
-                                       0xebd7 (size before relaxing)
- .debug_str     0x0000000000013f07     0x222e ./build/main.o
-                                      0x1301f (size before relaxing)
- .debug_str     0x0000000000016135      0x154 ./build/peripherals.o
-                                       0xc6be (size before relaxing)
- .debug_str     0x0000000000016289       0x7b ./build/startup.o
-                                       0xc520 (size before relaxing)
+.debug_str      0x0000000000000000    0x162ff
+ .debug_str     0x0000000000000000     0xf866 ./build/list.o
+                                       0xfa68 (size before relaxing)
+ .debug_str     0x000000000000f866     0x373a ./build/tasks.o
+                                      0x1319d (size before relaxing)
+ .debug_str     0x0000000000012fa0      0x75b ./build/heap_4.o
+                                      0x11576 (size before relaxing)
+ .debug_str     0x00000000000136fb      0x807 ./build/port.o
+                                       0xebd2 (size before relaxing)
+ .debug_str     0x0000000000013f02     0x222e ./build/main.o
+                                      0x1301a (size before relaxing)
+ .debug_str     0x0000000000016130      0x154 ./build/peripherals.o
+                                       0xc6b9 (size before relaxing)
+ .debug_str     0x0000000000016284       0x7b ./build/startup.o
+                                       0xc51b (size before relaxing)
 
 .comment        0x0000000000000000       0x52
  .comment       0x0000000000000000       0x52 ./build/list.o

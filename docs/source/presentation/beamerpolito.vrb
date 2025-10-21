@@ -1,3 +1,38 @@
-\frametitle{ChanginPeripheral test}
-\begin{itemize}
-\end{itemize}
+\frametitle{Peripheral test: SPI}
+\begin{columns}
+        \begin{column}{0.5\textwidth}
+            The test application for the SPI peripheral includes:
+            \begin{itemize}
+                \item Initialization of the SPI peripheral
+                \item Sending and receiving data
+                \item Printing messages to the terminal
+            \end{itemize}
+            Also this application is structured as a FreeRTOS task that runs independently.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{MCU Initialization}
+                    \begin{footnotesize}
+                        \begin{verbatim}
+int main(int argc, char **argv) {
+    SPI_init();
+}
+void SPI_test(void *pvParameters) {
+  (void)pvParameters;
+  SPI_status();
+  uint32_t pippo = 0x00;
+  uint32_t pluto = 0x00;
+  for (int i=0; i<10; ++i) {
+    uart_printf("Sending: %x\n", pippo);
+    SPI_write((uint8_t)pippo);
+    SPI_get((uint8_t *)&pluto);
+    pippo = pluto;
+    uart_printf("SPI read: %x\n", pluto);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+  SPI_status();
+  }
+                        \end{verbatim}
+                    \end{footnotesize}
+            \end{block}
+        \end{column}
+    \end{columns}
