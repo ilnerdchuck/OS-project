@@ -4,6 +4,16 @@
 #include "hw/sysbus.h"
 #include "hw/ssi/ssi.h"
 #include "qom/object.h"
+#include "qemu/osdep.h"
+#include "hw/sysbus.h"
+#include "qemu/log.h"
+#include "qapi/error.h"
+#include "qemu/module.h"
+#include "migration/vmstate.h"
+#include <string.h>
+#include <openssl/rand.h>
+#include <openssl/hmac.h>
+#include <openssl/sha.h>
 
 #define TYPE_S32K_TPM "S32K_TPM"
 OBJECT_DECLARE_SIMPLE_TYPE(S32KTPMState, S32K_TPM)
@@ -30,10 +40,14 @@ OBJECT_DECLARE_SIMPLE_TYPE(S32KTPMState, S32K_TPM)
 #define CMD_PCR_READ      5
 #define CMD_NV_WRITE      6
 #define CMD_NV_READ       7
+#define CMD_VERIFY_FW     8   /* NEW: verify firmware hash + signature */
+
+#define CMD_VERIFY_BOOT_HASH 0x10  // New command for secure boot
+#define BOOT_HASH_SIZE SHA256_DIGEST_LENGTH
 
 /* Sizes */
 #define KEY_SLOT_COUNT 4
-#define KEY_BYTES 32           /* 256-bit symmetric keys for prototype */
+#define KEY_BYTES 32           /* 256-bit symmetric keys (HMAC) for prototype */
 #define PCR_COUNT 24
 #define PCR_SIZE 32
 #define NV_SLOTS 4
@@ -63,6 +77,8 @@ typedef struct S32KTPMState {
     /* NV storage */
     uint8_t nv_slots[NV_SLOTS][NV_SLOT_SIZE];
     uint16_t nv_len[NV_SLOTS];
+
+    uint8_t boot_hash[BOOT_HASH_SIZE];  // Pre-stored bootloader hash
 
     qemu_irq irq;
     SSIBus *ssi;

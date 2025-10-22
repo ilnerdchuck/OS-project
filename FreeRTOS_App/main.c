@@ -14,6 +14,7 @@
 void UART_test(void *pvParameters);
 void SPI_test(void *pvParameters);
 void TPM_test(void *pvParameters);
+void SecureBoot_test(void *pvParameters);
 
 int main(int argc, char **argv) {
 
@@ -25,11 +26,13 @@ int main(int argc, char **argv) {
   SPI_init();
 
   // Test Tasks creation
-  // xTaskCreate(UART_test, "UART_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY, NULL);
+  xTaskCreate(UART_test, "UART_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY, NULL);
 
-  // xTaskCreate(SPI_test, "SPI_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY, NULL);
+  xTaskCreate(SPI_test, "SPI_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY+3, NULL);
 
-  xTaskCreate(TPM_test, "TMP_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY, NULL);
+  xTaskCreate(TPM_test, "TMP_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY+4, NULL);
+
+  xTaskCreate(SecureBoot_test, "SecureBoot_test", configMINIMAL_STACK_SIZE, NULL, mainTASK_PRIORITY+5, NULL);
   
   vTaskStartScheduler();
   for (;;)
@@ -41,7 +44,7 @@ void UART_test(void *pvParameters) {
 
   uart_printf("------------- Starting UART Test -------------\n");
 
-    uart_printf("Hello from UART of Group10!\n");
+    uart_printf("Hello from UART of Group11!\n");
 
   uart_printf("-------------- Ending UART Test -------------\n");
 
@@ -69,7 +72,6 @@ void SPI_test(void *pvParameters) {
     pippo = pluto;
 
     uart_printf("SPI read: %x\n", pluto);
-    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 
   SPI_status();
@@ -81,27 +83,63 @@ void SPI_test(void *pvParameters) {
 
 void TPM_test(void *pvParameters) {
   (void)pvParameters;
-
-  uart_printf("------------- Starting TPM Test -------------\n");
+  uart_printf("------------- Starting TPM Extended Test -------------\n");
 
   TPM_init();
 
-  // Check initial state
-  TPM_read();
-
-  // Generate key at slot 0
+  // Generate keys
   TPM_generate_key(0);
 
-  // Read back status
-  TPM_read();
-
-  // Generate key at slot 1
   TPM_generate_key(1);
 
-  // Test read/write of control/status registers directly
-  TPM_write();
+  uart_printf("-------------- TPM Extended Test Completed -------------\n");
+  vTaskDelete(NULL);
+}
 
-  uart_printf("-------------- TPM Test Completed -------------\n");
+void SecureBoot_test(void *pvParameters) {
+  (void)pvParameters;
+
+  uart_printf("------------- Starting Secure Boot Test -------------\n");
+
+  // Example bootloader hash (must match the one in the TPM for success)
+  uint8_t valid_boot_hash[32] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 
+                                 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 
+                                 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 
+                                 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0};
+
+  // Write the valid hash to the TPM's DATA_IN register
+  memcpy((void *)(S32K_TPM_BASE + 0x10), valid_boot_hash, sizeof(valid_boot_hash));
+
+  // Trigger the secure boot verification command
+  TPM_CMD_REG = 0x10;  // CMD_VERIFY_BOOT_HASH
+
+  // Check the result in the STATUS register
+  if (TPM_STATUS_REG & 0x01) {  // STATUS_READY
+    uart_printf("Secure Boot Test: FAILURE (valid hash)\n");
+  } else {
+    uart_printf("Secure Boot Test: SUCCESS (valid hash)\n");
+  }
+
+  // Test with an invalid hash
+  uint8_t invalid_boot_hash[32] = {0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 
+                                   0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00, 
+                                   0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 
+                                   0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00};
+
+  // Write the invalid hash to the TPM's DATA_IN register
+  memcpy((void *)(S32K_TPM_BASE + 0x10), invalid_boot_hash, sizeof(invalid_boot_hash));
+
+  // Trigger the secure boot verification command
+  TPM_CMD_REG = 0x10;  // CMD_VERIFY_BOOT_HASH
+
+  // Check the result in the STATUS register
+  if (TPM_STATUS_REG & 0x01) {  // STATUS_READY
+    uart_printf("Secure Boot Test: SUCCESS (invalid hash accepted)\n");
+  } else {
+    uart_printf("Secure Boot Test: FAILURE (invalid hash rejected)\n");
+  }
+
+  uart_printf("------------- Secure Boot Test Completed -------------\n");
 
   vTaskDelete(NULL);
 }

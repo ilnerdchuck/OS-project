@@ -11,6 +11,9 @@
 #include <openssl/sha.h>
 #include "hw/ssi/S32K_TPM.h"
 
+#define CMD_VERIFY_BOOT_HASH 0x10  // New command for secure boot
+#define BOOT_HASH_SIZE SHA256_DIGEST_LENGTH
+
 
 /* helper: set status flags */
 static void tpm_set_status(S32KTPMState *s, uint32_t set, uint32_t clear) {
@@ -131,6 +134,21 @@ static void tpm_nv_read(S32KTPMState *s, uint32_t nv_index) {
     tpm_write_response(s, s->nv_slots[nv_index], s->nv_len[nv_index]);
 }
 
+/* Verify bootloader hash */
+static void tpm_verify_boot_hash(S32KTPMState *s, const uint8_t *hash, size_t len) {
+    if (len != BOOT_HASH_SIZE) {
+        qemu_log_mask(LOG_GUEST_ERROR, "TPM: Invalid boot hash length\n");
+        tpm_set_status(s, STATUS_ERROR, STATUS_BUSY);
+        return;
+    }
+
+    if (memcmp(s->boot_hash, hash, BOOT_HASH_SIZE) == 0) {
+        tpm_write_response(s, (const uint8_t *)"OK", 2);  // Hash matches
+    } else {
+        tpm_write_response(s, (const uint8_t *)"FAIL", 4);  // Hash mismatch
+    }
+}
+
 /* Main dispatcher: read DATA_IN and run the command */
 static void tpm_handle_cmd(S32KTPMState *s, uint32_t cmd) {
     tpm_set_status(s, STATUS_BUSY, STATUS_READY | STATUS_ERROR);
@@ -173,6 +191,9 @@ static void tpm_handle_cmd(S32KTPMState *s, uint32_t cmd) {
         }
         case CMD_NV_READ:
             tpm_nv_read(s, (uint32_t)in[0]);
+            break;
+        case CMD_VERIFY_BOOT_HASH:
+            tpm_verify_boot_hash(s, in, DATA_IN_SIZE);
             break;
         default:
             qemu_log_mask(LOG_GUEST_ERROR, "TPM: unknown cmd %u\n", cmd);
@@ -285,6 +306,11 @@ static void s32k_tpm_init(Object *obj) {
     if (RAND_bytes(s->key_store[0], KEY_BYTES) == 1) {
         s->key_valid[0] = true;
     }
+
+    /* Initialize pre-stored bootloader hash (example hash) */
+    const uint8_t default_boot_hash[BOOT_HASH_SIZE] = { /* Example SHA256 hash */ 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0 };
+    memcpy(s->boot_hash, default_boot_hash, BOOT_HASH_SIZE);
+
     /* mark not busy */
     s->status_reg = 0;
 }

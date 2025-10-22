@@ -142,7 +142,6 @@ void TPM_generate_key(uint32_t key_index) {
 
   TPM_CONTROL_REG = key_index & 0xFF; // select key slot
   TPM_CMD_REG = 0x01; // trigger key generation (handled in QEMU write)
-  vTaskDelay(pdMS_TO_TICKS(100));
 
   uint32_t status = TPM_STATUS_REG;
   uart_printf("TPM: Key generation command complete, status=0x%x\n", status);

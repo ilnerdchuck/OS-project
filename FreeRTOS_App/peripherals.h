@@ -51,5 +51,7 @@ void TPM_generate_key(uint32_t key_index);
 void TPM_status(void);
 void TPM_read(void);
 void TPM_write(void);
+// void TPM_read_key(uint32_t , uint8_t *);
+// void TPM_secure_boot_verify(void);
 
 #endif
