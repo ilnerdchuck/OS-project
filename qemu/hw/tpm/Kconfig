@@ -30,3 +30,4 @@ config TPM_SPAPR
     default y
     depends on TPM && PSERIES
     select TPM_BACKEND
+

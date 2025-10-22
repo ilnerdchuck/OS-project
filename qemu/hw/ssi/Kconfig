@@ -38,3 +38,8 @@ config S32K3x8_SPI
     default y
     select SSI
 
+config S32K_TPM
+    bool
+    default y
+    select SSI
+

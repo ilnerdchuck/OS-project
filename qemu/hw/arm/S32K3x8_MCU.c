@@ -5,6 +5,7 @@
 #include "hw/arm/S32K3x8_MCU.h"
 #include "hw/arm/S32K3X8EVB.h"
 #include "include/hw/ssi/S32K3x8_spi.h"
+#include "include/hw/ssi/S32K_TPM.h"
 #include "hw/sysbus.h"
 #include "qemu/osdep.h"
 #include "qapi/error.h"
@@ -85,6 +86,8 @@ static const int spi_irq[NXP_NUM_SPI] = {
 
 //------- END SPIs ----------
 
+// TPM address
+static const uint32_t tpm0_addr = 0x40370000;
 
 //------- MCU initialization -----------
 static void S32K3x8_init(Object  *obj){
@@ -102,6 +105,9 @@ static void S32K3x8_init(Object  *obj){
     for (i = 0; i < NXP_NUM_SPI; i++) {
         object_initialize_child(obj, "spi[*]", &s->spi[i], TYPE_S32K3x8_SPI);
     }
+
+    // TPM
+    object_initialize_child(obj, "tpm0", &s->tpm0, TYPE_S32K_TPM);
 
     // CPU push 
     //cpu initializer
@@ -251,6 +257,18 @@ static void S32K3x8_realize(DeviceState *dev_mcu, Error **errp){
         sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, spi_irq[i]));
     }
     // ----------------- END SPIs Realization -----------------
+    // ----------------- TPM Realization -----------------
+    dev = DEVICE(&(s->tpm0));
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->tpm0), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    // Map the UART peripheral to memory
+    sysbus_mmio_map(busdev, 0, tpm0_addr);
+    // Should not be needed by the TPM
+    // // initialize the IRQ table of the CPU with the correct interrupt handler
+    // sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, spi_irq[i]));
+    // ----------------- END TPM Realization -----------------
 }
 
 //------- END MCU realization --------------

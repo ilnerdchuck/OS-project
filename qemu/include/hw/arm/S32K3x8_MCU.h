@@ -13,6 +13,7 @@
 #include "hw/or-irq.h"
 #include "hw/arm/armv7m.h"
 #include "include/hw/ssi/S32K3x8_spi.h"
+#include "include/hw/ssi/S32K_TPM.h"
 #include "qom/object.h"
 
 // Board clock frequency
@@ -47,10 +48,7 @@ struct S32K3x8State{
     MemoryRegion flash0;
     MemoryRegion flash_alias;
     MemoryRegion *board_memory;
-    
-    // We could also initialize and realize
-    // this container to not use dirrectly map all 
-    // the peripherals or memory regions directly in the 
+
     // QEMU memory
     MemoryRegion container;
     
@@ -60,5 +58,8 @@ struct S32K3x8State{
     
     // SPI
     S32K3x8SPIState spi[NXP_NUM_SPI];
+
+    // TPM
+    S32KTPMState tpm0;
 };
 
