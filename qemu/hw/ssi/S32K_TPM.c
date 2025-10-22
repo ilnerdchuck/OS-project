@@ -11,9 +11,6 @@
 #include <openssl/sha.h>
 #include "hw/ssi/S32K_TPM.h"
 
-#define CMD_VERIFY_BOOT_HASH 0x10  // New command for secure boot
-#define BOOT_HASH_SIZE SHA256_DIGEST_LENGTH
-
 
 /* helper: set status flags */
 static void tpm_set_status(S32KTPMState *s, uint32_t set, uint32_t clear) {
